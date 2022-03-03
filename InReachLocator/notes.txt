@@ -1,0 +1,6 @@
+﻿us0-enterprise.inreach.garmin.com
+300434030634300
+
+https://us0-origin.explore.garmin.com/IPCInbound/docs/#!/Location.svc/LastKnownLocationGET
+
+https://{IPCInboundBaseUrl}/IPCInbound/V1/Location.svc

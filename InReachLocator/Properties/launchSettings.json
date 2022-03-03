@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "InReachLocator (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "InReachLocator (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
