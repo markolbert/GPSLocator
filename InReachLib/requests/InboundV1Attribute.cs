@@ -3,9 +3,9 @@
 namespace J4JSoftware.InReach;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public class InReachInboundV1RequestAttribute : InReachInboundRequestAttribute
+public class InboundV1Attribute : InboundAttribute
 {
-    public InReachInboundV1RequestAttribute(
+    public InboundV1Attribute(
         string svcGroup,
         string service,
         bool requiresAuthentication

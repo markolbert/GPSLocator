@@ -2,10 +2,10 @@
 
 namespace J4JSoftware.InReach;
 
-[InReachInboundV1Request("Location.svc","Version", false)]
-public class InReachVersionRequest : InReachRequest<InReachVersion>
+[InboundV1("Location.svc","Version", false)]
+public class VersionRequest : InReachRequest<InReachVersion>
 {
-    public InReachVersionRequest( 
+    public VersionRequest( 
         IInReachConfig config, 
         IJ4JLogger logger )
         : base( config, logger )
