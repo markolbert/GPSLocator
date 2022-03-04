@@ -29,6 +29,9 @@ namespace J4JSoftware.InReach
     /// </summary>
     public partial class App : Application
     {
+        public const double FeetPerMeter = 3.28084;
+        public const double MPHperKMH = 0.621371;
+
         public new static App Current => (App)Application.Current;
 
         private readonly IJ4JLogger _logger;
@@ -83,7 +86,7 @@ namespace J4JSoftware.InReach
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            MainWindow = new MainWindow() { Title = "Media Timestamp Updater" };
+            MainWindow = new MainWindow() { Title = "InReach Locator" };
 
             MainWindowIntPtr = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
             MainWindowId = Win32Interop.GetWindowIdFromWindow(MainWindowIntPtr);
@@ -125,6 +128,10 @@ namespace J4JSoftware.InReach
                    .SingleInstance();
 
             builder.RegisterType<SettingsViewModel>()
+                   .AsSelf()
+                   .SingleInstance();
+
+            builder.RegisterType<LastKnownViewModel>()
                    .AsSelf()
                    .SingleInstance();
         }

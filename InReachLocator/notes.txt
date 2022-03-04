@@ -4,3 +4,5 @@
 https://us0-origin.explore.garmin.com/IPCInbound/docs/#!/Location.svc/LastKnownLocationGET
 
 https://{IPCInboundBaseUrl}/IPCInbound/V1/Location.svc
+
+{"Locations":[{"Altitude":17,"Coordinate":{"Latitude":36.977405,"Longitude":-122.015833},"Course":202,"GPSFixStatus":4,"IMEI":300434030634300,"Speed":28,"Timestamp":"\/Date(1646336692443)\/"}]}

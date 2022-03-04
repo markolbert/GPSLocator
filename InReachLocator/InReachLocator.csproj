@@ -29,9 +29,11 @@
 	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
 	  <PackageReadmeFile>nuget-locator.md</PackageReadmeFile>
   </PropertyGroup>
+
   <ItemGroup>
     <None Remove="DefaultResources.xaml" />
     <None Remove="HomeControl.xaml" />
+    <None Remove="ui\lastknown\LastKnownControl.xaml" />
     <None Remove="ui\settings\SettingsControl.xaml" />
   </ItemGroup>
 
@@ -42,8 +44,6 @@
 		</None>
 		<None Include="../docs/nuget-locator.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
-
-
 
 	<ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -81,6 +81,9 @@
     <None Update="appConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="ui\lastknown\LastKnownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="ui\settings\SettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -11,6 +11,9 @@ using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace J4JSoftware.InReach
 {
@@ -51,6 +54,18 @@ namespace J4JSoftware.InReach
 
         private async Task SaveAndCloseHandler()
         {
+            // test the proposed configuration
+            var testConfig = new InReachConfig
+            {
+                IMEI = IMEI,
+                UserName = UserName,
+                Website = Website,
+                Password = { ClearText = Password }
+            };
+
+            if ( !await testConfig.ValidateConfiguration( _logger ) )
+                return;
+
             _config.Website = Website;
             _config.UserName = UserName;
             _config.Password.ClearText = Password;

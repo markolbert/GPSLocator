@@ -25,6 +25,7 @@
                 Command="{Binding ConfigureCommand}">
             Settings
         </Button>
-        
+
     </StackPanel>
+
 </UserControl>

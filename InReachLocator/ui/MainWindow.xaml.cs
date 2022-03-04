@@ -94,5 +94,10 @@ namespace J4JSoftware.InReach
             _placeholder.Content = prior.Control;
             prior.ContainerConfigurator( _placeholder );
         }
+
+        private void MainWindow_OnSizeChanged( object sender, WindowSizeChangedEventArgs args )
+        {
+            WeakReferenceMessenger.Default.Send( new SizeMessage(args.Size), "mainwindow" );
+        }
     }
 }
