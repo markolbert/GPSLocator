@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,36 +17,24 @@ namespace J4JSoftware.InReach
     public class InReachRequest<TResponse>
         where TResponse : class
     {
-        private readonly HttpClient _httpClient;
-        private readonly Dictionary<string, string> _queryStrings =
-            new Dictionary<string, string>( StringComparer.OrdinalIgnoreCase );
+        private readonly Dictionary<string, string> _queryStrings = new( StringComparer.OrdinalIgnoreCase );
 
         protected InReachRequest(
             IInReachConfig config,
             IJ4JLogger logger
         )
         {
-            var svcAttr = GetType()
-                            .GetCustomAttributes( false )
-                            .FirstOrDefault( x => x is InReachRequestAttribute )
-                as InReachRequestAttribute;
-
-            if( svcAttr == null )
-                throw new NullReferenceException( $"{nameof(InReachRequest<TResponse>)} not decorated with {nameof(InReachRequestAttribute)}" );
+            if( GetType()
+               .GetCustomAttributes( false )
+               .FirstOrDefault( x => x is InReachAttribute ) is not InReachAttribute svcAttr )
+                throw new NullReferenceException( $"{nameof(InReachRequest<TResponse>)} not decorated with {nameof(InReachAttribute)}" );
 
             Configuration = config;
             ServiceGroup = svcAttr!.ServiceGroup;
             Service = svcAttr.Service;
             Direction = svcAttr.Direction;
             Version = svcAttr.Version;
-
-            BaseUri = $"https://{Configuration.Website}/{Direction}/V{Version}/{ServiceGroup}/{Service}";
-
-            _httpClient = new HttpClient();
-
-            if( svcAttr.RequiresAuthentication )
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue( "Basic", Configuration.Credentials );
+            RequiresAuthentication = svcAttr.RequiresAuthentication;
 
             Logger = logger;
             Logger.SetLoggedType( GetType() );
@@ -57,24 +47,38 @@ namespace J4JSoftware.InReach
         protected Direction Direction { get; }
         protected string Version { get; }
         protected IInReachConfig Configuration { get; }
+        protected bool RequiresAuthentication { get; }
 
-        public string BaseUri { get; }
+        public string? LastUri { get; private set; }
         public InReachError? LastError { get; protected set; }
 
-        protected void AddQueryString( string name, string value )
+        protected void SetQueryProperty( ref string property, string value, [ CallerMemberName ] string memberName = "" )
         {
-            if( _queryStrings.ContainsKey( name ) )
-                _queryStrings[ name ] = value;
-            else _queryStrings.Add( name, value );
+            property = value;
+
+            if (_queryStrings.ContainsKey(memberName))
+                _queryStrings[memberName] = value;
+            else _queryStrings.Add(memberName, value);
         }
 
-        public virtual async Task<TResponse?> ExecuteAsync()
+        public async Task<TResponse?> ExecuteAsync()
         {
             LastError = null;
 
-            var uri = QueryHelpers.AddQueryString( BaseUri, _queryStrings );
+            LastUri = QueryHelpers.AddQueryString(
+                $"https://{Configuration.Website}/{Direction}/V{Version}/{ServiceGroup}/{Service}",
+                _queryStrings );
 
-            var response = await _httpClient.GetAsync( uri );
+            var credentials = new NetworkCredential(Configuration.UserName, Configuration.Password.ClearText);
+
+            var clientHandler = new HttpClientHandler()
+            {
+                Credentials = credentials.GetCredential( new Uri( LastUri ), "Basic" )
+            };
+
+            var httpClient = new HttpClient( clientHandler );
+
+            var response = await httpClient.GetAsync( LastUri );
             var respText = await response.Content.ReadAsStringAsync();
 
             if ( !response.IsSuccessStatusCode )
@@ -84,6 +88,9 @@ namespace J4JSoftware.InReach
                     response.ReasonPhrase );
 
                 LastError = JsonSerializer.Deserialize<InReachError>(respText);
+                
+                if( LastError != null )
+                    LastError.HttpResponseCode = response.StatusCode;
 
                 return null;
             }
