@@ -8,7 +8,5 @@ namespace J4JSoftware.InReach
         string IMEI { get; set; }
         string UserName { get; set; }
         EncryptedString Password { get; }
-        string Credentials { get; }
-        bool IsValid { get; }
     }
 }
