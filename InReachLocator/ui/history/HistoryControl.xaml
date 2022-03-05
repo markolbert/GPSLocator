@@ -1,0 +1,66 @@
+﻿<UserControl
+    x:Class="J4JSoftware.InReach.HistoryControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:J4JSoftware.InReach"
+    xmlns:sfcal="using:Syncfusion.UI.Xaml.Calendar"
+    xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:HistoryViewModel}">
+
+    <StackPanel Orientation="Horizontal"
+                SizeChanged="OnSizeChanged">
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0">Start Date</TextBlock>
+            <sfcal:SfCalendar Grid.Row="0" Grid.Column="1"
+                              SelectedDate="{Binding StartDate, Mode=TwoWay}"
+                              MinDate="{Binding MinimumStartDate}"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0">End Date</TextBlock>
+            <sfcal:SfCalendar Grid.Row="1" Grid.Column="1"
+                              SelectedDate="{Binding EndDate, Mode=TwoWay}"/>
+        </Grid>
+
+        <sfgrid:SfDataGrid x:Name="LocationsGrid" 
+                           ItemsSource="{Binding Locations}"
+                           SelectedItem="{Binding SelectedLocation, Mode=TwoWay}"
+                           AutoGenerateColumns="False"
+                           AllowResizingColumns="True">
+
+            <sfgrid:SfDataGrid.Columns>
+                <sfgrid:GridDateColumn MappingName="Timestamp" 
+                                       HeaderText="Timestamp" 
+                                       DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
+                <sfgrid:GridTextColumn MappingName="Coordinate.SimpleDisplay"
+                                       HeaderText="Lat/Long"/>
+            </sfgrid:SfDataGrid.Columns>
+
+            <sfgrid:SfDataGrid.RowStyle>
+                <Style TargetType="sfgrid:DataGridRowControl">
+                    <Setter Property="Background" Value="{Binding HasMessage, Converter={StaticResource BoolToGridBackgroundColor}}"/>
+                </Style>
+            </sfgrid:SfDataGrid.RowStyle>
+
+        </sfgrid:SfDataGrid>
+
+        <WebView2 Height="{Binding MapHeight}"
+                  Width="{Binding MapWidth}"
+                  Source="{Binding LocationUrl, Mode=TwoWay}"/>
+
+    </StackPanel>
+
+</UserControl>
