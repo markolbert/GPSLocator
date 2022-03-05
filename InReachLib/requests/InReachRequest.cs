@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.AspNetCore.WebUtilities;
@@ -52,13 +53,35 @@ namespace J4JSoftware.InReach
         public string? LastUri { get; private set; }
         public InReachError? LastError { get; protected set; }
 
-        protected void SetQueryProperty( ref string property, string value, [ CallerMemberName ] string memberName = "" )
+        //protected void SetQueryProperty( ref string property, string value, [ CallerMemberName ] string memberName = "" )
+        //{
+        //    property = value;
+
+        //    if (_queryStrings.ContainsKey(memberName))
+        //        _queryStrings[memberName] = value;
+        //    else _queryStrings.Add(memberName, value);
+        //}
+
+        protected void SetQueryProperty<TProp>(
+            ref TProp property,
+            TProp value,
+            Func<TProp, string>? toTextFunc = null,
+            [ CallerMemberName ] string memberName = ""
+        )
         {
             property = value;
 
-            if (_queryStrings.ContainsKey(memberName))
-                _queryStrings[memberName] = value;
-            else _queryStrings.Add(memberName, value);
+            toTextFunc ??= x =>
+            {
+                if( x is string text )
+                    return text;
+
+                return x?.ToString() ?? string.Empty;
+            };
+
+            if( _queryStrings.ContainsKey( memberName ) )
+                _queryStrings[ memberName ] = toTextFunc( value );
+            else _queryStrings.Add( memberName, toTextFunc( value ) );
         }
 
         public async Task<TResponse?> ExecuteAsync()
