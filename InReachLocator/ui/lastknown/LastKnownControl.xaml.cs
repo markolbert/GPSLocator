@@ -26,15 +26,16 @@ namespace J4JSoftware.InReach
         {
             this.InitializeComponent();
 
-            ViewModel = App.Current.Host.Services.GetRequiredService<LastKnownViewModel>();
+            DataContext = App.Current.Host.Services.GetRequiredService<LastKnownViewModel>();
         }
-
-        public LastKnownViewModel ViewModel { get; set; }
 
         private void OnSizeChanged( object sender, SizeChangedEventArgs e )
         {
-            ViewModel.GridHeight = e.NewSize.Height;
-            ViewModel.GridWidth = e.NewSize.Width;
+            if( DataContext is not LastKnownViewModel viewModel )
+                return;
+
+            viewModel.GridHeight = e.NewSize.Height;
+            viewModel.GridWidth = e.NewSize.Width;
         }
     }
 }

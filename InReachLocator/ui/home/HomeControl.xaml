@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    DataContext="{x:Bind ViewModel}">
+    d:DataContext="{d:DesignInstance local:HomeViewModel}">
 
     <StackPanel Orientation="Vertical">
 
@@ -17,7 +17,8 @@
         </Button>
 
         <Button IsEnabled="{Binding ValidConfiguration}" 
-                HorizontalAlignment="Center">
+                HorizontalAlignment="Center"
+                Command="{Binding HistoryCommand}">
             Location History
         </Button>
 

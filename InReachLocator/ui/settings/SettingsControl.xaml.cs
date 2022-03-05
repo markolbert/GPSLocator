@@ -25,9 +25,7 @@ namespace J4JSoftware.InReach
         {
             this.InitializeComponent();
 
-            ViewModel = App.Current.Host.Services.GetRequiredService<SettingsViewModel>();
+            DataContext = App.Current.Host.Services.GetRequiredService<SettingsViewModel>();
         }
-
-        public SettingsViewModel ViewModel { get; }
     }
 }

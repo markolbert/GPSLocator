@@ -12,9 +12,7 @@ namespace J4JSoftware.InReach
         {
             this.InitializeComponent();
 
-            ViewModel = App.Current.Host.Services.GetRequiredService<HomeViewModel>();
+            DataContext = App.Current.Host.Services.GetRequiredService<HomeViewModel>();
         }
-
-        internal HomeViewModel ViewModel { get; }
     }
 }
