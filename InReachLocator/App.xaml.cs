@@ -131,7 +131,14 @@ namespace J4JSoftware.InReach
                    .AsSelf()
                    .SingleInstance();
 
+            builder.RegisterType<LocationViewModel>()
+                   .AsSelf();
+
             builder.RegisterType<LastKnownViewModel>()
+                   .AsSelf()
+                   .SingleInstance();
+
+            builder.RegisterType<LocationHistoryViewModel>()
                    .AsSelf()
                    .SingleInstance();
         }

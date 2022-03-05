@@ -33,7 +33,9 @@
   <ItemGroup>
     <None Remove="DefaultResources.xaml" />
     <None Remove="HomeControl.xaml" />
+    <None Remove="ui\common\LocationControl.xaml" />
     <None Remove="ui\lastknown\LastKnownControl.xaml" />
+    <None Remove="ui\location-history\LocationHistoryControl.xaml" />
     <None Remove="ui\settings\SettingsControl.xaml" />
   </ItemGroup>
 
@@ -61,6 +63,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Syncfusion.Calendar.WinUI" Version="19.4.0.54" />
 	<PackageReference Include="Syncfusion.Core.WinUI" Version="19.4.0.54" />
 	<PackageReference Include="Syncfusion.Licensing" Version="19.4.0.54" />
     <Manifest Include="$(ApplicationManifest)" />
@@ -81,6 +84,12 @@
     <None Update="appConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="ui\common\LocationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="ui\location-history\LocationHistoryControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="ui\lastknown\LastKnownControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
