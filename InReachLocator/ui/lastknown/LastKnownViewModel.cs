@@ -16,14 +16,7 @@ namespace J4JSoftware.InReach
     {
         private readonly IJ4JLogger _logger;
 
-        private bool _imperialUnits;
-        private DateTime _timestamp;
-        private double _latitude;
-        private double _longitude;
-        private double _altitude;
-        private double _speed;
-        private long _course;
-        private int _gpsFixStatus;
+        private LocationViewModel? _locationViewModel;
         private string? _locationUrl;
         private double _mapHeight = 500;
         private double _mapWidth = 500;
@@ -61,85 +54,22 @@ namespace J4JSoftware.InReach
 
         private void NewLocationHandler( LastKnownViewModel recipient, Location message )
         {
-            Timestamp = message.Timestamp;
-            Latitude = message.Coordinate!.Latitude;
-            Longitude = message.Coordinate!.Longitude;
-            Altitude = message.Altitude;
-            Speed = message.Speed;
-            Course = message.Course;
-            GPSFixStatus = message.GPSFixStatus;
+            LocationViewModel = new LocationViewModel( message, _logger );
 
-            LocationUrl = $"https://maps.google.com?q={Latitude},{Longitude}";
+            LocationUrl = $"https://maps.google.com?q={LocationViewModel.Latitude},{LocationViewModel.Longitude}";
         }
 
-        public DateTime Timestamp
+        public LocationViewModel? LocationViewModel
         {
-            get => _timestamp;
-            set => SetProperty( ref _timestamp, value );
+            get => _locationViewModel;
+            private set => SetProperty( ref _locationViewModel, value );
         }
-
-        public double Latitude
-        {
-            get => _latitude;
-            set=> SetProperty( ref _latitude, value );
-        }
-
-        public double Longitude
-        {
-            get => _longitude;
-            set=> SetProperty( ref _longitude, value );
-        }
-
-        public double Altitude
-        {
-            get => ConvertToImperial( _altitude, App.FeetPerMeter );
-            set=> SetProperty( ref _altitude, value );
-        }
-
-        public double Speed
-        {
-            get => ConvertToImperial( _speed, App.MPHperKMH );
-            set => SetProperty( ref _speed, value );
-        }
-
-        public long Course
-        {
-            get => _course;
-            set => SetProperty( ref _course, value );
-        }
-
-        public int GPSFixStatus
-        {
-            get => _gpsFixStatus;
-            set=> SetProperty( ref _gpsFixStatus, value );
-        }
-
-        public bool ImperialUnits
-        {
-            get => _imperialUnits;
-
-            set
-            {
-                SetProperty( ref _imperialUnits, value );
-
-                OnPropertyChanged( nameof( Speed ) );
-                OnPropertyChanged(nameof(SpeedUnits));
-                OnPropertyChanged( nameof( Altitude ) );
-                OnPropertyChanged( nameof( AltitudeUnits ) );
-            }
-        }
-
-        private double ConvertToImperial( double metric, double factor ) =>
-            Math.Round( metric * ( _imperialUnits ? factor : 1 ), 0 );
 
         public string? LocationUrl
         {
             get => _locationUrl;
             set => SetProperty( ref _locationUrl, value );
         }
-
-        public string AltitudeUnits => _imperialUnits ? "feet" : "meters";
-        public string SpeedUnits => _imperialUnits ? "mph" : "km/h";
 
         public double GridHeight { get; set; }
         public double GridWidth { get; set; }
