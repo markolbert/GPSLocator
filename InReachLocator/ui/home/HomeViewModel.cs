@@ -38,6 +38,7 @@ namespace J4JSoftware.InReach
             });
 
             LastKnownLocationCommand = new AsyncRelayCommand( LastKnownLocationHandler );
+            HistoryCommand = new RelayCommand( HistoryHandler );
             ConfigureCommand = new RelayCommand( ConfigureHandler );
 
             IsActive = true;
@@ -89,6 +90,18 @@ namespace J4JSoftware.InReach
                                           });
 
             WeakReferenceMessenger.Default.Send( result.Locations[ 0 ], "primary" );
+        }
+
+        public RelayCommand HistoryCommand { get; }
+
+        private void HistoryHandler()
+        {
+            App.Current.SetContentControl(new HistoryControl(),
+                                          x =>
+                                          {
+                                              x.HorizontalAlignment = HorizontalAlignment.Left;
+                                              x.VerticalAlignment = VerticalAlignment.Top;
+                                          });
         }
 
         public RelayCommand ConfigureCommand { get; }
