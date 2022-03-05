@@ -4,5 +4,5 @@ namespace J4JSoftware.InReach;
 
 public class History
 {
-    public List<HistoryItem> HistoryItems { get; } = new();
+    public List<LocationMessage> HistoryItems { get; set; } = new();
 }
