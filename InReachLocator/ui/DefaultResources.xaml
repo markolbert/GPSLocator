@@ -1,7 +1,9 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:J4JSoftware.InReach">
+    xmlns:local="using:J4JSoftware.InReach"
+    xmlns:sfcal="using:Syncfusion.UI.Xaml.Calendar"
+    xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid">
 
     <Style TargetType="TextBlock">
         <Setter Property="Margin" Value="5"/>
@@ -30,6 +32,14 @@
     </Style>
 
     <Style TargetType="WebView2">
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+
+    <Style TargetType="sfgrid:SfDataGrid">
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+
+    <Style TargetType="sfcal:SfCalendar">
         <Setter Property="Margin" Value="5"></Setter>
     </Style>
 
