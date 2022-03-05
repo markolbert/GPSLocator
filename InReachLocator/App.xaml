@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="ui/DefaultResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
+            <local:BoolToGridBackgroundColor x:Key="BoolToGridBackgroundColor"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
