@@ -16,9 +16,7 @@ namespace J4JSoftware.InReach
 {
     public class LocationMapViewModel : ObservableRecipient
     {
-        private readonly List<IMapLocation> _mapLocations = new();
-
-        //private LocationViewModel? _locationViewModel;
+        private readonly ObservableCollection<IMapLocation>
         private MapControl.Location? _mapCenter;
 
         private double _mapHeight = 500;
@@ -54,22 +52,18 @@ namespace J4JSoftware.InReach
             Messenger.UnregisterAll( this );
         }
 
-        //public LocationViewModel? LocationViewModel
-        //{
-        //    get => _locationViewModel;
-        //    protected set => SetProperty( ref _locationViewModel, value );
-        //}
+        public ObservableCollection<IMapLocation> MapLocations { get; } = new();
 
         public LocationCollection? Polyline =>
-            new( _mapLocations.Where( x => x.LocationType == LocationType.LinePoint )
+            new( MapLocations.Where( x => x.LocationType == LocationType.LinePoint )
                            .Select( x => x.MapPoint ) );
 
-        public IEnumerable<MapItem> Pushpins => _mapLocations.Where( x => x.LocationType == LocationType.Pushpin )
+        public IEnumerable<MapItem> Pushpins => MapLocations.Where( x => x.LocationType == LocationType.Pushpin )
                                                              .Select(x=>new MapItem()  );
 
         public virtual void ClearMapLocations()
         {
-            _mapLocations.Clear();
+            MapLocations.Clear();
             OnPropertyChanged( nameof( Polyline ) );
             OnPropertyChanged( nameof( Pushpins ) );
 
@@ -78,7 +72,7 @@ namespace J4JSoftware.InReach
 
         public void AddMapLocation( IMapLocation mapLocation )
         {
-            _mapLocations.Add( mapLocation );
+            MapLocations.Add( mapLocation );
 
             OnPropertyChanged( nameof( Pushpins ) );
             OnPropertyChanged( nameof( Polyline ) );
@@ -94,10 +88,10 @@ namespace J4JSoftware.InReach
 
         private void UpdateMapCenter()
         {
-            MapCenter = _mapLocations.Count switch
+            MapCenter = MapLocations.Count switch
             {
                 0 => null,
-                1 => _mapLocations[ 0 ].MapPoint,
+                1 => MapLocations[ 0 ].MapPoint,
                 _ => CalculateMapCenter()
             };
         }
@@ -110,7 +104,7 @@ namespace J4JSoftware.InReach
             double y = 0;
             double z = 0;
 
-            foreach (var mapLocation in _mapLocations)
+            foreach (var mapLocation in MapLocations)
             {
                 var latitude = mapLocation.MapPoint.Latitude * Math.PI / 180;
                 var longitude = mapLocation.MapPoint.Longitude * Math.PI / 180;
@@ -120,7 +114,7 @@ namespace J4JSoftware.InReach
                 z += Math.Sin(latitude);
             }
 
-            var total = _mapLocations.Count;
+            var total = MapLocations.Count;
 
             x = x / total;
             y = y / total;
