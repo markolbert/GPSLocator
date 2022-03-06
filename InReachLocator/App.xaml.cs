@@ -29,9 +29,6 @@ namespace J4JSoftware.InReach
     /// </summary>
     public partial class App : Application
     {
-        public const double FeetPerMeter = 3.28084;
-        public const double MPHperKMH = 0.621371;
-
         public new static App Current => (App)Application.Current;
 
         private readonly IJ4JLogger _logger;
@@ -130,9 +127,6 @@ namespace J4JSoftware.InReach
             builder.RegisterType<SettingsViewModel>()
                    .AsSelf()
                    .SingleInstance();
-
-            builder.RegisterType<LocationViewModel>()
-                   .AsSelf();
 
             builder.RegisterType<LastKnownViewModel>()
                    .AsSelf()

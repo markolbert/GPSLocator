@@ -70,7 +70,7 @@ namespace J4JSoftware.InReach
 
         private async Task LastKnownLocationHandler()
         {
-            var request = new LastKnownLocationRequest(_config, _logger);
+            var request = new LastKnownLocationRequest<MapLocation>(_config, _logger);
             var result = await request.ExecuteAsync();
 
             if (result == null || result.Locations.Count == 0)

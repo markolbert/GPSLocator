@@ -3,7 +3,8 @@
 namespace J4JSoftware.InReach;
 
 [InboundV1("Location.svc","LastKnownLocation", true)]
-public class LastKnownLocationRequest : InReachRequest<LastKnownLocation>
+public class LastKnownLocationRequest<TLoc> : InReachRequest<LastKnownLocation<TLoc>>
+    where TLoc : ILocation
 {
     private string _imei = string.Empty;
 

@@ -2,7 +2,8 @@
 
 namespace J4JSoftware.InReach;
 
-public class History
+public class History<TLocMesg>
+    where TLocMesg : ILocationMessage
 {
-    public List<LocationMessage> HistoryItems { get; set; } = new();
+    public List<TLocMesg> HistoryItems { get; set; } = new();
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -14,8 +16,11 @@ namespace J4JSoftware.InReach
 {
     public class LocationMapViewModel : ObservableRecipient
     {
-        private LocationViewModel? _locationViewModel;
-        private string? _locationUrl;
+        private readonly List<IMapLocation> _mapLocations = new();
+
+        //private LocationViewModel? _locationViewModel;
+        private MapControl.Location? _mapCenter;
+
         private double _mapHeight = 500;
         private double _mapWidth = 500;
 
@@ -49,16 +54,83 @@ namespace J4JSoftware.InReach
             Messenger.UnregisterAll( this );
         }
 
-        public LocationViewModel? LocationViewModel
+        //public LocationViewModel? LocationViewModel
+        //{
+        //    get => _locationViewModel;
+        //    protected set => SetProperty( ref _locationViewModel, value );
+        //}
+
+        public LocationCollection? Polyline =>
+            new( _mapLocations.Where( x => x.LocationType == LocationType.LinePoint )
+                           .Select( x => x.MapPoint ) );
+
+        public IEnumerable<MapItem> Pushpins => _mapLocations.Where( x => x.LocationType == LocationType.Pushpin )
+                                                             .Select(x=>new MapItem()  );
+
+        public virtual void ClearMapLocations()
         {
-            get => _locationViewModel;
-            protected set => SetProperty( ref _locationViewModel, value );
+            _mapLocations.Clear();
+            OnPropertyChanged( nameof( Polyline ) );
+            OnPropertyChanged( nameof( Pushpins ) );
+
+            UpdateMapCenter();
         }
 
-        public string? LocationUrl
+        public void AddMapLocation( IMapLocation mapLocation )
         {
-            get => _locationUrl;
-            set => SetProperty( ref _locationUrl, value );
+            _mapLocations.Add( mapLocation );
+
+            OnPropertyChanged( nameof( Pushpins ) );
+            OnPropertyChanged( nameof( Polyline ) );
+
+            UpdateMapCenter();
+        }
+
+        public MapControl.Location? MapCenter
+        {
+            get => _mapCenter;
+            set => SetProperty( ref _mapCenter, value );
+        }
+
+        private void UpdateMapCenter()
+        {
+            MapCenter = _mapLocations.Count switch
+            {
+                0 => null,
+                1 => _mapLocations[ 0 ].MapPoint,
+                _ => CalculateMapCenter()
+            };
+        }
+
+        // https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
+        // thanx to Gio and Yodacheese for this!
+        private MapControl.Location CalculateMapCenter()
+        {
+            double x = 0;
+            double y = 0;
+            double z = 0;
+
+            foreach (var mapLocation in _mapLocations)
+            {
+                var latitude = mapLocation.MapPoint.Latitude * Math.PI / 180;
+                var longitude = mapLocation.MapPoint.Longitude * Math.PI / 180;
+
+                x += Math.Cos(latitude) * Math.Cos(longitude);
+                y += Math.Cos(latitude) * Math.Sin(longitude);
+                z += Math.Sin(latitude);
+            }
+
+            var total = _mapLocations.Count;
+
+            x = x / total;
+            y = y / total;
+            z = z / total;
+
+            var centralLongitude = Math.Atan2(y, x);
+            var centralSquareRoot = Math.Sqrt(x * x + y * y);
+            var centralLatitude = Math.Atan2(z, centralSquareRoot);
+
+            return new MapControl.Location( centralLatitude, centralLongitude );
         }
 
         public double GridHeight { get; set; }

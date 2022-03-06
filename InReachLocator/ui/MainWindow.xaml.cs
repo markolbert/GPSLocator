@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using J4JSoftware.Logging;
+using MapControl;
+using MapControl.Caching;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
@@ -23,6 +27,18 @@ namespace J4JSoftware.InReach
         private readonly ContentControl? _placeholder;
         private readonly IJ4JLogger _logger;
 
+        static MainWindow()
+        {
+            ImageLoader.HttpClient.DefaultRequestHeaders.Add( "User-Agent", "InReachLocator" );
+
+            TileImageLoader.Cache = new ImageFileCache( TileImageLoader.DefaultCacheFolder );
+
+            //TileImageLoader.Cache = new FileDbCache(TileImageLoader.DefaultCacheFolder);
+            //TileImageLoader.Cache = new SQLiteCache(TileImageLoader.DefaultCacheFolder);
+
+            BingMapsTileLayer.ApiKey = "Ameqf9cCPjqwawIcun91toGQ-F85jSDu8-XyEFeHEdTDr60dV9ySmZt800aHj6PS";
+        }
+
         public MainWindow()
         {
             this.InitializeComponent();
@@ -43,14 +59,23 @@ namespace J4JSoftware.InReach
                 break;
             }
 
-            if( _placeholder != null )
-                SetContentControl( new HomeControl(),
+            if (_placeholder != null)
+                SetContentControl(new HomeControl(),
                                    x =>
                                    {
                                        x.HorizontalAlignment = HorizontalAlignment.Center;
                                        x.VerticalAlignment = VerticalAlignment.Center;
-                                   } );
-            else _logger.Fatal( "Could not find content placeholder" );
+                                   });
+            else _logger.Fatal("Could not find content placeholder");
+
+            if (TileImageLoader.Cache is ImageFileCache)
+            {
+                Task.Run( async () =>
+                {
+                    await Task.Delay( 2000 );
+                    await ( (ImageFileCache) TileImageLoader.Cache ).Clean();
+                } );
+            }
         }
 
         public void SetContentControl(

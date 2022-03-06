@@ -14,6 +14,8 @@ namespace J4JSoftware.InReach
 {
     public class LastKnownViewModel : LocationMapViewModel
     {
+        private MapLocation? _lastLocation;
+
         public LastKnownViewModel(
             IJ4JLogger logger
         )
@@ -26,14 +28,26 @@ namespace J4JSoftware.InReach
         {
             base.OnActivated();
 
-            Messenger.Register<LastKnownViewModel, Location, string>(this, "primary", NewLocationHandler);
+            Messenger.Register<LastKnownViewModel, MapLocation, string>(this, "primary", NewLocationHandler);
         }
 
-        private void NewLocationHandler( LastKnownViewModel recipient, Location message )
+        private void NewLocationHandler( LastKnownViewModel recipient, MapLocation mapLocation )
         {
-            LocationViewModel = new LocationViewModel( message, Logger );
+            //LocationViewModel = new LocationViewModel( mapLocation, Logger );
+            mapLocation.LocationType = LocationType.Pushpin;
 
-            LocationUrl = $"https://maps.google.com?q={LocationViewModel.Latitude},{LocationViewModel.Longitude}";
+            ClearMapLocations();
+            AddMapLocation( mapLocation );
+
+            LastLocation = mapLocation;
+
+            //LocationUrl = $"https://maps.google.com?q={LocationViewModel.Latitude},{LocationViewModel.Longitude}";
+        }
+
+        public MapLocation? LastLocation
+        {
+            get => _lastLocation;
+            set => SetProperty( ref _lastLocation, value );
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace J4JSoftware.InReach;
 
-public class LocationMessage : Location
+public class LocationMessage : Location, ILocationMessage
 {
     public bool HasMessage => !string.IsNullOrEmpty( Message );
     public string Message { get; set; } = string.Empty;

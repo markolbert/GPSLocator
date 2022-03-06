@@ -11,7 +11,7 @@ namespace J4JSoftware.InReach
     {
         public static async Task<bool> ValidateConfiguration( this IInReachConfig config, IJ4JLogger logger )
         {
-            var testReq = new LastKnownLocationRequest(config, logger);
+            var testReq = new LastKnownLocationRequest<Location>(config, logger);
             var result = await testReq.ExecuteAsync();
 
             if( result != null && result.Locations.Count != 0 )

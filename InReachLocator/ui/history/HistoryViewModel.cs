@@ -19,6 +19,8 @@ namespace J4JSoftware.InReach
         private DateTimeOffset? _endDate;
         private Location? _selectedLocation;
         private bool _deferUpdateLocations;
+        private string? _locationText;
+        private MapControl.Location? _location;
 
         public HistoryViewModel(
             IInReachConfig config,
@@ -78,15 +80,15 @@ namespace J4JSoftware.InReach
             if( StartDate == null || EndDate == null )
                 return;
 
-            var request = new HistoryRequest( _config, Logger )
+            var request = new HistoryRequest<MapLocationMessage>( _config, Logger )
             {
                 Start = StartDate.Value.UtcDateTime, End = EndDate.Value.UtcDateTime
             };
 
             var result = Task.Run( async () => await request.ExecuteAsync() );
-            var items = result.Result?.HistoryItems;
+            var mapLocations = result.Result?.HistoryItems;
 
-            if( items == null || items.Count == 0 )
+            if( mapLocations == null || mapLocations.Count == 0 )
             {
                 if( request.LastError != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", request.LastError.ToString() );
@@ -96,15 +98,13 @@ namespace J4JSoftware.InReach
             }
 
             SelectedLocation = null;
-            Locations.Clear();
+            ClearMapLocations();
 
-            foreach( var item in items )
+            foreach( var mapLocation in mapLocations )
             {
-                Locations.Add( item );
+                AddMapLocation( mapLocation );
             }
         }
-
-        public ObservableCollection<LocationMessage> Locations { get; } = new();
 
         public Location? SelectedLocation
         {
@@ -117,8 +117,26 @@ namespace J4JSoftware.InReach
                 if( value == null )
                     return;
 
-                LocationUrl = $"https://maps.google.com?q={value.Coordinate!.Latitude},{value.Coordinate.Longitude}";
+                Location = new MapControl.Location(value.Coordinate!.Latitude, value.Coordinate.Longitude);
+                LocationText =
+                    $"{value.Coordinate.Latitude}, {value.Coordinate.Longitude}\n{value.Timestamp}";
+
+                //LocationUrl = $"https://maps.google.com?q={value.Coordinate!.Latitude},{value.Coordinate.Longitude}";
             }
         }
+
+        public MapControl.Location? Location
+        {
+            get => _location;
+            private set => SetProperty(ref _location, value);
+        }
+
+        public string? LocationText
+        {
+            get => _locationText;
+            private set => SetProperty(ref _locationText, value);
+        }
+
+
     }
 }

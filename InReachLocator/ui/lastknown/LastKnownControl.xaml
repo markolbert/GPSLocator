@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:J4JSoftware.InReach"
+    xmlns:map="using:MapControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -10,12 +11,53 @@
 
     <StackPanel Orientation="Horizontal">
 
-        <local:LocationControl DataContext="{Binding LocationViewModel}" 
+        <StackPanel.Resources>
+
+            <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
+                <Setter Property="AutoCollapse" Value="True"/>
+                <Setter Property="LocationMemberPath" Value="LastLocation.MapPoint"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Bottom"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="map:MapItem">
+                            <map:Pushpin Content="{Binding LastLocation.Label, FallbackValue=?}"
+                                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </StackPanel.Resources>
+
+        <local:LocationControl DataContext="{Binding LastLocation}" 
                                SizeChanged="OnSizeChanged"/>
 
-        <WebView2 Height="{Binding MapHeight}"
-                  Width="{Binding MapWidth}"
-                  Source="{Binding LocationUrl}"/>
+        <map:Map x:Name="TestMap" ManipulationMode="All"
+                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="18"
+                 Width="{Binding MapWidth}"
+                 Height="{Binding MapHeight}"
+                 Center="{Binding MapCenter}">
+
+            <map:MapTileLayer SourceName="OpenStreetMap"
+                              Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
+
+                <map:MapTileLayer.TileSource>
+                    <map:TileSource UriFormat="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                </map:MapTileLayer.TileSource>
+
+            </map:MapTileLayer>
+
+            <map:MapItemsControl ItemsSource="{Binding Pushpins}"
+                                 ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
+
+            <!--<map:Pushpin AutoCollapse="True" Content="DingDong!">
+                <map:Pushpin.Location>
+                    <map:Location Latitude="36.977405" Longitude="-122.015833"/>
+                </map:Pushpin.Location>
+            </map:Pushpin>-->
+
+        </map:Map>
 
     </StackPanel>
 

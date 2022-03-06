@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:LocationViewModel}">
+    d:DataContext="{d:DesignInstance local:MapLocation}">
 
     <Grid>
 
@@ -32,12 +32,12 @@
         <TextBlock Grid.Row="1" Grid.Column="0">Latitude</TextBlock>
         <TextBlock Grid.Row="1" Grid.Column="1" 
                    HorizontalAlignment="Right"
-                   Text="{Binding Latitude}"/>
+                   Text="{Binding Coordinate.Latitude}"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Longitude</TextBlock>
         <TextBlock Grid.Row="2" Grid.Column="1" 
                    HorizontalAlignment="Right"
-                   Text="{Binding Longitude}"/>
+                   Text="{Binding Coordinate.Longitude}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0">Altitude</TextBlock>
         <StackPanel Grid.Row="3" Grid.Column="1" 
