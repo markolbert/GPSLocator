@@ -16,16 +16,17 @@ namespace J4JSoftware.InReach
 {
     public class LocationMapViewModel : ObservableRecipient
     {
-        private readonly ObservableCollection<IMapLocation>
         private MapControl.Location? _mapCenter;
-
         private double _mapHeight = 500;
         private double _mapWidth = 500;
 
         protected LocationMapViewModel(
+            AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
         {
+            LocationTypeChoices = locationTypeChoices;
+
             Logger = logger;
             Logger.SetLoggedType( GetType() );
         }
@@ -52,30 +53,37 @@ namespace J4JSoftware.InReach
             Messenger.UnregisterAll( this );
         }
 
-        public ObservableCollection<IMapLocation> MapLocations { get; } = new();
+        public AnnotatedLocationType.Choices LocationTypeChoices { get; }
 
-        public LocationCollection? Polyline =>
-            new( MapLocations.Where( x => x.LocationType == LocationType.LinePoint )
-                           .Select( x => x.MapPoint ) );
+        public ObservableCollection<MapPoint> MapPoints { get; } = new();
 
-        public IEnumerable<MapItem> Pushpins => MapLocations.Where( x => x.LocationType == LocationType.Pushpin )
-                                                             .Select(x=>new MapItem()  );
+        public bool HasPoints => MapPoints.Any();
+
+        public LocationCollection? Route =>
+            new( MapPoints.Where( x => x.SelectedLocationType?.LocationType == LocationType.LinePoint )
+                           .Select( x => x.DisplayPoint ) );
+
+        public IEnumerable<MapPoint> Pushpins =>
+            MapPoints.Where( x => x.SelectedLocationType?.LocationType == LocationType.Pushpin );
 
         public virtual void ClearMapLocations()
         {
-            MapLocations.Clear();
-            OnPropertyChanged( nameof( Polyline ) );
+            MapPoints.Clear();
+
+            OnPropertyChanged(nameof(HasPoints));
+            OnPropertyChanged( nameof( Route ) );
             OnPropertyChanged( nameof( Pushpins ) );
 
             UpdateMapCenter();
         }
 
-        public void AddMapLocation( IMapLocation mapLocation )
+        public void AddMapLocation( MapPoint mapPoint )
         {
-            MapLocations.Add( mapLocation );
+            MapPoints.Add( mapPoint );
 
+            OnPropertyChanged(nameof(HasPoints));
             OnPropertyChanged( nameof( Pushpins ) );
-            OnPropertyChanged( nameof( Polyline ) );
+            OnPropertyChanged( nameof( Route ) );
 
             UpdateMapCenter();
         }
@@ -88,10 +96,10 @@ namespace J4JSoftware.InReach
 
         private void UpdateMapCenter()
         {
-            MapCenter = MapLocations.Count switch
+            MapCenter = MapPoints.Count switch
             {
                 0 => null,
-                1 => MapLocations[ 0 ].MapPoint,
+                1 => MapPoints[ 0 ].DisplayPoint,
                 _ => CalculateMapCenter()
             };
         }
@@ -104,17 +112,17 @@ namespace J4JSoftware.InReach
             double y = 0;
             double z = 0;
 
-            foreach (var mapLocation in MapLocations)
+            foreach (var mapLocation in MapPoints)
             {
-                var latitude = mapLocation.MapPoint.Latitude * Math.PI / 180;
-                var longitude = mapLocation.MapPoint.Longitude * Math.PI / 180;
+                var latitude = mapLocation.DisplayPoint.Latitude * Math.PI / 180;
+                var longitude = mapLocation.DisplayPoint.Longitude * Math.PI / 180;
 
                 x += Math.Cos(latitude) * Math.Cos(longitude);
                 y += Math.Cos(latitude) * Math.Sin(longitude);
                 z += Math.Sin(latitude);
             }
 
-            var total = MapLocations.Count;
+            var total = MapPoints.Count;
 
             x = x / total;
             y = y / total;

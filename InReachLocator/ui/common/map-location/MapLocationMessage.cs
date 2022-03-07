@@ -8,11 +8,11 @@ public class MapLocationMessage : LocationMessage, IMapLocation
     private LocationType _locationType = LocationType.Unspecified;
     private string _label = string.Empty;
 
-    public MapControl.Location MapPoint
+    public MapControl.Location DisplayPoint
     {
         get
         {
-            if (Math.Abs(_mapPoint.Latitude - Coordinate.Latitude) + Math.Abs(_mapPoint.Longitude - Coordinate.Longitude) >= MapLocation.MinimumDelta)
+            if (Math.Abs(_mapPoint.Latitude - Coordinate.Latitude) + Math.Abs(_mapPoint.Longitude - Coordinate.Longitude) >= MapPoint.MinimumDelta)
             {
                 _mapPoint = new MapControl.Location(Coordinate.Latitude, Coordinate.Longitude);
                 OnPropertyChanged();
