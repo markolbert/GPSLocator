@@ -29,6 +29,10 @@
 	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
 	  <PackageReadmeFile>nuget-locator.md</PackageReadmeFile>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="ui\common\map-location\IMapLocation.cs" />
+    <Compile Remove="ui\common\map-location\MapLocationMessage.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="DefaultResources.xaml" />

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:J4JSoftware.InReach"
+    xmlns:sfcore="using:Syncfusion.UI.Xaml.Core"
     xmlns:map="using:MapControl">
     <Application.Resources>
         <ResourceDictionary>
@@ -14,6 +15,9 @@
             <!-- Other app resources here -->
 
             <local:BoolToGridBackgroundColor x:Key="BoolToGridBackgroundColor"/>
+            <local:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
+            <local:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter"/>
+            <sfcore:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

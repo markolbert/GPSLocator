@@ -70,7 +70,7 @@ namespace J4JSoftware.InReach
         public IntPtr MainWindowIntPtr { get; private set; }
         public WindowId MainWindowId { get; private set; }
 
-        public void SetContentControl( UserControl control, Action<ContentControl> containerConfigurator ) =>
+        public void SetContentControl( UserControl control, Action<ContentControl>? containerConfigurator = null ) =>
             MainWindow!.SetContentControl( control, containerConfigurator );
         public void PopContentControl() => MainWindow!.PopContentControl();
 
@@ -118,6 +118,10 @@ namespace J4JSoftware.InReach
                         return retVal;
                     } )
                    .AsImplementedInterfaces()
+                   .SingleInstance();
+
+            builder.RegisterType<AnnotatedLocationType.Choices>()
+                   .AsSelf()
                    .SingleInstance();
 
             builder.RegisterType<HomeViewModel>()

@@ -17,16 +17,15 @@ namespace J4JSoftware.InReach
         private DateTimeOffset? _minDate;
         private DateTimeOffset? _startDate;
         private DateTimeOffset? _endDate;
-        private Location? _selectedLocation;
+        private MapPoint? _selectedMapPoint;
         private bool _deferUpdateLocations;
-        private string? _locationText;
-        private MapControl.Location? _location;
 
         public HistoryViewModel(
             IInReachConfig config,
+            AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
-        : base(logger)
+        : base(locationTypeChoices, logger)
         {
             _config = config;
             
@@ -80,7 +79,7 @@ namespace J4JSoftware.InReach
             if( StartDate == null || EndDate == null )
                 return;
 
-            var request = new HistoryRequest<MapLocationMessage>( _config, Logger )
+            var request = new HistoryRequest<LocationMessage>( _config, Logger )
             {
                 Start = StartDate.Value.UtcDateTime, End = EndDate.Value.UtcDateTime
             };
@@ -97,46 +96,19 @@ namespace J4JSoftware.InReach
                 return;
             }
 
-            SelectedLocation = null;
+            SelectedMapPoint = null;
             ClearMapLocations();
 
             foreach( var mapLocation in mapLocations )
             {
-                AddMapLocation( mapLocation );
+                AddMapLocation( new MapPoint(mapLocation) );
             }
         }
 
-        public Location? SelectedLocation
+        public MapPoint? SelectedMapPoint
         {
-            get => _selectedLocation;
-
-            set
-            {
-                SetProperty( ref _selectedLocation, value );
-
-                if( value == null )
-                    return;
-
-                Location = new MapControl.Location(value.Coordinate!.Latitude, value.Coordinate.Longitude);
-                LocationText =
-                    $"{value.Coordinate.Latitude}, {value.Coordinate.Longitude}\n{value.Timestamp}";
-
-                //LocationUrl = $"https://maps.google.com?q={value.Coordinate!.Latitude},{value.Coordinate.Longitude}";
-            }
+            get => _selectedMapPoint;
+            set => SetProperty( ref _selectedMapPoint, value );
         }
-
-        public MapControl.Location? Location
-        {
-            get => _location;
-            private set => SetProperty(ref _location, value);
-        }
-
-        public string? LocationText
-        {
-            get => _locationText;
-            private set => SetProperty(ref _locationText, value);
-        }
-
-
     }
 }

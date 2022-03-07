@@ -7,10 +7,12 @@
     xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mapControl="using:MapControl"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance local:HistoryViewModel}">
 
-    <StackPanel Orientation="Horizontal"
+    <StackPanel x:Name="OuterContainer" 
+                Orientation="Horizontal"
                 SizeChanged="OnSizeChanged">
 
         <Grid>
@@ -35,31 +37,70 @@
                               SelectedDate="{Binding EndDate, Mode=TwoWay}"/>
         </Grid>
 
-        <sfgrid:SfDataGrid x:Name="LocationsGrid" 
-                           ItemsSource="{Binding Locations}"
-                           SelectedItem="{Binding SelectedLocation, Mode=TwoWay}"
-                           AutoGenerateColumns="False"
-                           AllowResizingColumns="True">
+        <Grid VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <sfgrid:SfDataGrid.Columns>
-                <sfgrid:GridDateColumn MappingName="Timestamp" 
-                                       HeaderText="Timestamp" 
-                                       DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
-                <sfgrid:GridTextColumn MappingName="Coordinate.SimpleDisplay"
-                                       HeaderText="Lat/Long"/>
-            </sfgrid:SfDataGrid.Columns>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <sfgrid:SfDataGrid.RowStyle>
-                <Style TargetType="sfgrid:DataGridRowControl">
-                    <Setter Property="Background" Value="{Binding HasMessage, Converter={StaticResource BoolToGridBackgroundColor}}"/>
-                </Style>
-            </sfgrid:SfDataGrid.RowStyle>
+            <sfgrid:SfDataGrid Grid.Row="0" Grid.Column="0" 
+                               x:Name="LocationsGrid" 
+                               Visibility="{Binding ElementName=OuterContainer, Path=DataContext.HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
+                               ItemsSource="{Binding MapPoints}"
+                               SelectedItem="{Binding SelectedMapPoint, Mode=TwoWay}"
+                               AutoGenerateColumns="False"
+                               AllowResizingColumns="True">
 
-        </sfgrid:SfDataGrid>
+                <sfgrid:SfDataGrid.Columns>
+                    <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
+                                           HeaderText="Timestamp"
+                                           DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
 
-        <WebView2 Height="{Binding MapHeight}"
-                  Width="{Binding MapWidth}"
-                  Source="{Binding LocationUrl, Mode=TwoWay}"/>
+                    <sfgrid:GridComboBoxColumn MappingName="SelectedLocationType" 
+                                               DisplayMemberPath="Label"
+                                               ItemsSource="{Binding LocationTypeChoices}"/>
+                </sfgrid:SfDataGrid.Columns>
+
+                <sfgrid:SfDataGrid.RowStyle>
+                    <Style TargetType="sfgrid:DataGridRowControl">
+                        <Setter Property="Background" Value="{Binding SelectedMapPoint.HasMessage, FallbackValue=null, Converter={StaticResource BoolToGridBackgroundColor}}"/>
+                    </Style>
+                </sfgrid:SfDataGrid.RowStyle>
+
+            </sfgrid:SfDataGrid>
+
+            <local:LocationControl Grid.Row="1" Grid.Column="0" 
+                                   Visibility="{Binding ElementName=OuterContainer, Path=DataContext.SelectedMapPoint, Converter={StaticResource ObjectToVisibilityConverter }}"
+                                   DataContext="{Binding SelectedMapPoint.InReachLocation, FallbackValue=null}" />
+
+        </Grid>
+
+        <!--<mapControl:Map x:Name="TestMap" ManipulationMode="All"
+                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="18"
+                 Width="{Binding MapWidth}"
+                 Height="{Binding MapHeight}"
+                 Center="{Binding MapCenter}">
+
+            <mapControl:MapTileLayer SourceName="OpenStreetMap"
+                              Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
+
+                <mapControl:MapTileLayer.TileSource>
+                    <mapControl:TileSource UriFormat="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                </mapControl:MapTileLayer.TileSource>
+
+            </mapControl:MapTileLayer>
+
+            <mapControl:MapItemsControl ItemsSource="{Binding Pushpins}"
+                                 ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
+
+            <mapControl:MapItemsControl ItemsSource="{Binding Route}"
+                                        ItemTemplate="{StaticResource RouteTemplate}"/>
+
+        </mapControl:Map>-->
 
     </StackPanel>
 
