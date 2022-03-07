@@ -9,34 +9,25 @@
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance local:LastKnownViewModel}">
 
-    <StackPanel Orientation="Horizontal">
+    <Grid>
 
-        <StackPanel.Resources>
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-            <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
-                <Setter Property="AutoCollapse" Value="True"/>
-                <Setter Property="LocationMemberPath" Value="LastLocation.MapPoint"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Bottom"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="map:MapItem">
-                            <map:Pushpin Content="{Binding LastLocation.Label, FallbackValue=?}"
-                                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>-->
 
-        </StackPanel.Resources>
-
-        <local:LocationControl DataContext="{Binding LastLocation}" 
-                               SizeChanged="OnSizeChanged"/>
+        <!--<local:LocationControl Grid.Row="0" Grid.Column="0" 
+                               DataContext="{Binding LastLocation.InReachLocation, FallbackValue=null}" 
+                               SizeChanged="OnSizeChanged"/>-->
 
         <map:Map x:Name="TestMap" ManipulationMode="All"
-                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="18"
-                 Width="{Binding MapWidth}"
-                 Height="{Binding MapHeight}"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="15"
                  Center="{Binding MapCenter}">
 
             <map:MapTileLayer SourceName="OpenStreetMap"
@@ -59,6 +50,6 @@
 
         </map:Map>
 
-    </StackPanel>
+    </Grid>
 
 </UserControl>

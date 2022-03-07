@@ -44,4 +44,23 @@
         <Setter Property="Margin" Value="5"></Setter>
     </Style>
 
+    <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
+        <Setter Property="AutoCollapse" Value="True"/>
+        <Setter Property="LocationMemberPath" Value="DisplayPoint"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="map:MapItem">
+                    <map:Pushpin Content="{Binding Label, FallbackValue=?}"
+                                 HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="RouteTemplate">
+        <map:MapPolyline Locations="{Binding Locations}" Stroke="Red" StrokeThickness="3"/>
+    </DataTemplate>
+
 </ResourceDictionary>
