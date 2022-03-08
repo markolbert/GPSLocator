@@ -6,21 +6,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:map="using:MapControl"
-    mc:Ignorable="d"
-    SizeChanged="MainWindow_OnSizeChanged">
+    mc:Ignorable="d">
 
     <NavigationView x:Name="NavigationView" 
                     PaneDisplayMode="Top"
-                    SelectionChanged="NavigationView_OnSelectionChanged">
+                    SelectionChanged="NavigationView_OnSelectionChanged"
+                    d:DataContext="{d:DesignInstance local:MainViewModel}">
 
         <NavigationView.MenuItems>
 
             <NavigationViewItem Content="Last Known"
                                 Tag="LastKnown"
+                                IsEnabled="{Binding ValidConfiguration}"
                                 ToolTipService.ToolTip="shows last known location on a map"/>
 
             <NavigationViewItem Content="History"
                                 Tag="History"
+                                IsEnabled="{Binding ValidConfiguration}"
                                 ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
             <NavigationViewItem Content="Settings"

@@ -48,25 +48,12 @@ namespace J4JSoftware.InReach
             _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
             _logger.SetLoggedType( GetType() );
 
-            // find and store the content control
-            for( var idx = 0; idx < VisualTreeHelper.GetChildrenCount( Content ); idx++ )
+            var appConfig = App.Current.Host.Services.GetRequiredService<IAppConfig>();
+
+            DispatcherQueue.TryEnqueue( async () =>
             {
-                var child = VisualTreeHelper.GetChild( Content, idx );
-                if( child is not ContentControl curCtl || curCtl.Name != "ContentPlaceholder" )
-                    continue;
-
-                _placeholder = curCtl;
-                break;
-            }
-
-            if (_placeholder != null)
-                SetContentControl(new HomeControl(),
-                                   x =>
-                                   {
-                                       x.HorizontalAlignment = HorizontalAlignment.Center;
-                                       x.VerticalAlignment = VerticalAlignment.Center;
-                                   });
-            else _logger.Fatal("Could not find content placeholder");
+                appConfig.IsValid = await appConfig.ValidateConfiguration( _logger );
+            } );
 
             if (TileImageLoader.Cache is ImageFileCache)
             {
@@ -76,59 +63,8 @@ namespace J4JSoftware.InReach
                     await ( (ImageFileCache) TileImageLoader.Cache ).Clean();
                 } );
             }
-        }
 
-        public void SetContentControl(
-            UserControl control,
-            Action<ContentControl>? containerConfigurator
-        )
-        {
-            if( _placeholder == null )
-            {
-                _logger.Error( "Could not display new {0} because content placeholder is undefined",
-                               control.GetType() );
-                return;
-            }
-
-            containerConfigurator ??= x =>
-            {
-                x.HorizontalAlignment = HorizontalAlignment.Stretch;
-                x.VerticalAlignment = VerticalAlignment.Stretch;
-            };
-
-            //var newControlContext = new DisplayControl( control, containerConfigurator );
-            //_displayControls.Push( newControlContext );
-
-            //containerConfigurator?.Invoke(_placeholder);
-            //_placeholder.Content = control;
-        }
-
-        public void PopContentControl()
-        {
-            if( _placeholder == null )
-            {
-                _logger.Error( "Could not revert to prior content because content placeholder is undefined" );
-                return;
-            }
-
-            if( _displayControls.Count == 0 )
-            {
-                _logger.Error( "Could not revert to prior content because stack is empty" );
-                return;
-            }
-
-            // top of stack is currently displayed UserControl, which we no longer need
-            _displayControls.Pop();
-
-            var prior = _displayControls.Peek();
-
-            _placeholder.Content = prior.Control;
-            prior.ContainerConfigurator( _placeholder );
-        }
-
-        private void MainWindow_OnSizeChanged( object sender, WindowSizeChangedEventArgs args )
-        {
-            //WeakReferenceMessenger.Default.Send( new SizeMessage(args.Size), "mainwindow" );
+            NavigationView.DataContext = App.Current.Host.Services.GetRequiredService<MainViewModel>();
         }
 
         private void NavigationView_OnSelectionChanged( NavigationView sender, NavigationViewSelectionChangedEventArgs args )
@@ -140,6 +76,8 @@ namespace J4JSoftware.InReach
             var (pageType, title) = ( item.Tag as string ) switch
             {
                 "Settings"=>(typeof(SettingsPage), "Application Settings"),
+                "LastKnown"=>(typeof(LastKnownPage), "Last Known Location"),
+                "History" => (typeof(HistoryPage), "Location History"),
                 _ => (null, null)
             };
 
