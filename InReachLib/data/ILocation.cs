@@ -15,4 +15,8 @@ public interface ILocation : INotifyPropertyChanged
     bool ImperialUnits { get; set; }
     public string AltitudeUnits { get; }
     public string SpeedUnits { get; }
+
+    bool HasMessage { get; }
+    string Message { get; set; }
+    List<string> Recipients { get; set; }
 }

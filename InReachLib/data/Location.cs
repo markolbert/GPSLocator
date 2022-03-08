@@ -68,7 +68,11 @@ public class Location : ILocation
     public string AltitudeUnits => ImperialUnits ? "feet" : "meters";
     public string SpeedUnits => ImperialUnits ? "mph" : "km/h";
 
-    [ NotifyPropertyChangedInvocator ]
+    public bool HasMessage => !string.IsNullOrEmpty(Message);
+    public string Message { get; set; } = string.Empty;
+    public List<string> Recipients { get; set; } = new();
+
+    [NotifyPropertyChangedInvocator ]
     protected virtual void OnPropertyChanged( [ CallerMemberName ] string? propertyName = null )
     {
         PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );

@@ -23,6 +23,11 @@
 	  <PackageReadmeFile>nuget-lib.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="data\ILocationMessage.cs" />
+    <Compile Remove="data\LocationMessage.cs" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<None Include="..\..\Media\JumpForJoy\Diego nuspec.png">
 			<Pack>True</Pack>

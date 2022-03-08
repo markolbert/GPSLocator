@@ -3,8 +3,8 @@
 namespace J4JSoftware.InReach;
 
 [InboundV1("Location.svc","History", true)]
-public class HistoryRequest<TLocMesg> : InReachRequest<History<TLocMesg>>
-    where TLocMesg : ILocationMessage
+public class HistoryRequest<TLoc> : InReachRequest<History<TLoc>>
+    where TLoc : ILocation
 {
     private string _imei = string.Empty;
     private DateTime _startDate = DateTime.Today.AddDays( 7 );
