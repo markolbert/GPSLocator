@@ -20,10 +20,9 @@ namespace J4JSoftware.InReach
 
         public HistoryViewModel(
             IAppConfig config,
-            AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
-        : base(config, locationTypeChoices, logger)
+        : base(config, logger)
         {
         }
 
@@ -49,7 +48,7 @@ namespace J4JSoftware.InReach
                 SetProperty( ref _endDate, value );
 
                 _deferUpdateLocations = true;
-                MinimumStartDate = _endDate?.AddDays( -31 );
+                MinimumStartDate = _endDate?.AddDays( -32 );
                 _deferUpdateLocations = false;
 
                 UpdateLocations();
@@ -92,18 +91,53 @@ namespace J4JSoftware.InReach
             }
 
             SelectedMapPoint = null;
+
+            DeferUpdatingMapCenter = true;
             ClearMapLocations();
 
             foreach( var mapLocation in mapLocations )
             {
-                AddMapLocation( new MapPoint(mapLocation) );
+                AddMapLocation( new MapPoint( mapLocation,
+                                              LocationTypeChoices.First(
+                                                  x => x.LocationType == LocationType.Unspecified ) ) );
             }
+
+            DeferUpdatingMapCenter = false;
+            UpdateMapCenter();
         }
 
         public MapPoint? SelectedMapPoint
         {
             get => _selectedMapPoint;
             set => SetProperty( ref _selectedMapPoint, value );
+        }
+
+        protected override bool IncludeLocationType( LocationType locationType ) =>
+            locationType != LocationType.Unspecified;
+
+        protected override void OnMapPointsChanged()
+        {
+            if( DeferUpdatingMapCenter )
+                return;
+
+            base.OnMapPointsChanged();
+
+            var mapChanged = false;
+
+            if( MapPoints.Any( x => x.SelectedLocationType.LocationType == LocationType.Pushpin ) )
+            {
+                OnPropertyChanged(nameof(Pushpins));
+                mapChanged = true;
+            }
+
+            if( MapPoints.Any( x => x.SelectedLocationType.LocationType == LocationType.RoutePoint ) )
+            {
+                OnPropertyChanged(nameof(Route));
+                mapChanged = true;
+            }
+
+            if( mapChanged )
+                UpdateMapCenter();
         }
     }
 }

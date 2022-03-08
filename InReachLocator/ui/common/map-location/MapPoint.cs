@@ -9,10 +9,11 @@ namespace J4JSoftware.InReach
 {
     public class MapPoint : ObservableObject
     {
-        private AnnotatedLocationType? _selectedLocType;
+        private AnnotatedLocationType _selectedLocType;
 
         public MapPoint(
-            ILocation inReachLocation
+            ILocation inReachLocation,
+            AnnotatedLocationType initialLocType
         )
         {
             InReachLocation = inReachLocation;
@@ -22,12 +23,14 @@ namespace J4JSoftware.InReach
 
             Label =
                 $"{inReachLocation.Coordinate.Latitude}, {inReachLocation.Coordinate.Longitude}\n{inReachLocation.Timestamp}";
+
+            _selectedLocType = initialLocType;
         }
 
         public ILocation InReachLocation { get; }
         public MapControl.Location DisplayPoint { get; }
 
-        public AnnotatedLocationType? SelectedLocationType
+        public AnnotatedLocationType SelectedLocationType
         {
             get => _selectedLocType;
             set => SetProperty( ref _selectedLocType, value );

@@ -18,10 +18,9 @@ namespace J4JSoftware.InReach
     {
         public LastKnownViewModel(
             IAppConfig configuration,
-            AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
-        : base(configuration, locationTypeChoices, logger)
+        : base(configuration, logger)
         {
             var dQueue = DispatcherQueue.GetForCurrentThread();
             dQueue.TryEnqueue( async () =>

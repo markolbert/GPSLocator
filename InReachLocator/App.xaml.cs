@@ -116,10 +116,6 @@ namespace J4JSoftware.InReach
                    .AsImplementedInterfaces()
                    .SingleInstance();
 
-            builder.RegisterType<AnnotatedLocationType.Choices>()
-                   .AsSelf()
-                   .SingleInstance();
-
             builder.RegisterType<MainViewModel>()
                    .AsSelf()
                    .SingleInstance();

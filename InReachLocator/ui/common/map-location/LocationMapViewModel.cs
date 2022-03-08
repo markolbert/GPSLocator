@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -22,23 +23,30 @@ namespace J4JSoftware.InReach
 
         protected LocationMapViewModel(
             IAppConfig configuration,
-            AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
             : base( configuration, logger )
         {
-            LocationTypeChoices = locationTypeChoices;
+            LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.RoutePoint, "Include in Route"));
+            LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Pushpin, "Show as Pushpin"));
+            LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Unspecified, "Don't Show"));
+
+            MapPoints = new BindingList<MapPoint>();
+            MapPoints.ListChanged += MapPoints_ListChanged;
         }
 
-        private void WindowSizeChangedHandler( LocationMapViewModel recipient, SizeMessage message )
+        private void MapPoints_ListChanged(object? sender, ListChangedEventArgs e)
         {
-            MapHeight = message.Height - 50;
-            MapWidth = message.Width - GridWidth - 10;
+            OnMapPointsChanged();
         }
 
-        public AnnotatedLocationType.Choices LocationTypeChoices { get; }
+        protected virtual void OnMapPointsChanged()
+        {
+        }
 
-        public ObservableCollection<MapPoint> MapPoints { get; } = new();
+        public List<AnnotatedLocationType> LocationTypeChoices { get; } = new();
+
+        public BindingList<MapPoint> MapPoints { get; }
 
         public bool HasPoints => MapPoints.Any();
 
@@ -62,11 +70,13 @@ namespace J4JSoftware.InReach
 
         protected void AddMapLocation( ILocation inReachLocation, LocationType locType )
         {
-            AddMapLocation( new MapPoint( inReachLocation )
-            {
-                SelectedLocationType = LocationTypeChoices
-                   .First( x => x.LocationType == LocationType.Pushpin )
-            } );
+            AddMapLocation(
+                new MapPoint( inReachLocation,
+                              LocationTypeChoices.First( x => x.LocationType == LocationType.Unspecified ) )
+                {
+                    SelectedLocationType = LocationTypeChoices
+                       .First( x => x.LocationType == LocationType.Pushpin )
+                } );
         }
 
         protected void AddPushpin( ILocation inReachLocation ) => AddMapLocation( inReachLocation, LocationType.Pushpin );
@@ -95,32 +105,43 @@ namespace J4JSoftware.InReach
             set => SetProperty( ref _mapCenter, value );
         }
 
-        private void UpdateMapCenter()
+        protected bool DeferUpdatingMapCenter { get; set; }
+
+        protected virtual bool IncludeLocationType( LocationType locationType ) => true;
+
+        protected void UpdateMapCenter()
         {
-            MapCenter = MapPoints.Count switch
+            if( DeferUpdatingMapCenter )
+                return;
+
+            var filteredPoints = MapPoints
+                                .Where( x => IncludeLocationType( x.SelectedLocationType.LocationType ) )
+                                .ToList();
+
+            MapCenter = filteredPoints.Count switch
             {
                 0 => null,
-                1 => MapPoints[ 0 ].DisplayPoint,
-                _ => CalculateMapCenter()
+                1 => filteredPoints[ 0 ].DisplayPoint,
+                _ => CalculateMapCenter(filteredPoints)
             };
         }
 
         // https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
         // thanx to Gio and Yodacheese for this!
-        private MapControl.Location CalculateMapCenter()
+        private MapControl.Location CalculateMapCenter( List<MapPoint> points )
         {
             double x = 0;
             double y = 0;
             double z = 0;
 
-            foreach (var mapLocation in MapPoints)
+            foreach( var mapLocation in points )
             {
                 var latitude = mapLocation.DisplayPoint.Latitude * Math.PI / 180;
                 var longitude = mapLocation.DisplayPoint.Longitude * Math.PI / 180;
 
-                x += Math.Cos(latitude) * Math.Cos(longitude);
-                y += Math.Cos(latitude) * Math.Sin(longitude);
-                z += Math.Sin(latitude);
+                x += Math.Cos( latitude ) * Math.Cos( longitude );
+                y += Math.Cos( latitude ) * Math.Sin( longitude );
+                z += Math.Sin( latitude );
             }
 
             var total = MapPoints.Count;
@@ -133,7 +154,7 @@ namespace J4JSoftware.InReach
             var centralSquareRoot = Math.Sqrt(x * x + y * y);
             var centralLatitude = Math.Atan2(z, centralSquareRoot);
 
-            return new MapControl.Location( centralLatitude, centralLongitude );
+            return new MapControl.Location( centralLatitude * 180 / Math.PI, centralLongitude * 180 / Math.PI );
         }
 
         public double GridHeight { get; set; }
