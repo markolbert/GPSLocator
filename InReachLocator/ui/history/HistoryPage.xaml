@@ -53,7 +53,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="410"/>
+            <ColumnDefinition Width="Auto" MaxWidth="410"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -76,6 +76,7 @@
         <sfgrid:SfDataGrid Grid.Row="0" Grid.Column="2" 
                            x:Name="LocationsGrid" 
                            MaxHeight="300"
+                           Width="410"
                            RowHeight="40"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Top"
@@ -115,6 +116,7 @@
                  MinZoomLevel="2" 
                  MaxZoomLevel="21" 
                  ZoomLevel="12"
+                 Visibility="{Binding MapCenter, Converter={StaticResource ObjectToVisibilityConverter}}"
                  Center="{Binding MapCenter, Mode=TwoWay}">
 
             <!--<map:Map.Center>
