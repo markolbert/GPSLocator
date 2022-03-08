@@ -10,6 +10,24 @@
 
     <Grid>
 
+        <Grid.Resources>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="14, 7, 14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="CheckBox">
+                <Setter Property="Margin" Value="14"/>
+            </Style>
+
+        </Grid.Resources>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -43,24 +61,29 @@
         <StackPanel Grid.Row="3" Grid.Column="1" 
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Altitude}"/>
-            <TextBlock Text="{Binding AltitudeUnits}"/>
+            <TextBlock Text="{Binding Altitude}"
+                       Margin="14,7,0, 7"/>
+            <TextBlock Text="{Binding AltitudeUnits}"
+                       Margin="5,7,14,7"/>
         </StackPanel>
 
         <TextBlock Grid.Row="4" Grid.Column="0">Speed</TextBlock>
         <StackPanel Grid.Row="4" Grid.Column="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Speed}"/>
-            <TextBlock Text="{Binding SpeedUnits}"/>
+            <TextBlock Text="{Binding Speed}"
+                       Margin="14,7,0, 7"/>
+            <TextBlock Text="{Binding SpeedUnits}"
+                       Margin="5,7,14,7"/>
         </StackPanel>
 
         <TextBlock Grid.Row="5" Grid.Column="0">Course</TextBlock>
         <StackPanel Grid.Row="5" Grid.Column="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Course}"/>
-            <TextBlock>degrees</TextBlock>
+            <TextBlock Text="{Binding Course}"
+                       Margin="14,7,0, 7"/>
+            <TextBlock Margin="5,7,14,7">degrees</TextBlock>
         </StackPanel>
 
         <TextBlock Grid.Row="6" Grid.Column="0">GPS Fix Status</TextBlock>

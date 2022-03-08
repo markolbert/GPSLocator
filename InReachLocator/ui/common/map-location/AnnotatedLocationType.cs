@@ -19,7 +19,7 @@ namespace J4JSoftware.InReach
 
             public Choices()
             {
-                _values.Add(new AnnotatedLocationType(this, LocationType.LinePoint, "Include in Route"));
+                _values.Add(new AnnotatedLocationType(this, LocationType.RoutePoint, "Include in Route"));
                 _values.Add(new AnnotatedLocationType(this, LocationType.Pushpin, "Show as Pushpin"));
                 _values.Add(new AnnotatedLocationType(this, LocationType.Unspecified, "Don't Show"));
             }

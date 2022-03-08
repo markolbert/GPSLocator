@@ -33,11 +33,11 @@ namespace J4JSoftware.InReach
 
         private void OnSizeChanged( object sender, SizeChangedEventArgs e )
         {
-            if( DataContext is not LastKnownViewModel viewModel )
-                return;
+            //if( DataContext is not LastKnownViewModel viewModel )
+            //    return;
 
-            viewModel.GridHeight = e.NewSize.Height;
-            viewModel.GridWidth = e.NewSize.Width;
+            //viewModel.GridHeight = e.NewSize.Height;
+            //viewModel.GridWidth = e.NewSize.Width;
         }
     }
 }

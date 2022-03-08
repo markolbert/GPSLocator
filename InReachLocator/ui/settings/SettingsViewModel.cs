@@ -80,10 +80,6 @@ namespace J4JSoftware.InReach
 
             Directory.CreateDirectory( dirPath! );
             await File.WriteAllTextAsync( filePath, text );
-
-            WeakReferenceMessenger.Default.Send( new ConfigurationChangedMessage( true ), "primary" );
-
-            App.Current.PopContentControl();
         }
 
         public AsyncRelayCommand ValidateCommand { get; }

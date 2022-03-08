@@ -70,10 +70,6 @@ namespace J4JSoftware.InReach
         public IntPtr MainWindowIntPtr { get; private set; }
         public WindowId MainWindowId { get; private set; }
 
-        public void SetContentControl( UserControl control, Action<ContentControl>? containerConfigurator = null ) =>
-            MainWindow!.SetContentControl( control, containerConfigurator );
-        public void PopContentControl() => MainWindow!.PopContentControl();
-
         public IJ4JHost Host { get; }
 
         /// <summary>
@@ -110,7 +106,7 @@ namespace J4JSoftware.InReach
         {
             builder.Register( ( ctxt, pms ) =>
                     {
-                        var retVal = hbc.Configuration.Get<InReachConfig>() ?? new InReachConfig();
+                        var retVal = hbc.Configuration.Get<AppConfig>() ?? new AppConfig();
                         
                         retVal.Password.Logger = ctxt.Resolve<IJ4JLogger>();
                         retVal.Password.Protector = ctxt.Resolve<IJ4JProtection>();
@@ -124,7 +120,7 @@ namespace J4JSoftware.InReach
                    .AsSelf()
                    .SingleInstance();
 
-            builder.RegisterType<HomeViewModel>()
+            builder.RegisterType<MainViewModel>()
                    .AsSelf()
                    .SingleInstance();
 

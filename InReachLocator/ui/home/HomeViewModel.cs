@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -70,7 +71,7 @@ namespace J4JSoftware.InReach
 
         private async Task LastKnownLocationHandler()
         {
-            var request = new LastKnownLocationRequest<MapLocation>(_config, _logger);
+            var request = new LastKnownLocationRequest<Location>(_config, _logger);
             var result = await request.ExecuteAsync();
 
             if (result == null || result.Locations.Count == 0)
@@ -88,6 +89,8 @@ namespace J4JSoftware.InReach
                                               x.HorizontalAlignment = HorizontalAlignment.Left;
                                               x.VerticalAlignment = VerticalAlignment.Top;
                                           });
+
+            App.Current.SetContentControl(new LastKnownControl());
 
             WeakReferenceMessenger.Default.Send( result.Locations[ 0 ], "primary" );
         }

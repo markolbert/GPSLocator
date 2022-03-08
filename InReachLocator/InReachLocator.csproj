@@ -30,16 +30,27 @@
 	  <PackageReadmeFile>nuget-locator.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ui\home\**" />
+    <EmbeddedResource Remove="ui\home\**" />
+    <None Remove="ui\home\**" />
+    <Page Remove="ui\home\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="ui\common\map-location\IMapLocation.cs" />
     <Compile Remove="ui\common\map-location\MapLocationMessage.cs" />
+    <Compile Remove="ui\history\HistoryControl.xaml.cs" />
+    <Compile Remove="ui\lastknown\LastKnownControl.xaml.cs" />
+    <Compile Remove="ui\settings\SettingsControl.xaml.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="DefaultResources.xaml" />
     <None Remove="HomeControl.xaml" />
     <None Remove="ui\common\LocationControl.xaml" />
+    <None Remove="ui\history\HistoryPage.xaml" />
     <None Remove="ui\lastknown\LastKnownControl.xaml" />
     <None Remove="ui\history\HistoryControl.xaml" />
+    <None Remove="ui\lastknown\LastKnownPage.xaml" />
     <None Remove="ui\settings\SettingsControl.xaml" />
     <None Remove="ui\settings\SettingsPage.xaml" />
   </ItemGroup>
@@ -91,6 +102,12 @@
     <None Update="appConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="ui\history\HistoryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="ui\lastknown\LastKnownPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="ui\settings\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -100,19 +117,16 @@
     <Page Update="ui\location-history\HistoryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="ui\lastknown\LastKnownControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="ui\settings\SettingsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="ui\DefaultResources.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="ui\home\HomeControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <PRIResource Remove="ui\home\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="ui\history\HistoryControl.xaml" />
+    <Page Remove="ui\lastknown\LastKnownControl.xaml" />
+    <Page Remove="ui\settings\SettingsControl.xaml" />
   </ItemGroup>
 </Project>

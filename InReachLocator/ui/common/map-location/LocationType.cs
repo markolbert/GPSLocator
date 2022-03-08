@@ -4,5 +4,5 @@ public enum LocationType
 {
     Unspecified,
     Pushpin,
-    LinePoint
+    RoutePoint
 }
