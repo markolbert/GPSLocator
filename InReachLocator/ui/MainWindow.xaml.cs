@@ -80,7 +80,7 @@ namespace J4JSoftware.InReach
 
         public void SetContentControl(
             UserControl control,
-            Action<ContentControl> containerConfigurator
+            Action<ContentControl>? containerConfigurator
         )
         {
             if( _placeholder == null )
@@ -90,11 +90,17 @@ namespace J4JSoftware.InReach
                 return;
             }
 
-            var newControlContext = new DisplayControl( control, containerConfigurator );
-            _displayControls.Push( newControlContext );
+            containerConfigurator ??= x =>
+            {
+                x.HorizontalAlignment = HorizontalAlignment.Stretch;
+                x.VerticalAlignment = VerticalAlignment.Stretch;
+            };
 
-            _placeholder.Content = control;
-            containerConfigurator( _placeholder );
+            //var newControlContext = new DisplayControl( control, containerConfigurator );
+            //_displayControls.Push( newControlContext );
+
+            //containerConfigurator?.Invoke(_placeholder);
+            //_placeholder.Content = control;
         }
 
         public void PopContentControl()
@@ -122,7 +128,28 @@ namespace J4JSoftware.InReach
 
         private void MainWindow_OnSizeChanged( object sender, WindowSizeChangedEventArgs args )
         {
-            WeakReferenceMessenger.Default.Send( new SizeMessage(args.Size), "mainwindow" );
+            //WeakReferenceMessenger.Default.Send( new SizeMessage(args.Size), "mainwindow" );
+        }
+
+        private void NavigationView_OnSelectionChanged( NavigationView sender, NavigationViewSelectionChangedEventArgs args )
+        {
+            var item = args.SelectedItemContainer as NavigationViewItem;
+            if( item?.Tag == null )
+                return;
+
+            var (pageType, title) = ( item.Tag as string ) switch
+            {
+                "Settings"=>(typeof(SettingsPage), "Application Settings"),
+                _ => (null, null)
+            };
+
+            if( pageType == null )
+                return;
+
+            ContentFrame.Navigate( pageType );
+
+            NavigationView.Header = title;
+            NavigationView.SelectedItem = item;
         }
     }
 }

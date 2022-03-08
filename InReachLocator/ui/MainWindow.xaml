@@ -5,41 +5,30 @@
     xmlns:local="using:J4JSoftware.InReach"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:map="using:MapControl"
     mc:Ignorable="d"
     SizeChanged="MainWindow_OnSizeChanged">
 
-    <Grid>
+    <NavigationView x:Name="NavigationView" 
+                    PaneDisplayMode="Top"
+                    SelectionChanged="NavigationView_OnSelectionChanged">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <NavigationView.MenuItems>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <NavigationViewItem Content="Last Known"
+                                Tag="LastKnown"
+                                ToolTipService.ToolTip="shows last known location on a map"/>
 
-        <ContentControl Grid.Row="0" Grid.Column="0" 
-                        x:Name="ContentPlaceholder"/>
+            <NavigationViewItem Content="History"
+                                Tag="History"
+                                ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
-        <Grid Grid.Row="1" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <NavigationViewItem Content="Settings"
+                                Tag="Settings"
+                                ToolTipService.ToolTip="configures the application"/>
+        </NavigationView.MenuItems>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <Frame x:Name="ContentFrame"/>
 
-            <ProgressBar Grid.Row="0" Grid.Column="0"/>
-            <TextBlock Grid.Row="0" Grid.Column="0"/>
-
-            <Button Grid.Row="0" Grid.Column="1">
-                View Log
-            </Button>
-
-        </Grid>
-
-    </Grid>
+    </NavigationView>
 </Window>
