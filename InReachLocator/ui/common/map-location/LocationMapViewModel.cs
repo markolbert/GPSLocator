@@ -14,43 +14,26 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace J4JSoftware.InReach
 {
-    public class LocationMapViewModel : ObservableRecipient
+    public class LocationMapViewModel : BasePassiveViewModel
     {
         private MapControl.Location? _mapCenter;
         private double _mapHeight = 500;
         private double _mapWidth = 500;
 
         protected LocationMapViewModel(
+            IAppConfig configuration,
             AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
+            : base( configuration, logger )
         {
             LocationTypeChoices = locationTypeChoices;
-
-            Logger = logger;
-            Logger.SetLoggedType( GetType() );
-        }
-
-        protected IJ4JLogger Logger { get; }
-
-        protected override void OnActivated()
-        {
-            base.OnActivated();
-
-            Messenger.Register<LocationMapViewModel, SizeMessage, string>(this, "mainwindow", WindowSizeChangedHandler);
         }
 
         private void WindowSizeChangedHandler( LocationMapViewModel recipient, SizeMessage message )
         {
             MapHeight = message.Height - 50;
             MapWidth = message.Width - GridWidth - 10;
-        }
-
-        protected override void OnDeactivated()
-        {
-            base.OnDeactivated();
-
-            Messenger.UnregisterAll( this );
         }
 
         public AnnotatedLocationType.Choices LocationTypeChoices { get; }
@@ -60,13 +43,13 @@ namespace J4JSoftware.InReach
         public bool HasPoints => MapPoints.Any();
 
         public LocationCollection? Route =>
-            new( MapPoints.Where( x => x.SelectedLocationType?.LocationType == LocationType.LinePoint )
+            new( MapPoints.Where( x => x.SelectedLocationType?.LocationType == LocationType.RoutePoint )
                            .Select( x => x.DisplayPoint ) );
 
         public IEnumerable<MapPoint> Pushpins =>
             MapPoints.Where( x => x.SelectedLocationType?.LocationType == LocationType.Pushpin );
 
-        public virtual void ClearMapLocations()
+        protected virtual void ClearMapLocations()
         {
             MapPoints.Clear();
 
@@ -77,13 +60,31 @@ namespace J4JSoftware.InReach
             UpdateMapCenter();
         }
 
-        public void AddMapLocation( MapPoint mapPoint )
+        protected void AddMapLocation( ILocation inReachLocation, LocationType locType )
+        {
+            AddMapLocation( new MapPoint( inReachLocation )
+            {
+                SelectedLocationType = LocationTypeChoices
+                   .First( x => x.LocationType == LocationType.Pushpin )
+            } );
+        }
+
+        protected void AddPushpin( ILocation inReachLocation ) => AddMapLocation( inReachLocation, LocationType.Pushpin );
+
+        protected void AddRoutePoint( ILocation inReachLocation ) =>
+            AddMapLocation( inReachLocation, LocationType.RoutePoint );
+
+        protected void AddMapLocation( MapPoint mapPoint )
         {
             MapPoints.Add( mapPoint );
 
             OnPropertyChanged(nameof(HasPoints));
-            OnPropertyChanged( nameof( Pushpins ) );
-            OnPropertyChanged( nameof( Route ) );
+
+            if( mapPoint.SelectedLocationType is { LocationType: LocationType.Pushpin } )
+                OnPropertyChanged( nameof( Pushpins ) );
+
+            if( mapPoint.SelectedLocationType is { LocationType: LocationType.RoutePoint } )
+                OnPropertyChanged( nameof( Route ) );
 
             UpdateMapCenter();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -9,45 +10,54 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.UI.Dispatching;
 
 namespace J4JSoftware.InReach
 {
     public class LastKnownViewModel : LocationMapViewModel
     {
-        private MapLocation? _lastLocation;
-
         public LastKnownViewModel(
+            IAppConfig configuration,
+            AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
-        : base(logger)
+        : base(configuration, locationTypeChoices, logger)
         {
-            IsActive = true;
+            var dQueue = DispatcherQueue.GetForCurrentThread();
+            dQueue.TryEnqueue( async () =>
+            {
+                await RefreshHandlerAsync();
+            } );
+
+            RefreshCommand = new AsyncRelayCommand( RefreshHandlerAsync );
         }
 
-        protected override void OnActivated()
-        {
-            base.OnActivated();
+        public AsyncRelayCommand RefreshCommand { get; }
 
-            Messenger.Register<LastKnownViewModel, MapLocation, string>(this, "primary", NewLocationHandler);
-        }
-
-        private void NewLocationHandler( LastKnownViewModel recipient, MapLocation mapLocation )
+        private async Task RefreshHandlerAsync()
         {
-            //LocationViewModel = new LocationViewModel( mapLocation, Logger );
-            mapLocation.LocationType = LocationType.Pushpin;
+            if( !Configuration.IsValid )
+                return;
+
+            var request = new LastKnownLocationRequest<Location>( Configuration, Logger );
+            var result = await request.ExecuteAsync();
+
+            if( result == null || result.Locations.Count == 0 )
+            {
+                if( request.LastError != null )
+                    Logger.Error<string>( "Invalid configuration, message was '{0}'", request.LastError.ToString() );
+                else Logger.Error( "Invalid configuration" );
+
+                return;
+            }
 
             ClearMapLocations();
-            AddMapLocation( mapLocation );
 
-            LastLocation = mapLocation;
+            AddPushpin( result.Locations[ 0 ] );
 
-            //LocationUrl = $"https://maps.google.com?q={LocationViewModel.Latitude},{LocationViewModel.Longitude}";
+            OnPropertyChanged( nameof( LastLocation ) );
         }
 
-        public MapLocation? LastLocation
-        {
-            get => _lastLocation;
-            set => SetProperty( ref _lastLocation, value );
-        }
+        public MapPoint? LastLocation => MapPoints.Any() ? MapPoints.Last() : null;
     }
 }

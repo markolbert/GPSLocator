@@ -12,8 +12,6 @@ namespace J4JSoftware.InReach
 {
     public class HistoryViewModel : LocationMapViewModel
     {
-        private readonly IInReachConfig _config;
-
         private DateTimeOffset? _minDate;
         private DateTimeOffset? _startDate;
         private DateTimeOffset? _endDate;
@@ -21,15 +19,12 @@ namespace J4JSoftware.InReach
         private bool _deferUpdateLocations;
 
         public HistoryViewModel(
-            IInReachConfig config,
+            IAppConfig config,
             AnnotatedLocationType.Choices locationTypeChoices,
             IJ4JLogger logger
         )
-        : base(locationTypeChoices, logger)
+        : base(config, locationTypeChoices, logger)
         {
-            _config = config;
-            
-            IsActive = true;
         }
 
         public DateTimeOffset? StartDate
@@ -76,10 +71,10 @@ namespace J4JSoftware.InReach
 
         private void UpdateLocations()
         {
-            if( StartDate == null || EndDate == null )
+            if( !Configuration.IsValid || StartDate == null || EndDate == null )
                 return;
 
-            var request = new HistoryRequest<LocationMessage>( _config, Logger )
+            var request = new HistoryRequest<Location>( Configuration, Logger )
             {
                 Start = StartDate.Value.UtcDateTime, End = EndDate.Value.UtcDateTime
             };
