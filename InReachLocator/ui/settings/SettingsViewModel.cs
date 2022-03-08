@@ -14,6 +14,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.UI.Dispatching;
 
 namespace J4JSoftware.InReach
 {
@@ -27,6 +28,8 @@ namespace J4JSoftware.InReach
         private string _userName;
         private string? _password;
         private string _imei;
+        private bool _validated;
+        private bool _changed;
 
         public SettingsViewModel(
             IInReachConfig config,
@@ -45,25 +48,23 @@ namespace J4JSoftware.InReach
             _logger = logger;
             _logger.SetLoggedType( GetType() );
 
-            SaveAndCloseCommand = new AsyncRelayCommand( SaveAndCloseHandler );
-            CloseCommand = new RelayCommand( CloseHandler );
-            RefreshCommand = new RelayCommand( RefreshHandler );
+            var dQueue = DispatcherQueue.GetForCurrentThread();
+
+            dQueue.TryEnqueue( async () =>
+            {
+                Validated = await _config.ValidateConfiguration( _logger );
+            } );
+
+            SaveCommand = new AsyncRelayCommand( SaveHandlerAsync );
+            ValidateCommand = new AsyncRelayCommand( ValidateHandlerAsync );
+            RevertCommand = new RelayCommand( RevertHandler );
         }
 
-        public AsyncRelayCommand SaveAndCloseCommand { get; }
+        public AsyncRelayCommand SaveCommand { get; }
 
-        private async Task SaveAndCloseHandler()
+        private async Task SaveHandlerAsync()
         {
-            // test the proposed configuration
-            var testConfig = new InReachConfig
-            {
-                IMEI = IMEI,
-                UserName = UserName,
-                Website = Website,
-                Password = { ClearText = Password }
-            };
-
-            if ( !await testConfig.ValidateConfiguration( _logger ) )
+            if( !Validated )
                 return;
 
             _config.Website = Website;
@@ -85,48 +86,111 @@ namespace J4JSoftware.InReach
             App.Current.PopContentControl();
         }
 
-        public RelayCommand CloseCommand { get; }
+        public AsyncRelayCommand ValidateCommand { get; }
 
-        private void CloseHandler()
+        private async Task ValidateHandlerAsync()
         {
-            StrongReferenceMessenger.Default.Send<ConfigurationChangedMessage, string>(
-                new ConfigurationChangedMessage(false),
-                "primary");
+            // test the proposed configuration
+            var testConfig = new InReachConfig
+            {
+                IMEI = IMEI,
+                UserName = UserName,
+                Website = Website,
+                Password = { ClearText = Password }
+            };
 
-            App.Current.PopContentControl();
+            Validated = await testConfig.ValidateConfiguration( _logger );
         }
 
-        public RelayCommand RefreshCommand { get; }
+        public RelayCommand RevertCommand { get; }
 
-        private void RefreshHandler()
+        private void RevertHandler()
         {
             Website = _config.Website;
             UserName = _config.UserName;
             Password = _config.Password.ClearText;
+
+            Validated = false;
+            Changed = true;
         }
 
         public string Website
         {
             get => _website;
-            set => SetProperty( ref _website, value );
+
+            set
+            {
+                Changed = !string.Equals( _website, value, StringComparison.OrdinalIgnoreCase );
+
+                SetProperty( ref _website, value );
+
+                Validated = false;
+            }
         }
 
         public string UserName
         {
             get => _userName;
-            set => SetProperty( ref _userName, value );
+
+            set
+            {
+                Changed = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
+
+                SetProperty( ref _userName, value );
+
+                Validated = false;
+            }
         }
 
         public string? Password
         {
             get => _password;
-            set=> SetProperty( ref _password, value );
+
+            set
+            {
+                Changed = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
+
+                SetProperty( ref _password, value );
+
+                Validated = false;
+            }
         }
 
         public string IMEI
         {
             get => _imei;
-            set => SetProperty(ref _imei, value);
+            
+            set
+            {
+                Changed = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
+
+                SetProperty( ref _imei, value );
+                
+                Validated = false;
+            }
         }
+
+        public bool Validated
+        {
+            get => _validated;
+            set
+            {
+                SetProperty( ref _validated, value );
+                OnPropertyChanged(nameof(CanSave));
+            }
+        }
+
+        public bool Changed
+        {
+            get => _changed;
+
+            set
+            {
+                SetProperty( ref _changed, value );
+                OnPropertyChanged(nameof(CanSave));
+            }
+        }
+
+        public bool CanSave => Validated && Changed;
     }
 }
