@@ -1,0 +1,123 @@
+﻿<Page
+    x:Class="J4JSoftware.InReach.HistoryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:J4JSoftware.InReach"
+    xmlns:mapControl="using:MapControl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sfcal="using:Syncfusion.UI.Xaml.Calendar"
+    xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:HistoryViewModel}"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel x:Name="OuterContainer" 
+                Orientation="Horizontal">
+
+        <StackPanel.Resources>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+
+            <Style TargetType="sfgrid:SfDataGrid">
+                <Setter Property="Margin" Value="14,7,14,7"></Setter>
+            </Style>
+
+            <Style TargetType="sfcal:SfCalendar">
+                <Setter Property="Margin" Value="14,7,14,7"></Setter>
+            </Style>
+
+        </StackPanel.Resources>
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0">Start Date</TextBlock>
+            <sfcal:SfCalendar Grid.Row="0" Grid.Column="1"
+                              SelectedDate="{Binding StartDate, Mode=TwoWay}"
+                              MinDate="{Binding MinimumStartDate}"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0">End Date</TextBlock>
+            <sfcal:SfCalendar Grid.Row="1" Grid.Column="1"
+                              SelectedDate="{Binding EndDate, Mode=TwoWay}"/>
+        </Grid>
+
+        <Grid VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <sfgrid:SfDataGrid Grid.Row="0" Grid.Column="0" 
+                               x:Name="LocationsGrid" 
+                               Visibility="{Binding Path=HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
+                               ItemsSource="{Binding MapPoints}"
+                               SelectedItem="{Binding SelectedMapPoint, Mode=TwoWay}"
+                               AutoGenerateColumns="False"
+                               AllowResizingColumns="True">
+
+                <sfgrid:SfDataGrid.Columns>
+                    <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
+                                           HeaderText="Timestamp"
+                                           DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
+
+                    <sfgrid:GridComboBoxColumn MappingName="SelectedLocationType" 
+                                               DisplayMemberPath="Label"
+                                               ItemsSource="{Binding LocationTypeChoices}"/>
+                </sfgrid:SfDataGrid.Columns>
+
+                <sfgrid:SfDataGrid.RowStyle>
+                    <Style TargetType="sfgrid:DataGridRowControl">
+                        <Setter Property="Background" Value="{Binding SelectedMapPoint.HasMessage, FallbackValue=null, Converter={StaticResource BoolToGridBackgroundColor}}"/>
+                    </Style>
+                </sfgrid:SfDataGrid.RowStyle>
+
+            </sfgrid:SfDataGrid>
+
+            <local:LocationControl Grid.Row="1" Grid.Column="0" 
+                                   Visibility="{Binding ElementName=OuterContainer, Path=DataContext.SelectedMapPoint, Converter={StaticResource ObjectToVisibilityConverter }}"
+                                   DataContext="{Binding SelectedMapPoint.InReachLocation, FallbackValue=null}" />
+
+        </Grid>
+
+        <!--<mapControl:Map x:Name="TestMap" ManipulationMode="All"
+                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="18"
+                 Width="{Binding MapWidth}"
+                 Height="{Binding MapHeight}"
+                 Center="{Binding MapCenter}">
+
+            <mapControl:MapTileLayer SourceName="OpenStreetMap"
+                              Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
+
+                <mapControl:MapTileLayer.TileSource>
+                    <mapControl:TileSource UriFormat="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                </mapControl:MapTileLayer.TileSource>
+
+            </mapControl:MapTileLayer>
+
+            <mapControl:MapItemsControl ItemsSource="{Binding Pushpins}"
+                                 ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
+
+            <mapControl:MapItemsControl ItemsSource="{Binding Route}"
+                                        ItemTemplate="{StaticResource RouteTemplate}"/>
+
+        </mapControl:Map>-->
+
+    </StackPanel>
+</Page>
