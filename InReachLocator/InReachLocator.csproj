@@ -29,24 +29,9 @@
 	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
 	  <PackageReadmeFile>nuget-locator.md</PackageReadmeFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="ui\home\**" />
-    <EmbeddedResource Remove="ui\home\**" />
-    <None Remove="ui\home\**" />
-    <Page Remove="ui\home\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="ui\common\map-location\IMapLocation.cs" />
-    <Compile Remove="ui\common\map-location\MapLocationMessage.cs" />
-  </ItemGroup>
 
   <ItemGroup>
-    <None Remove="DefaultResources.xaml" />
-    <None Remove="HomeControl.xaml" />
     <None Remove="ui\common\LocationControl.xaml" />
-    <None Remove="ui\lastknown\LastKnownControl.xaml" />
-    <None Remove="ui\history\HistoryControl.xaml" />
-    <None Remove="ui\settings\SettingsControl.xaml" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -106,15 +91,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="ui\location-history\HistoryControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="ui\lastknown\LastKnownControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="ui\settings\SettingsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="ui\DefaultResources.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
