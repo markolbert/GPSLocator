@@ -9,6 +9,30 @@
     d:DataContext="{d:DesignInstance local:SettingsViewModel}">
 
     <Grid>
+
+        <Grid.Resources>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,14,14,14"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="14, 14, 14,14"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="PasswordBox">
+                <Setter Property="Margin" Value="14, 14, 14,14"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="14"/>
+            </Style>
+
+        </Grid.Resources>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
@@ -48,8 +72,8 @@
                     VerticalAlignment="Bottom">
 
             <Button Command="{Binding CloseCommand}">Cancel</Button>
-            <Button Command="{Binding RefreshCommand}">Revert</Button>
-            <Button Command="{Binding SaveAndCloseCommand}">Save and Close</Button>
+            <Button Command="{Binding RevertCommand}">Revert</Button>
+            <Button Command="{Binding SaveCommand}">Save and Close</Button>
         </StackPanel>
 
     </Grid>
