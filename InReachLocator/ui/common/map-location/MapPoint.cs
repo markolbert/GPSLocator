@@ -74,7 +74,6 @@ namespace J4JSoftware.InReach
         public LocationType SelectedLocationType
         {
             get => _selectedLocType;
-
             set => SetProperty( ref _selectedLocType, value );
         }
 
