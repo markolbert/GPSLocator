@@ -6,18 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach
 {
     public class HistoryViewModel : LocationMapViewModel
     {
-        private DateTimeOffset? _minDate;
-        private DateTimeOffset? _startDate;
-        private DateTimeOffset? _endDate;
-        private bool _deferUpdateLocations;
+        private DateTimeOffset _endDate;
+        private double _daysBack = 7;
+        private bool _refreshEnabled;
 
         public HistoryViewModel(
             IAppConfig config,
@@ -25,61 +26,60 @@ namespace J4JSoftware.InReach
         )
         : base(config, logger)
         {
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes( 1 ) };
+            timer.Tick += Timer_Tick;
+            timer.Start();
+
+            RefreshCommand = new RelayCommand( RefreshCommandHandler );
+            EndDate = DateTimeOffset.Now;
+
             ChangeSelectedMapPointsCommand = new RelayCommand<LocationType>( ChangeSelectedMapPointsHandler );
 
             SelectedMapPoints.CollectionChanged += SelectedMapPoints_CollectionChanged;
+
+            RefreshCommandHandler();
         }
 
-        public DateTimeOffset? StartDate
+        private void Timer_Tick(object? sender, object e)
         {
-            get => _startDate;
-
-            set
-            {
-                SetProperty( ref _startDate, value );
-
-                if( !_deferUpdateLocations)
-                    UpdateLocations();
-            }
+            EndDate = DateTimeOffset.Now;
+            RefreshEnabled = true;
         }
 
-        public DateTimeOffset? EndDate
+        public DateTimeOffset StartDate => _endDate.DateTime.AddDays( -DaysBack );
+
+        public DateTimeOffset EndDate
         {
             get => _endDate;
 
             set
             {
                 SetProperty( ref _endDate, value );
-
-                _deferUpdateLocations = true;
-                MinimumStartDate = _endDate?.AddDays( -32 );
-                _deferUpdateLocations = false;
-
-                UpdateLocations();
+                OnPropertyChanged(nameof(StartDate));
             }
         }
 
-        public DateTimeOffset? MinimumStartDate
+        public double DaysBack
         {
-            get => _minDate;
+            get => _daysBack;
 
             set
             {
-                SetProperty( ref _minDate, value );
-
-                if( _minDate > _startDate )
-                    StartDate = value;
+                SetProperty( ref _daysBack, value );
+                OnPropertyChanged(nameof(StartDate));
             }
         }
 
-        private void UpdateLocations()
+        public RelayCommand RefreshCommand { get; }
+
+        private void RefreshCommandHandler()
         {
-            if( !Configuration.IsValid || StartDate == null || EndDate == null )
+            if( !Configuration.IsValid )
                 return;
 
             var request = new HistoryRequest<Location>( Configuration, Logger )
             {
-                Start = StartDate.Value.UtcDateTime, End = EndDate.Value.UtcDateTime
+                Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
             };
 
             var result = Task.Run( async () => await request.ExecuteAsync() );
@@ -104,6 +104,13 @@ namespace J4JSoftware.InReach
 
             DeferUpdatingMapCenter = false;
             UpdateMapCenter();
+            RefreshEnabled = false;
+        }
+
+        public bool RefreshEnabled
+        {
+            get => _refreshEnabled;
+            set => SetProperty(ref _refreshEnabled, value);
         }
 
         public ObservableCollection<object> SelectedMapPoints { get; }  = new();
@@ -120,14 +127,24 @@ namespace J4JSoftware.InReach
             if( SelectedMapPoints.Count == 0 )
                 return;
 
-            foreach( var mapPoint in SelectedMapPoints.Cast<MapPoint>() )
+            foreach( var mapPoint in SelectedMapPoints
+                                    .Cast<MapPoint>()
+                                    .ToList() )
             {
                 mapPoint.SelectedLocationType = locationType;
 
-                var rowIndex = MapPoints.IndexOf( mapPoint );
-                WeakReferenceMessenger.Default.Send( new LocationTypeMessage( rowIndex + 1, locationType ),
+                var rowNum = MapPoints.IndexOf( mapPoint );
+
+                WeakReferenceMessenger.Default.Send( new LocationTypeMessage( rowNum + 1, locationType ),
                                                      "LocationTypeChanged" );
             }
+
+            SelectedMapPoints.Clear();
+
+            OnPropertyChanged( nameof( Pushpins ) );
+            OnPropertyChanged( nameof( Route ) );
+
+            UpdateMapCenter();
         }
 
         public MapPoint? MapPointToDisplay => SelectedMapPoints.Count == 1 ? (MapPoint?) SelectedMapPoints[ 0 ] : null;

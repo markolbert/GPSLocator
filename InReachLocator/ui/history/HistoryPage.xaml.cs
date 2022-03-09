@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.UI;
 using Syncfusion.UI.Xaml.DataGrid;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -28,7 +29,7 @@ namespace J4JSoftware.InReach
     {
         public HistoryPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             DataContext = App.Current.Host.Services.GetRequiredService<HistoryViewModel>();
 
@@ -49,6 +50,7 @@ namespace J4JSoftware.InReach
             {
                 LocationType.Pushpin => OuterContainer.Resources["PushpinRowStyle"] as Style,
                 LocationType.RoutePoint => OuterContainer.Resources["RoutePointRowStyle"] as Style,
+                LocationType.Unspecified => OuterContainer.Resources["UnspecifiedRowStyle"] as Style,
                 _ => null
             };
 

@@ -6,23 +6,31 @@
     xmlns:map="using:MapControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sfcal="using:Syncfusion.UI.Xaml.Calendar"
     xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid"
+    xmlns:sfeditors="using:Syncfusion.UI.Xaml.Editors"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance local:HistoryViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid x:Name="OuterContainer">
+    <Grid x:Name="OuterContainer"
+          ColumnDefinitions="Auto, Auto, *"
+          RowDefinitions="*, Auto">
 
         <Grid.Resources>
 
             <Style TargetType="TextBlock">
                 <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="14,7,14,7"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
 
-            <Style TargetType="sfcal:SfCalendar">
-                <Setter Property="Margin" Value="14,7,14,7"></Setter>
+            <Style TargetType="sfeditors:SfNumberBox">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
             <Style TargetType="sfgrid:SfDataGrid">
@@ -31,12 +39,14 @@
 
             <Style x:Key="PushpinRowStyle" TargetType="sfgrid:DataGridRowControl">
                 <Setter Property="Background" Value="AliceBlue"/>
-                <Setter Property="FontWeight" Value="Bold"/>
             </Style>
 
             <Style x:Key="RoutePointRowStyle" TargetType="sfgrid:DataGridRowControl">
                 <Setter Property="Background" Value="LightGoldenrodYellow"/>
-                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="UnspecifiedRowStyle" TargetType="sfgrid:DataGridRowControl">
+                <Setter Property="Background" Value="Transparent"/>
             </Style>
 
             <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
@@ -60,54 +70,63 @@
 
         </Grid.Resources>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto" MaxWidth="410"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" 
+              ColumnDefinitions="Auto, Auto"
+              RowDefinitions="Auto, Auto, Auto, Auto">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
+            <sfeditors:SfNumberBox Grid.Row="0" Grid.Column="1"
+                                   Value="{Binding DaysBack, Mode=TwoWay}"
+                                   Minimum="1"
+                                   Maximum="31"
+                                   CustomFormat="#"
+                                   SmallChange="1"
+                                   LargeChange="7" 
+                                   UpDownPlacementMode="Inline"/>
+            <Button Grid.Row="1" Grid.Column="1"
+                    IsEnabled="{Binding RefreshEnabled}"
+                    Command="{Binding RefreshCommand}">
+                Refresh
+            </Button>
 
-        <TextBlock Grid.Row="0" Grid.Column="0">Start Date</TextBlock>
-        <sfcal:SfCalendar Grid.Row="0" Grid.Column="1"
-                          x:Name="StartCalendar"
-                          SelectedDate="{Binding StartDate, Mode=TwoWay}"
-                          MinDate="{Binding MinimumStartDate}"/>
+            <TextBlock Grid.Row="2" Grid.Column="0">End Date</TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding EndDate}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">End Date</TextBlock>
-        <sfcal:SfCalendar Grid.Row="1" Grid.Column="1"
-                          SelectedDate="{Binding EndDate, Mode=TwoWay}"/>
+            <TextBlock Grid.Row="3" Grid.Column="0">Start Date</TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding StartDate}"/>
 
-        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical">
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1" 
+              ColumnDefinitions="*, Auto"
+              RowDefinitions="Auto, Auto">
 
             <sfgrid:SfDataGrid x:Name="LocationsGrid" 
-                               MaxHeight="300"
-                               Width="410"
-                               RowHeight="40"
-                               SelectionMode="Extended"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Top"
-                               Visibility="{Binding Path=HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
-                               ItemsSource="{Binding MapPoints}"
-                               SelectedItems="{Binding SelectedMapPoints}"
-                               AutoGenerateColumns="False"
-                               AllowResizingColumns="True">
+                           Grid.Row="0" Grid.Column="0"
+                           MaxHeight="300"
+                           Width="200"
+                           RowHeight="40"
+                           SelectionMode="Extended"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Visibility="{Binding Path=HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
+                           ItemsSource="{Binding MapPoints}"
+                           SelectedItems="{Binding SelectedMapPoints}"
+                           AutoGenerateColumns="False"
+                           AllowResizingColumns="True">
 
                 <sfgrid:SfDataGrid.Columns>
                     <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
-                                           HeaderText="Timestamp"
-                                           DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
+                                       HeaderText="Timestamp"
+                                       DisplayDateFormat="MM/dd/yyyy HH:mm:ss"
+                                       Width="180"/>
                 </sfgrid:SfDataGrid.Columns>
 
             </sfgrid:SfDataGrid>
 
-            <StackPanel Orientation="Horizontal"
-                        Visibility="{Binding HasPoints, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Grid.Row="0" Grid.Column="1" 
+                    Orientation="Vertical"
+                    Visibility="{Binding HasPoints, Converter={StaticResource BoolToVisibilityConverter}}">
 
                 <Button Command="{Binding ChangeSelectedMapPointsCommand}">
                     <Button.CommandParameter>
@@ -131,17 +150,18 @@
                 </Button>
 
             </StackPanel>
-        </StackPanel>
 
-        <local:LocationControl Grid.Row="1" Grid.Column="2" 
+            <local:LocationControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
                                Visibility="{Binding ElementName=OuterContainer, Path=DataContext.MapPointToDisplay, Converter={StaticResource ObjectToVisibilityConverter }}"
                                DataContext="{Binding MapPointToDisplay.InReachLocation, FallbackValue=null}" />
 
-        <map:Map Grid.Row="0" Grid.Column="3" Grid.RowSpan="3" 
-                 x:Name="TestMap" 
+        </Grid>
+
+        <map:Map Grid.Row="0" Grid.Column="2"
                  ManipulationMode="All"
                  MinZoomLevel="2" 
                  MaxZoomLevel="21" 
+                 Margin="14,7,7,14"
                  ZoomLevel="12"
                  Visibility="{Binding MapCenter, Converter={StaticResource ObjectToVisibilityConverter}}"
                  Center="{Binding MapCenter, Mode=TwoWay}">
