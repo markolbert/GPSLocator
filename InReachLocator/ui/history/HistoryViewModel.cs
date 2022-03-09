@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace J4JSoftware.InReach
@@ -15,7 +17,6 @@ namespace J4JSoftware.InReach
         private DateTimeOffset? _minDate;
         private DateTimeOffset? _startDate;
         private DateTimeOffset? _endDate;
-        private MapPoint? _selectedMapPoint;
         private bool _deferUpdateLocations;
 
         public HistoryViewModel(
@@ -24,6 +25,9 @@ namespace J4JSoftware.InReach
         )
         : base(config, logger)
         {
+            ChangeSelectedMapPointsCommand = new RelayCommand<LocationType>( ChangeSelectedMapPointsHandler );
+
+            SelectedMapPoints.CollectionChanged += SelectedMapPoints_CollectionChanged;
         }
 
         public DateTimeOffset? StartDate
@@ -90,27 +94,39 @@ namespace J4JSoftware.InReach
                 return;
             }
 
-            SelectedMapPoint = null;
-
             DeferUpdatingMapCenter = true;
             ClearMapLocations();
 
             foreach( var mapLocation in mapLocations )
             {
-                AddMapLocation( new MapPoint( mapLocation,
-                                              LocationTypeChoices.First(
-                                                  x => x.LocationType == LocationType.Unspecified ) ) );
+                AddMapLocation( mapLocation );
             }
 
             DeferUpdatingMapCenter = false;
             UpdateMapCenter();
         }
 
-        public MapPoint? SelectedMapPoint
+        public ObservableCollection<object> SelectedMapPoints { get; }  = new();
+
+        private void SelectedMapPoints_CollectionChanged( object? sender, NotifyCollectionChangedEventArgs e )
         {
-            get => _selectedMapPoint;
-            set => SetProperty( ref _selectedMapPoint, value );
+            OnPropertyChanged(nameof(MapPointToDisplay));
         }
+
+        public RelayCommand<LocationType> ChangeSelectedMapPointsCommand { get; }
+
+        private void ChangeSelectedMapPointsHandler( LocationType locationType )
+        {
+            if( SelectedMapPoints.Count == 0 )
+                return;
+
+            foreach( var mapPoint in SelectedMapPoints.Cast<MapPoint>() )
+            {
+                mapPoint.SelectedLocationType = locationType;
+            }
+        }
+
+        public MapPoint? MapPointToDisplay => SelectedMapPoints.Count == 1 ? (MapPoint?) SelectedMapPoints[ 0 ] : null;
 
         protected override bool IncludeLocationType( LocationType locationType ) =>
             locationType != LocationType.Unspecified;
@@ -124,13 +140,13 @@ namespace J4JSoftware.InReach
 
             var mapChanged = false;
 
-            if( MapPoints.Any( x => x.SelectedLocationType.LocationType == LocationType.Pushpin ) )
+            if( MapPoints.Any( x => x.SelectedLocationType == LocationType.Pushpin ) )
             {
                 OnPropertyChanged(nameof(Pushpins));
                 mapChanged = true;
             }
 
-            if( MapPoints.Any( x => x.SelectedLocationType.LocationType == LocationType.RoutePoint ) )
+            if( MapPoints.Any( x => x.SelectedLocationType == LocationType.RoutePoint ) )
             {
                 OnPropertyChanged(nameof(Route));
                 mapChanged = true;
