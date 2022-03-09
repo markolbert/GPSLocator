@@ -31,7 +31,7 @@ namespace J4JSoftware.InReach
             LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Pushpin, "Show as Pushpin"));
             LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Unspecified, "Don't Show"));
 
-            MapPoints = new BindingList<MapPoint>();
+            MapPoints = new MapPoint.Collection();
             MapPoints.ListChanged += MapPoints_ListChanged;
         }
 
@@ -46,16 +46,16 @@ namespace J4JSoftware.InReach
 
         public List<AnnotatedLocationType> LocationTypeChoices { get; } = new();
 
-        public BindingList<MapPoint> MapPoints { get; }
+        public MapPoint.Collection MapPoints { get; }
 
         public bool HasPoints => MapPoints.Any();
 
         public LocationCollection? Route =>
-            new( MapPoints.Where( x => x.SelectedLocationType?.LocationType == LocationType.RoutePoint )
+            new( MapPoints.Where( x => x.SelectedLocationType == LocationType.RoutePoint )
                            .Select( x => x.DisplayPoint ) );
 
         public IEnumerable<MapPoint> Pushpins =>
-            MapPoints.Where( x => x.SelectedLocationType?.LocationType == LocationType.Pushpin );
+            MapPoints.Where( x => x.SelectedLocationType == LocationType.Pushpin );
 
         protected virtual void ClearMapLocations()
         {
@@ -68,21 +68,29 @@ namespace J4JSoftware.InReach
             UpdateMapCenter();
         }
 
-        protected void AddMapLocation( ILocation inReachLocation, LocationType locType )
+        protected MapPoint AddMapLocation( ILocation inReachLocation )
         {
-            AddMapLocation(
-                new MapPoint( inReachLocation,
-                              LocationTypeChoices.First( x => x.LocationType == LocationType.Unspecified ) )
-                {
-                    SelectedLocationType = LocationTypeChoices
-                       .First( x => x.LocationType == LocationType.Pushpin )
-                } );
+            var retVal = new MapPoint( inReachLocation );
+            AddMapLocation( retVal );
+
+            return retVal;
         }
 
-        protected void AddPushpin( ILocation inReachLocation ) => AddMapLocation( inReachLocation, LocationType.Pushpin );
+        protected MapPoint AddPushpin( ILocation inReachLocation )
+        {
+            var retVal = AddMapLocation( inReachLocation );
+            retVal.SelectedLocationType = LocationType.Pushpin;
 
-        protected void AddRoutePoint( ILocation inReachLocation ) =>
-            AddMapLocation( inReachLocation, LocationType.RoutePoint );
+            return retVal;
+        }
+
+        protected MapPoint AddRoutePoint( ILocation inReachLocation )
+        {
+            var retVal = AddMapLocation(inReachLocation);
+            retVal.SelectedLocationType = LocationType.RoutePoint;
+
+            return retVal;
+        }
 
         protected void AddMapLocation( MapPoint mapPoint )
         {
@@ -90,11 +98,16 @@ namespace J4JSoftware.InReach
 
             OnPropertyChanged(nameof(HasPoints));
 
-            if( mapPoint.SelectedLocationType is { LocationType: LocationType.Pushpin } )
-                OnPropertyChanged( nameof( Pushpins ) );
+            switch( mapPoint.SelectedLocationType )
+            {
+                case LocationType.Pushpin:
+                    OnPropertyChanged( nameof( Pushpins ) );
+                    break;
 
-            if( mapPoint.SelectedLocationType is { LocationType: LocationType.RoutePoint } )
-                OnPropertyChanged( nameof( Route ) );
+                case LocationType.RoutePoint:
+                    OnPropertyChanged( nameof( Route ) );
+                    break;
+            }
 
             UpdateMapCenter();
         }
@@ -115,7 +128,7 @@ namespace J4JSoftware.InReach
                 return;
 
             var filteredPoints = MapPoints
-                                .Where( x => IncludeLocationType( x.SelectedLocationType.LocationType ) )
+                                .Where( x => IncludeLocationType( x.SelectedLocationType ) )
                                 .ToList();
 
             MapCenter = filteredPoints.Count switch
