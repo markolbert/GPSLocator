@@ -123,6 +123,10 @@ namespace J4JSoftware.InReach
             foreach( var mapPoint in SelectedMapPoints.Cast<MapPoint>() )
             {
                 mapPoint.SelectedLocationType = locationType;
+
+                var rowIndex = MapPoints.IndexOf( mapPoint );
+                WeakReferenceMessenger.Default.Send( new LocationTypeMessage( rowIndex + 1, locationType ),
+                                                     "LocationTypeChanged" );
             }
         }
 
