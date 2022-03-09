@@ -21,12 +21,24 @@
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
 
+            <Style TargetType="sfcal:SfCalendar">
+                <Setter Property="Margin" Value="14,7,14,7"></Setter>
+            </Style>
+
             <Style TargetType="sfgrid:SfDataGrid">
                 <Setter Property="Margin" Value="14,7,14,7"></Setter>
             </Style>
 
-            <Style TargetType="sfcal:SfCalendar">
-                <Setter Property="Margin" Value="14,7,14,7"></Setter>
+            <local:HistoryRowStyleSelector x:Key="HistoryRowStyleSelector"/>
+
+            <Style x:Key="PushpinRowStyle" TargetType="sfgrid:DataGridRowControl">
+                <Setter Property="Background" Value="AliceBlue"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="RoutePointRowStyle" TargetType="sfgrid:DataGridRowControl">
+                <Setter Property="Background" Value="LightGoldenrodYellow"/>
+                <Setter Property="FontWeight" Value="Bold"/>
             </Style>
 
             <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
@@ -73,42 +85,66 @@
         <sfcal:SfCalendar Grid.Row="1" Grid.Column="1"
                           SelectedDate="{Binding EndDate, Mode=TwoWay}"/>
 
-        <sfgrid:SfDataGrid Grid.Row="0" Grid.Column="2" 
-                           x:Name="LocationsGrid" 
-                           MaxHeight="300"
-                           Width="410"
-                           RowHeight="40"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Visibility="{Binding Path=HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
-                           ItemsSource="{Binding MapPoints}"
-                           SelectedItem="{Binding SelectedMapPoint, Mode=TwoWay}"
-                           AutoGenerateColumns="False"
-                           AllowResizingColumns="True">
+        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical">
 
-            <sfgrid:SfDataGrid.Columns>
-                <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
-                                       HeaderText="Timestamp"
-                                       DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
+            <sfgrid:SfDataGrid x:Name="LocationsGrid" 
+                               MaxHeight="300"
+                               Width="410"
+                               RowHeight="40"
+                               SelectionMode="Extended"
+                               RowStyleSelector="{StaticResource HistoryRowStyleSelector}"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Visibility="{Binding Path=HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
+                               ItemsSource="{Binding MapPoints}"
+                               SelectedItems="{Binding SelectedMapPoints}"
+                               AutoGenerateColumns="False"
+                               AllowResizingColumns="True">
 
-                <sfgrid:GridComboBoxColumn MappingName="SelectedLocationType"
-                                           DisplayMemberPath="Label"
-                                           AllowEditing="True"
-                                           HeaderText="Usage"
-                                           ItemsSource="{Binding ElementName=LocationsGrid, Path=DataContext.LocationTypeChoices}"/>
-            </sfgrid:SfDataGrid.Columns>
+                <sfgrid:SfDataGrid.Columns>
+                    <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
+                                           HeaderText="Timestamp"
+                                           DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
 
-            <sfgrid:SfDataGrid.RowStyle>
-                <Style TargetType="sfgrid:DataGridRowControl">
-                    <Setter Property="Background" Value="{Binding SelectedMapPoint.InReachLocation.HasMessage, FallbackValue=null, Converter={StaticResource BoolToGridBackgroundColor}}"/>
-                </Style>
-            </sfgrid:SfDataGrid.RowStyle>
+                    <sfgrid:GridComboBoxColumn MappingName="SelectedLocationType"
+                                               DisplayMemberPath="Label"
+                                               AllowEditing="True"
+                                               HeaderText="Usage"
+                                               ItemsSource="{Binding ElementName=LocationsGrid, Path=DataContext.LocationTypeChoices}"/>
+                </sfgrid:SfDataGrid.Columns>
 
-        </sfgrid:SfDataGrid>
+            </sfgrid:SfDataGrid>
+
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding HasPoints, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                <Button Command="{Binding ChangeSelectedMapPointsCommand}">
+                    <Button.CommandParameter>
+                        <local:LocationType>Pushpin</local:LocationType>
+                    </Button.CommandParameter>
+                    -> Pushpin(s)
+                </Button>
+
+                <Button Command="{Binding ChangeSelectedMapPointsCommand}">
+                    <Button.CommandParameter>
+                        <local:LocationType>RoutePoint</local:LocationType>
+                    </Button.CommandParameter>
+                    -> Route Point(s)
+                </Button>
+
+                <Button Command="{Binding ChangeSelectedMapPointsCommand}">
+                    <Button.CommandParameter>
+                        <local:LocationType>Unspecified</local:LocationType>
+                    </Button.CommandParameter>
+                    -> Hidden
+                </Button>
+
+            </StackPanel>
+        </StackPanel>
 
         <local:LocationControl Grid.Row="1" Grid.Column="2" 
-                               Visibility="{Binding ElementName=OuterContainer, Path=DataContext.SelectedMapPoint, Converter={StaticResource ObjectToVisibilityConverter }}"
-                               DataContext="{Binding SelectedMapPoint.InReachLocation, FallbackValue=null}" />
+                               Visibility="{Binding ElementName=OuterContainer, Path=DataContext.MapPointToDisplay, Converter={StaticResource ObjectToVisibilityConverter }}"
+                               DataContext="{Binding MapPointToDisplay.InReachLocation, FallbackValue=null}" />
 
         <map:Map Grid.Row="0" Grid.Column="3" Grid.RowSpan="3" 
                  x:Name="TestMap" 
