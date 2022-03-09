@@ -14,7 +14,6 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
 
-            <local:BoolToGridBackgroundColor x:Key="BoolToGridBackgroundColor"/>
             <local:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
             <local:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter"/>
             <sfcore:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
