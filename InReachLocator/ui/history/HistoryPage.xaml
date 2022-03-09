@@ -29,8 +29,6 @@
                 <Setter Property="Margin" Value="14,7,14,7"></Setter>
             </Style>
 
-            <local:HistoryRowStyleSelector x:Key="HistoryRowStyleSelector"/>
-
             <Style x:Key="PushpinRowStyle" TargetType="sfgrid:DataGridRowControl">
                 <Setter Property="Background" Value="AliceBlue"/>
                 <Setter Property="FontWeight" Value="Bold"/>
@@ -92,7 +90,6 @@
                                Width="410"
                                RowHeight="40"
                                SelectionMode="Extended"
-                               RowStyleSelector="{StaticResource HistoryRowStyleSelector}"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
                                Visibility="{Binding Path=HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
@@ -105,12 +102,6 @@
                     <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
                                            HeaderText="Timestamp"
                                            DisplayDateFormat="MM/dd/yyyy HH:mm:ss"/>
-
-                    <sfgrid:GridComboBoxColumn MappingName="SelectedLocationType"
-                                               DisplayMemberPath="Label"
-                                               AllowEditing="True"
-                                               HeaderText="Usage"
-                                               ItemsSource="{Binding ElementName=LocationsGrid, Path=DataContext.LocationTypeChoices}"/>
                 </sfgrid:SfDataGrid.Columns>
 
             </sfgrid:SfDataGrid>
