@@ -17,10 +17,9 @@ namespace J4JSoftware.InReach
     public class LastKnownViewModel : LocationMapViewModel
     {
         public LastKnownViewModel(
-            IAppConfig configuration,
             IJ4JLogger logger
         )
-        : base(configuration, logger)
+        : base(logger)
         {
             var dQueue = DispatcherQueue.GetForCurrentThread();
             dQueue.TryEnqueue( async () =>

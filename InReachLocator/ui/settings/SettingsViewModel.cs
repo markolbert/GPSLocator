@@ -20,8 +20,8 @@ namespace J4JSoftware.InReach
 {
     public class SettingsViewModel : ObservableObject
     {
-        private readonly IInReachConfig _config;
-        private readonly IJ4JHost _host;
+        private readonly AppConfig _appConfig;
+        private readonly string _userConfigPath;
         private readonly IJ4JLogger _logger;
 
         private string _website;
@@ -32,28 +32,22 @@ namespace J4JSoftware.InReach
         private bool _changed;
 
         public SettingsViewModel(
-            IInReachConfig config,
             IJ4JHost host,
             IJ4JLogger logger
         )
         {
-            _config = config;
-            _host = host;
+            _appConfig = (App.Current.Resources["AppConfiguration"] as AppConfig)!;
+            _userConfigPath = host.UserConfigurationFiles.First();
 
-            _website = _config.Website;
-            _userName = _config.UserName;
-            _password = _config.Password.ClearText;
-            _imei = _config.IMEI;
+            _website = _appConfig.Website;
+            _userName = _appConfig.UserName;
+            _password = _appConfig.Password.ClearText;
+            _imei = _appConfig.IMEI;
+
+            Validated = _appConfig.IsValid;
 
             _logger = logger;
             _logger.SetLoggedType( GetType() );
-
-            var dQueue = DispatcherQueue.GetForCurrentThread();
-
-            dQueue.TryEnqueue( async () =>
-            {
-                Validated = await _config.ValidateConfiguration( _logger );
-            } );
 
             SaveCommand = new AsyncRelayCommand( SaveHandlerAsync );
             ValidateCommand = new AsyncRelayCommand( ValidateHandlerAsync );
@@ -67,19 +61,18 @@ namespace J4JSoftware.InReach
             if( !Validated )
                 return;
 
-            _config.Website = Website;
-            _config.UserName = UserName;
-            _config.Password.ClearText = Password;
-            _config.IMEI = IMEI;
+            _appConfig.Website = Website;
+            _appConfig.UserName = UserName;
+            _appConfig.Password.ClearText = Password;
+            _appConfig.IMEI = IMEI;
 
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
-            var text = JsonSerializer.Serialize( _config, jsonOptions );
-            var filePath = _host.UserConfigurationFiles.First();
-            var dirPath = Path.GetDirectoryName( filePath );
+            var text = JsonSerializer.Serialize( _appConfig, jsonOptions );
+            var dirPath = Path.GetDirectoryName( _userConfigPath );
 
             Directory.CreateDirectory( dirPath! );
-            await File.WriteAllTextAsync( filePath, text );
+            await File.WriteAllTextAsync( _userConfigPath, text );
         }
 
         public AsyncRelayCommand ValidateCommand { get; }
@@ -102,11 +95,11 @@ namespace J4JSoftware.InReach
 
         private void RevertHandler()
         {
-            Website = _config.Website;
-            UserName = _config.UserName;
-            Password = _config.Password.ClearText;
+            Website = _appConfig.Website;
+            UserName = _appConfig.UserName;
+            Password = _appConfig.Password.ClearText;
 
-            Validated = false;
+            Validated = _appConfig.IsValid;
             Changed = true;
         }
 

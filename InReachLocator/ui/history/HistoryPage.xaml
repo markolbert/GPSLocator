@@ -14,7 +14,7 @@
 
     <Grid x:Name="OuterContainer"
           ColumnDefinitions="Auto, Auto, *"
-          RowDefinitions="*, Auto">
+          RowDefinitions="*">
 
         <Grid.Resources>
 
@@ -152,7 +152,7 @@
             </StackPanel>
 
             <local:LocationControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-                               Visibility="{Binding ElementName=OuterContainer, Path=DataContext.MapPointToDisplay, Converter={StaticResource ObjectToVisibilityConverter }}"
+                               Visibility="{Binding ElementName=OuterContainer, Path=DataContext.MapPointToDisplay, Converter={StaticResource NullToHiddenConverter }}"
                                DataContext="{Binding MapPointToDisplay.InReachLocation, FallbackValue=null}" />
 
         </Grid>
@@ -163,7 +163,7 @@
                  MaxZoomLevel="21" 
                  Margin="14,7,7,14"
                  ZoomLevel="12"
-                 Visibility="{Binding MapCenter, Converter={StaticResource ObjectToVisibilityConverter}}"
+                 Visibility="{Binding MapCenter, Converter={StaticResource NullToHiddenConverter}}"
                  Center="{Binding MapCenter, Mode=TwoWay}">
 
             <!--<map:Map.Center>

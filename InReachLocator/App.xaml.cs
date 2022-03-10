@@ -31,8 +31,6 @@ namespace J4JSoftware.InReach
     {
         public new static App Current => (App)Application.Current;
 
-        private readonly IJ4JLogger _logger;
-
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -62,8 +60,8 @@ namespace J4JSoftware.InReach
             Host = hostConfig.Build()
              ?? throw new NullReferenceException($"Failed to build {nameof(IJ4JHost)}");
 
-            _logger = Host.Services.GetRequiredService<IJ4JLogger>();
-            _logger.OutputCache(hostConfig.Logger);
+            var logger = Host.Services.GetRequiredService<IJ4JLogger>();
+            logger.OutputCache(hostConfig.Logger);
         }
 
         public MainWindow? MainWindow { get; private set; }
@@ -104,12 +102,12 @@ namespace J4JSoftware.InReach
 
         private void SetupDependencyInjection(HostBuilderContext hbc, ContainerBuilder builder)
         {
-            builder.Register( ( ctxt, pms ) =>
+            builder.Register( ( c ) =>
                     {
-                        var retVal = hbc.Configuration.Get<AppConfig>() ?? new AppConfig();
+                        var retVal = hbc.Configuration.Get<InReachConfig>() ?? new InReachConfig();
                         
-                        retVal.Password.Logger = ctxt.Resolve<IJ4JLogger>();
-                        retVal.Password.Protector = ctxt.Resolve<IJ4JProtection>();
+                        retVal.Password.Logger = c.Resolve<IJ4JLogger>();
+                        retVal.Password.Protector = c.Resolve<IJ4JProtection>();
 
                         return retVal;
                     } )

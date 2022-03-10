@@ -22,10 +22,9 @@ namespace J4JSoftware.InReach
         private double _mapWidth = 500;
 
         protected LocationMapViewModel(
-            IAppConfig configuration,
             IJ4JLogger logger
         )
-            : base( configuration, logger )
+            : base( logger )
         {
             LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.RoutePoint, "Include in Route"));
             LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Pushpin, "Show as Pushpin"));

@@ -14,9 +14,28 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
 
-            <local:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
+            <local:AppConfig x:Key="AppConfiguration"/>
+
+            <local:NullToHiddenConverter x:Key="NullToHiddenConverter"/>
+            <local:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
             <local:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter"/>
             <sfcore:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+            <Style x:Key="NormalStatusMessageStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+            </Style>
+
+            <Style x:Key="ImportantStatusMessageStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="DarkOrange"/>
+            </Style>
+
+            <Style x:Key="UrgentStatusMessageStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="Red"/>
+            </Style>
 
         </ResourceDictionary>
     </Application.Resources>

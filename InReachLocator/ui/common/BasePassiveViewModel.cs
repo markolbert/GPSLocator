@@ -1,41 +1,38 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using J4JSoftware.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach;
 
-public class BasePassiveViewModel : ObservableObject
+public class BasePassiveViewModel : ObservableRecipient
 {
-    private bool _validConfig;
-
     protected BasePassiveViewModel(
-        IAppConfig configuration,
         IJ4JLogger logger
     )
     {
-        Configuration = configuration;
-        Configuration.PropertyChanged += ConfigOnPropertyChanged;
+        IsActive = true;
 
-        ValidConfiguration = Configuration.IsValid;
+        Configuration = (App.Current.Resources["AppConfiguration"] as AppConfig)!;
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );
-    }
 
-    private void ConfigOnPropertyChanged( object? sender, PropertyChangedEventArgs e )
-    {
-        if( !string.Equals( e.PropertyName, nameof( IAppConfig.IsValid ) ) )
-            return;
-
-        ValidConfiguration = Configuration.IsValid;
+        if( Configuration.IsValid )
+            StatusMessage.Send( "Ready" );
+        else StatusMessage.Send( "Invalid configuration", StatusMessageType.Important );
     }
 
     protected IJ4JLogger Logger { get; }
-    protected IAppConfig Configuration { get; }
+    protected AppConfig Configuration { get; }
 
-    public bool ValidConfiguration
+    protected override void OnDeactivated()
     {
-        get => _validConfig;
-        set => SetProperty( ref _validConfig, value );
+        base.OnDeactivated();
+
+        Messenger.UnregisterAll(this);
     }
 }

@@ -21,10 +21,9 @@ namespace J4JSoftware.InReach
         private bool _refreshEnabled;
 
         public HistoryViewModel(
-            IAppConfig config,
             IJ4JLogger logger
         )
-        : base(config, logger)
+        : base(logger)
         {
             var timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes( 1 ) };
             timer.Tick += Timer_Tick;
