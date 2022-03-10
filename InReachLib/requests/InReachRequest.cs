@@ -101,7 +101,10 @@ namespace J4JSoftware.InReach
 
             var httpClient = new HttpClient( clientHandler );
 
+            Logger.Information<string>("Querying {0}", LastUri);
             var response = await httpClient.GetAsync( LastUri );
+
+            Logger.Information("Reading response");
             var respText = await response.Content.ReadAsStringAsync();
 
             if ( !response.IsSuccessStatusCode )
@@ -122,9 +125,12 @@ namespace J4JSoftware.InReach
 
             try
             {
+                Logger.Information("Parsing response");
                 retVal = JsonSerializer.Deserialize<TResponse>( respText );
+
+                Logger.Information("Query succeeded");
             }
-            catch( Exception ex )
+            catch ( Exception ex )
             {
                 Logger.Error<Type, string>( "Parsing response to {0} failed, message was '{1}'",
                                             typeof( TResponse ),
