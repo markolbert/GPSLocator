@@ -21,11 +21,9 @@ namespace J4JSoftware.InReach
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        private record DisplayControl( UserControl Control, Action<ContentControl> ContainerConfigurator );
-
-        private readonly Stack<DisplayControl> _displayControls = new();
-        private readonly ContentControl? _placeholder;
         private readonly IJ4JLogger _logger;
+
+        private bool _initialized;
 
         static MainWindow()
         {
@@ -48,34 +46,38 @@ namespace J4JSoftware.InReach
             _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
             _logger.SetLoggedType( GetType() );
 
-            var appConfig = App.Current.Host.Services.GetRequiredService<IAppConfig>();
+            this.Activated += MainWindow_Activated;
+        }
 
-            DispatcherQueue.TryEnqueue( async () =>
-            {
-                appConfig.IsValid = await appConfig.ValidateConfiguration( _logger );
-            } );
+        private async void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
+        {
+            if( _initialized )
+                return;
 
-            if (TileImageLoader.Cache is ImageFileCache)
-            {
-                Task.Run( async () =>
-                {
-                    await Task.Delay( 2000 );
-                    await ( (ImageFileCache) TileImageLoader.Cache ).Clean();
-                } );
-            }
+            _initialized = true;
 
-            NavigationView.DataContext = App.Current.Host.Services.GetRequiredService<MainViewModel>();
+            var appConfig = App.Current.Resources["AppConfiguration"] as AppConfig;
+            appConfig!.IsValid = await appConfig.ValidateConfiguration( _logger );
+
+            await ((ImageFileCache)TileImageLoader.Cache).Clean();
+
+            OuterElement.DataContext = App.Current.Host.Services.GetRequiredService<MainViewModel>();
         }
 
         private void NavigationView_OnSelectionChanged( NavigationView sender, NavigationViewSelectionChangedEventArgs args )
         {
+            if( args.IsSettingsSelected )
+            {
+                ContentFrame.Navigate( typeof( SettingsPage ) );
+                return;
+            }
+
             var item = args.SelectedItemContainer as NavigationViewItem;
             if( item?.Tag == null )
                 return;
 
             var (pageType, title) = ( item.Tag as string ) switch
             {
-                "Settings"=>(typeof(SettingsPage), "Application Settings"),
                 "LastKnown"=>(typeof(LastKnownPage), "Last Known Location"),
                 "History" => (typeof(HistoryPage), "Location History"),
                 _ => (null, null)
@@ -84,10 +86,7 @@ namespace J4JSoftware.InReach
             if( pageType == null )
                 return;
 
-            ContentFrame.Navigate( pageType );
-
-            NavigationView.Header = title;
-            NavigationView.SelectedItem = item;
+            ContentFrame.Navigate(pageType);
         }
     }
 }

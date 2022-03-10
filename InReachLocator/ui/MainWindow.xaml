@@ -8,29 +8,68 @@
     xmlns:map="using:MapControl"
     mc:Ignorable="d">
 
-    <NavigationView x:Name="NavigationView" 
-                    PaneDisplayMode="Top"
-                    SelectionChanged="NavigationView_OnSelectionChanged"
-                    d:DataContext="{d:DesignInstance local:MainViewModel}">
+    <Grid x:Name="OuterElement" 
+          d:DataContext="{d:DesignInstance local:MainViewModel}">
 
-        <NavigationView.MenuItems>
+        <Grid.Resources>
 
-            <NavigationViewItem Content="Last Known"
-                                Tag="LastKnown"
-                                IsEnabled="{Binding ValidConfiguration}"
-                                ToolTipService.ToolTip="shows last known location on a map"/>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
 
-            <NavigationViewItem Content="History"
-                                Tag="History"
-                                IsEnabled="{Binding ValidConfiguration}"
-                                ToolTipService.ToolTip="shows locations within the last 31 days"/>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
 
-            <NavigationViewItem Content="Settings"
-                                Tag="Settings"
-                                ToolTipService.ToolTip="configures the application"/>
-        </NavigationView.MenuItems>
+        </Grid.Resources>
 
-        <Frame x:Name="ContentFrame"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-    </NavigationView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <NavigationView Grid.Row="0" Grid.Column="0"
+                        x:Name="NavigationView" 
+                        PaneDisplayMode="Top"
+                        SelectionChanged="NavigationView_OnSelectionChanged">
+
+            <NavigationView.MenuItems>
+
+                <NavigationViewItem Content="Last Known"
+                                    Tag="LastKnown"
+                                    IsEnabled="{Binding IsValid, Source={StaticResource AppConfiguration} }"
+                                    ToolTipService.ToolTip="shows last known location on a map"/>
+
+                <NavigationViewItem Content="History"
+                                    Tag="History"
+                                    IsEnabled="{Binding IsValid, Source={StaticResource AppConfiguration} }"
+                                    ToolTipService.ToolTip="shows locations within the last 31 days"/>
+
+            </NavigationView.MenuItems>
+
+            <Frame x:Name="ContentFrame"/>
+
+        </NavigationView>
+
+        <ProgressBar Grid.Row="1" Grid.Column="0"
+                     Visibility="{Binding ProgressBarVisibility, Source={StaticResource AppConfiguration} }"
+                     HorizontalAlignment="Left"
+                     IsIndeterminate="{Binding ProgressBarState.Indeterminate, FallbackValue=false, Source={StaticResource AppConfiguration} }"
+                     Maximum="{Binding ProgressBarMaximum, Source={StaticResource AppConfiguration} }"
+                     Value="{Binding ProgressBarValue, Source={StaticResource AppConfiguration} }"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0"
+                   Visibility="{Binding StatusMessageVisibility, Source={StaticResource AppConfiguration} }"
+                   HorizontalAlignment="Right"
+                   Text="{Binding StatusMessage.Message, Source={StaticResource AppConfiguration}, FallbackValue=null }"
+                   Style="{Binding StatusMessage.MessageStyle, Source={StaticResource AppConfiguration}, FallbackValue=null}"/>
+
+    </Grid>
+
 </Window>

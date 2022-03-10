@@ -10,11 +10,11 @@ namespace J4JSoftware.InReach
     public class MainViewModel : BasePassiveViewModel
     {
         public MainViewModel( 
-            IAppConfig configuration, 
             IJ4JLogger logger 
             )
-            : base( configuration, logger )
+            : base( logger )
         {
+            IsActive = true;
         }
     }
 }
