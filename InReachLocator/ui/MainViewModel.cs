@@ -7,7 +7,7 @@ using J4JSoftware.Logging;
 
 namespace J4JSoftware.InReach
 {
-    public class MainViewModel : BasePassiveViewModel
+    public class MainViewModel : BaseViewModel
     {
         public MainViewModel( 
             IJ4JLogger logger 

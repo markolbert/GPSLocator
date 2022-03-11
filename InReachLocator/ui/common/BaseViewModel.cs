@@ -8,9 +8,9 @@ using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach;
 
-public class BasePassiveViewModel : ObservableRecipient
+public class BaseViewModel : ObservableRecipient
 {
-    protected BasePassiveViewModel(
+    protected BaseViewModel(
         IJ4JLogger logger
     )
     {

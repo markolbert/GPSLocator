@@ -15,7 +15,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace J4JSoftware.InReach
 {
-    public class LocationMapViewModel : BasePassiveViewModel
+    public class LocationMapViewModel : BaseViewModel
     {
         private MapControl.Location? _mapCenter;
         private double _mapHeight = 500;

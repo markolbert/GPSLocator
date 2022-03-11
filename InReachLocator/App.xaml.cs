@@ -129,6 +129,10 @@ namespace J4JSoftware.InReach
             builder.RegisterType<HistoryViewModel>()
                    .AsSelf()
                    .SingleInstance();
+
+            builder.RegisterType<LogViewerViewModel>()
+                   .AsSelf()
+                   .SingleInstance();
         }
 
         private void InitializeServices(HostBuilderContext hbc, IServiceCollection services)
