@@ -18,14 +18,11 @@ namespace J4JSoftware.InReach
 
     public class StatusMessage : ObservableObject
     {
-        public const string NormalStyleKey = "NormalStatusMessageStyle";
-        public const string ImportantStyleKey = "ImportantStatusMessageStyle";
-        public const string UrgentStyleKey = "UrgentStatusMessageStyle";
-
-        public const string StatusMessageToken = "statusmessage";
-
-        public static void Send( string mesg, StatusMessageType type = StatusMessageType.Normal ) =>
-            WeakReferenceMessenger.Default.Send( new StatusMessage() { Message = mesg, Type = type }, StatusMessageToken );
+        public static void Send( string mesg, StatusMessageType type = StatusMessageType.Normal )
+        {
+            WeakReferenceMessenger.Default.Send( new StatusMessage() { Message = mesg, Type = type },
+                                                 AppConfig.ResourceNames.StatusMessageToken );
+        }
 
         private static readonly object NormalStyle;
         private static readonly object ImportantStyle;
@@ -33,17 +30,14 @@ namespace J4JSoftware.InReach
 
         static StatusMessage()
         {
-            NormalStyle = App.Current.Resources.ContainsKey(NormalStyleKey)
-                ? App.Current.Resources[NormalStyleKey]
-                : DependencyProperty.UnsetValue;
+            NormalStyle = GetStyle( AppConfig.ResourceNames.NormalStyleKey );
+            ImportantStyle = GetStyle( AppConfig.ResourceNames.ImportantStyleKey );
+            UrgentStyle = GetStyle( AppConfig.ResourceNames.UrgentStyleKey );
 
-            ImportantStyle = App.Current.Resources.ContainsKey(ImportantStyleKey)
-                ? App.Current.Resources[ImportantStyleKey]
-                : DependencyProperty.UnsetValue;
-
-            UrgentStyle = App.Current.Resources.ContainsKey(UrgentStyleKey)
-                ? App.Current.Resources[UrgentStyleKey]
-                : DependencyProperty.UnsetValue;
+            object GetStyle( string key ) =>
+                App.Current.Resources.ContainsKey( key )
+                    ? App.Current.Resources[ key ]
+                    : DependencyProperty.UnsetValue;
         }
 
         private string? _message;

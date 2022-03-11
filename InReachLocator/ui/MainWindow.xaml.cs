@@ -22,6 +22,7 @@ namespace J4JSoftware.InReach
     public sealed partial class MainWindow : Window
     {
         private readonly IJ4JLogger _logger;
+        private readonly AppConfig _appConfig;
 
         private bool _initialized;
 
@@ -40,6 +41,8 @@ namespace J4JSoftware.InReach
         public MainWindow()
         {
             this.InitializeComponent();
+
+            _appConfig = (App.Current.Resources["AppConfiguration"] as AppConfig)!;
 
             Title = "InReach Locator";
 
@@ -76,11 +79,12 @@ namespace J4JSoftware.InReach
             if( item?.Tag == null )
                 return;
 
-            var (pageType, title) = ( item.Tag as string ) switch
+            var pageType = ( item.Tag as string ) switch
             {
-                "LastKnown"=>(typeof(LastKnownPage), "Last Known Location"),
-                "History" => (typeof(HistoryPage), "Location History"),
-                _ => (null, null)
+                LastKnownPage.PageName => typeof( LastKnownPage ),
+                HistoryPage.PageName => typeof( HistoryPage ),
+                LogViewerPage.PageName => typeof( LogViewerPage ),
+                _ => null
             };
 
             if( pageType == null )

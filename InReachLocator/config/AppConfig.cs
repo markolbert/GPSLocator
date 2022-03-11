@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,12 +14,15 @@ using J4JSoftware.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
+using Serilog.Events;
 
 namespace J4JSoftware.InReach
 {
     public class AppConfig : ObservableRecipient, IAppConfig
     {
-        public const string ProgressBarMessageToken = "progressbar";
+        public static ResourceNames ResourceNames { get; } = new();
+
+        private readonly List<NetEventArgs> _netEvents = new();
 
         private bool _isValid;
         private ProgressBarState? _progressBarState;
@@ -26,8 +30,7 @@ namespace J4JSoftware.InReach
         private int? _progressBarValue;
         private StatusMessage? _statusMesg;
 
-        public AppConfig(
-        )
+        public AppConfig()
         {
             var config = App.Current.Host.Services.GetRequiredService<IInReachConfig>();
             Website = config.Website;
@@ -46,7 +49,7 @@ namespace J4JSoftware.InReach
 
         private void Logger_LogEvent(object? sender, NetEventArgs e)
         {
-            LogEvents.Add( e );
+            LogEvents.AddLogEvent( e );
         }
 
         protected override void OnActivated()
@@ -55,17 +58,17 @@ namespace J4JSoftware.InReach
 
             Messenger.Register<AppConfig, ProgressBarActionMessage, string>(
                 this,
-                ProgressBarMessageToken,
+                ResourceNames.ProgressBarMessageToken,
                 ProgressBarActionHandler);
 
             Messenger.Register<AppConfig, ProgressBarIncrementMessage, string>(
                 this,
-                ProgressBarMessageToken,
+                ResourceNames.ProgressBarMessageToken,
                 ProgressBarIncrementHandler);
 
             Messenger.Register<AppConfig, StatusMessage, string>(
                 this,
-                StatusMessage.StatusMessageToken,
+                ResourceNames.StatusMessageToken,
                 StatusBarMessageHandler);
         }
 
@@ -133,9 +136,7 @@ namespace J4JSoftware.InReach
         }
 
         [JsonIgnore]
-        public ObservableCollection<NetEventArgs> LogEvents { get; } = new();
-
-        public void ClearLogEvents() => LogEvents.Clear();
+        public IndexedLogEvent.Collection LogEvents { get; } = new();
 
         [JsonIgnore]
         public ProgressBarState? ProgressBarState

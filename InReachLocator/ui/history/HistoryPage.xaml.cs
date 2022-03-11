@@ -27,6 +27,8 @@ namespace J4JSoftware.InReach
     /// </summary>
     public sealed partial class HistoryPage : Page
     {
+        public const string PageName = "History";
+
         public HistoryPage()
         {
             InitializeComponent();
