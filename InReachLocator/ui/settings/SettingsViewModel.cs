@@ -14,6 +14,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 
 namespace J4JSoftware.InReach
@@ -24,10 +25,10 @@ namespace J4JSoftware.InReach
         private readonly string _userConfigPath;
         private readonly IJ4JLogger _logger;
 
-        private string _website;
-        private string _userName;
+        private string _website = string.Empty;
+        private string _userName = string.Empty;
         private string? _password;
-        private string _imei;
+        private string _imei = string.Empty;
         private bool _validated;
         private bool _changed;
 
@@ -39,19 +40,23 @@ namespace J4JSoftware.InReach
             _appConfig = (App.Current.Resources["AppConfiguration"] as AppConfig)!;
             _userConfigPath = host.UserConfigurationFiles.First();
 
-            _website = _appConfig.Website;
-            _userName = _appConfig.UserName;
-            _password = _appConfig.Password.ClearText;
-            _imei = _appConfig.IMEI;
-
-            Validated = _appConfig.IsValid;
-
             _logger = logger;
             _logger.SetLoggedType( GetType() );
 
             SaveCommand = new AsyncRelayCommand( SaveHandlerAsync );
             ValidateCommand = new AsyncRelayCommand( ValidateHandlerAsync );
             RevertCommand = new RelayCommand( RevertHandler );
+        }
+
+        public void OnLoaded()
+        {
+            Website = _appConfig.InReachConfig.Website;
+            UserName = _appConfig.InReachConfig.UserName;
+            Password = _appConfig.InReachConfig.Password;
+            Imei = _appConfig.InReachConfig.IMEI;
+
+            Validated = _appConfig.InReachConfig.IsValid;
+            Changed = false;
         }
 
         public AsyncRelayCommand SaveCommand { get; }
@@ -61,18 +66,20 @@ namespace J4JSoftware.InReach
             if( !Validated )
                 return;
 
-            _appConfig.Website = Website;
-            _appConfig.UserName = UserName;
-            _appConfig.Password.ClearText = Password;
-            _appConfig.IMEI = IMEI;
+            _appConfig.InReachConfig.Website = Website;
+            _appConfig.InReachConfig.UserName = UserName;
+            _appConfig.InReachConfig.Password = Password;
+            _appConfig.InReachConfig.IMEI = Imei;
 
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
-            var text = JsonSerializer.Serialize( _appConfig, jsonOptions );
+            var text = JsonSerializer.Serialize( _appConfig.InReachConfig, jsonOptions );
             var dirPath = Path.GetDirectoryName( _userConfigPath );
 
             Directory.CreateDirectory( dirPath! );
             await File.WriteAllTextAsync( _userConfigPath, text );
+
+            StatusMessage.Send("Configuration saved");
         }
 
         public AsyncRelayCommand ValidateCommand { get; }
@@ -80,26 +87,34 @@ namespace J4JSoftware.InReach
         private async Task ValidateHandlerAsync()
         {
             // test the proposed configuration
-            var testConfig = new InReachConfig
+            var testConfig = new InReachConfig()
             {
-                IMEI = IMEI,
-                UserName = UserName,
-                Website = Website,
-                Password = { ClearText = Password }
+                IMEI = Imei, UserName = UserName, Website = Website, Password = Password
             };
 
-            Validated = await testConfig.ValidateConfiguration( _logger );
+            var protector = App.Current.Host.Services.GetRequiredService<IJ4JProtection>();
+            testConfig.Initialize( protector, _logger );
+
+            Validated = await testConfig.ValidateAsync();
+
+            if( Validated )
+                StatusMessage.Send("Ready");
+            else
+                StatusMessage.Send( ( testConfig.ValidationState & ValidationState.CredentialsValid )
+                                 == ValidationState.CredentialsValid
+                                        ? "Invalid IMEI"
+                                        : "Invalid user name and/or password",
+                                    StatusMessageType.Urgent );
         }
 
         public RelayCommand RevertCommand { get; }
 
         private void RevertHandler()
         {
-            Website = _appConfig.Website;
-            UserName = _appConfig.UserName;
-            Password = _appConfig.Password.ClearText;
-
-            Validated = _appConfig.IsValid;
+            Website = _appConfig.InReachConfig.Website;
+            UserName = _appConfig.InReachConfig.UserName;
+            Password = _appConfig.InReachConfig.Password;
+            Validated = _appConfig.InReachConfig.IsValid;
             Changed = true;
         }
 
@@ -145,7 +160,7 @@ namespace J4JSoftware.InReach
             }
         }
 
-        public string IMEI
+        public string Imei
         {
             get => _imei;
             
