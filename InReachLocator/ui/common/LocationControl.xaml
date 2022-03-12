@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:ILocation}">
+    d:DataContext="{d:DesignInstance local:Location}">
 
     <Grid>
 
@@ -23,7 +23,7 @@
             </Style>
 
             <Style TargetType="CheckBox">
-                <Setter Property="Margin" Value="14"/>
+                <Setter Property="Margin" Value="14, 7, 14,0"/>
             </Style>
 
         </Grid.Resources>
@@ -34,6 +34,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -81,9 +82,10 @@
         <StackPanel Grid.Row="5" Grid.Column="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Course}"
+            <TextBlock Text="{Binding CourseDisplay}"
                        Margin="14,7,0, 7"/>
-            <TextBlock Margin="5,7,14,7">degrees</TextBlock>
+            <TextBlock Margin="5,7,14,7"
+                       Text="{Binding CompassUnits}"/>
         </StackPanel>
 
         <TextBlock Grid.Row="6" Grid.Column="0">GPS Fix Status</TextBlock>
@@ -94,6 +96,11 @@
         <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
                       IsChecked="{Binding ImperialUnits, Mode=TwoWay}">
             Use Imperial Units
+        </CheckBox>
+
+        <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
+                  IsChecked="{Binding CompassHeadings, Mode=TwoWay}">
+            Use Compass Headings
         </CheckBox>
 
     </Grid>
