@@ -84,7 +84,10 @@ public class InReachConfig
 
     public EncryptedString EncryptedPassword { get; } = new();
 
+    [JsonIgnore]
     public ValidationState ValidationState { get; private set; }
+    
+    [JsonIgnore]
     public bool IsValid => ( ValidationState & ValidationState.Validated ) == ValidationState.Validated;
 
     public async Task<bool> ValidateAsync()
