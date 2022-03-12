@@ -6,7 +6,7 @@ namespace J4JSoftware.InReach;
 public class VersionRequest : InReachRequest<InReachVersion>
 {
     public VersionRequest( 
-        IInReachConfig config, 
+        InReachConfig config, 
         IJ4JLogger logger )
         : base( config, logger )
     {

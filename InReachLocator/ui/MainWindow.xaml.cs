@@ -60,7 +60,7 @@ namespace J4JSoftware.InReach
             _initialized = true;
 
             var appConfig = App.Current.Resources["AppConfiguration"] as AppConfig;
-            appConfig!.IsValid = await appConfig.ValidateConfiguration( _logger );
+            appConfig!.IsValid = await appConfig.InReachConfig.ValidateAsync();
 
             await ((ImageFileCache)TileImageLoader.Cache).Clean();
 

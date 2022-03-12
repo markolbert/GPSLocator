@@ -18,7 +18,7 @@ using Serilog.Events;
 
 namespace J4JSoftware.InReach
 {
-    public class AppConfig : ObservableRecipient, IAppConfig
+    public class AppConfig : ObservableRecipient
     {
         public static ResourceNames ResourceNames { get; } = new();
 
@@ -32,16 +32,9 @@ namespace J4JSoftware.InReach
 
         public AppConfig()
         {
-            var config = App.Current.Host.Services.GetRequiredService<IInReachConfig>();
-            Website = config.Website;
-            IMEI = config.IMEI;
-            UserName = config.UserName;
+            InReachConfig = App.Current.Host.Services.GetRequiredService<InReachConfig>();
 
-            Password = config.Password;
             var logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
-            Password.Logger = logger;
-            Password.Protector = App.Current.Host.Services.GetRequiredService<IJ4JProtection>();
-
             logger.LogEvent += Logger_LogEvent;
 
             IsActive = true;
@@ -115,10 +108,7 @@ namespace J4JSoftware.InReach
             StatusMessage = message;
         }
 
-        public string Website { get; set; }
-        public string IMEI { get; set; }
-        public string UserName { get; set; }
-        public EncryptedString Password { get; }
+        public InReachConfig InReachConfig { get; set; }
 
         [JsonIgnore]
         public bool IsValid

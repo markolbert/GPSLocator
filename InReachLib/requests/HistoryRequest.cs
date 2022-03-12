@@ -11,7 +11,7 @@ public class HistoryRequest<TLoc> : InReachRequest<History<TLoc>>
     private DateTime _endDate = DateTime.Today;
 
     public HistoryRequest( 
-        IInReachConfig config, 
+        InReachConfig config, 
         IJ4JLogger logger )
         : base( config, logger )
     {

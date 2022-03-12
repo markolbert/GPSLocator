@@ -37,13 +37,13 @@ namespace J4JSoftware.InReach
             if( !Configuration.IsValid )
                 return;
 
-            var request = new LastKnownLocationRequest<Location>( Configuration, Logger );
-            var result = await request.ExecuteAsync();
+            var request = new LastKnownLocationRequest<Location>( Configuration.InReachConfig, Logger );
+            var response = await request.ExecuteAsync();
 
-            if( result == null || result.Locations.Count == 0 )
+            if( !response.Succeeded || response.Result!.Locations.Count == 0 )
             {
-                if( request.LastError != null )
-                    Logger.Error<string>( "Invalid configuration, message was '{0}'", request.LastError.ToString() );
+                if( response.Error != null )
+                    Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
 
                 return;
@@ -51,7 +51,7 @@ namespace J4JSoftware.InReach
 
             ClearMapLocations();
 
-            AddPushpin( result.Locations[ 0 ] );
+            AddPushpin( response.Result.Locations[ 0 ] );
 
             OnPropertyChanged( nameof( LastLocation ) );
         }

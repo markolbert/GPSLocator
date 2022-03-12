@@ -29,7 +29,7 @@ namespace J4JSoftware.InReach
             timer.Tick += Timer_Tick;
             timer.Start();
 
-            RefreshCommand = new RelayCommand( RefreshCommandHandler );
+            RefreshCommand = new AsyncRelayCommand( RefreshCommandHandler );
             EndDate = DateTimeOffset.Now;
 
             ChangeSelectedMapPointsCommand = new RelayCommand<LocationType>( ChangeSelectedMapPointsHandler );
@@ -69,25 +69,25 @@ namespace J4JSoftware.InReach
             }
         }
 
-        public RelayCommand RefreshCommand { get; }
+        public AsyncRelayCommand RefreshCommand { get; }
 
-        private void RefreshCommandHandler()
+        private async Task RefreshCommandHandler()
         {
             if( !Configuration.IsValid )
                 return;
 
-            var request = new HistoryRequest<Location>( Configuration, Logger )
+            var request = new HistoryRequest<Location>( Configuration.InReachConfig, Logger )
             {
                 Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
             };
 
-            var result = Task.Run( async () => await request.ExecuteAsync() );
-            var mapLocations = result.Result?.HistoryItems;
+            var response = await request.ExecuteAsync();
+            var mapLocations = response.Result?.HistoryItems;
 
-            if( mapLocations == null || mapLocations.Count == 0 )
+            if( !response.Succeeded )
             {
-                if( request.LastError != null )
-                    Logger.Error<string>( "Invalid configuration, message was '{0}'", request.LastError.ToString() );
+                if( response.Error != null )
+                    Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
 
                 return;
@@ -96,7 +96,7 @@ namespace J4JSoftware.InReach
             DeferUpdatingMapCenter = true;
             ClearMapLocations();
 
-            foreach( var mapLocation in mapLocations )
+            foreach( var mapLocation in response.Result!.HistoryItems )
             {
                 AddMapLocation( mapLocation );
             }

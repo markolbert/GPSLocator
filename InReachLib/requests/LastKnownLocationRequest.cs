@@ -9,7 +9,7 @@ public class LastKnownLocationRequest<TLoc> : InReachRequest<LastKnownLocation<T
     private string _imei = string.Empty;
 
     public LastKnownLocationRequest( 
-        IInReachConfig config, 
+        InReachConfig config, 
         IJ4JLogger logger )
         : base( config, logger )
     {

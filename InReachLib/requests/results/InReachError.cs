@@ -5,7 +5,7 @@ namespace J4JSoftware.InReach;
 
 public class InReachError
 {
-    public int Code { get; set; }
+    public GarminErrorCodes Code { get; set; }
     public string Description { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public string IMEI { get; set; } = string.Empty;
