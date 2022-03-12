@@ -39,6 +39,13 @@ namespace J4JSoftware.InReach
                 this,
                 "LocationTypeChanged",
                 LocationTypeChangedHandler );
+
+            Loaded += OnLoaded;
+        }
+
+        private async void OnLoaded( object sender, RoutedEventArgs e )
+        {
+            await ( (HistoryViewModel) DataContext ).OnPageActivated();
         }
 
         private void LocationTypeChangedHandler( HistoryPage recipient, LocationTypeMessage message )

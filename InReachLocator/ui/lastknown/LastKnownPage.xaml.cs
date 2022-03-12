@@ -31,6 +31,13 @@ namespace J4JSoftware.InReach
             this.InitializeComponent();
 
             DataContext = App.Current.Host.Services.GetRequiredService<LastKnownViewModel>();
+
+            Loaded += OnLoaded;
+        }
+
+        private async void OnLoaded( object sender, RoutedEventArgs e )
+        {
+            await ((LastKnownViewModel) DataContext).OnPageActivated();
         }
     }
 }

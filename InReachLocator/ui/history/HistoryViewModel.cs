@@ -35,8 +35,11 @@ namespace J4JSoftware.InReach
             ChangeSelectedMapPointsCommand = new RelayCommand<LocationType>( ChangeSelectedMapPointsHandler );
 
             SelectedMapPoints.CollectionChanged += SelectedMapPoints_CollectionChanged;
+        }
 
-            RefreshCommandHandler();
+        public async Task OnPageActivated()
+        {
+            await RefreshCommandHandler();
         }
 
         private void Timer_Tick(object? sender, object e)

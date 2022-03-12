@@ -21,13 +21,18 @@ namespace J4JSoftware.InReach
         )
         : base(logger)
         {
-            var dQueue = DispatcherQueue.GetForCurrentThread();
-            dQueue.TryEnqueue( async () =>
-            {
-                await RefreshHandlerAsync();
-            } );
+            //var dQueue = DispatcherQueue.GetForCurrentThread();
+            //dQueue.TryEnqueue( async () =>
+            //{
+            //    await RefreshHandlerAsync();
+            //} );
 
             RefreshCommand = new AsyncRelayCommand( RefreshHandlerAsync );
+        }
+
+        public async Task OnPageActivated()
+        {
+            await RefreshHandlerAsync();
         }
 
         public AsyncRelayCommand RefreshCommand { get; }
