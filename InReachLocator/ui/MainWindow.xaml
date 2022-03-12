@@ -27,6 +27,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -34,7 +35,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <NavigationView Grid.Row="0" Grid.Column="0"
+        <NavigationView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                         x:Name="NavigationView" 
                         PaneDisplayMode="Top"
                         SelectionChanged="NavigationView_OnSelectionChanged">
@@ -69,7 +70,7 @@
                      Maximum="{Binding ProgressBarMaximum, Source={StaticResource AppConfiguration} }"
                      Value="{Binding ProgressBarValue, Source={StaticResource AppConfiguration} }"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0"
+        <TextBlock Grid.Row="1" Grid.Column="1"
                    Visibility="{Binding StatusMessageVisibility, Source={StaticResource AppConfiguration} }"
                    HorizontalAlignment="Right"
                    Text="{Binding StatusMessage.Message, Source={StaticResource AppConfiguration}, FallbackValue=null }"

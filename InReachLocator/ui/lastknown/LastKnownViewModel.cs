@@ -21,12 +21,6 @@ namespace J4JSoftware.InReach
         )
         : base(logger)
         {
-            //var dQueue = DispatcherQueue.GetForCurrentThread();
-            //dQueue.TryEnqueue( async () =>
-            //{
-            //    await RefreshHandlerAsync();
-            //} );
-
             RefreshCommand = new AsyncRelayCommand( RefreshHandlerAsync );
         }
 
@@ -40,14 +34,23 @@ namespace J4JSoftware.InReach
         private async Task RefreshHandlerAsync()
         {
             if( !Configuration.IsValid )
+            {
+                StatusMessage.Send( "Invalid configuration", StatusMessageType.Urgent );
                 return;
+            }
+
+            var pBar = StatusMessage.SendWithIndeterminateProgressBar("Updating last known location");
 
             var request = new LastKnownLocationRequest<Location>( Configuration.Configuration, Logger );
             var response = await request.ExecuteAsync();
 
-            if( !response.Succeeded || response.Result!.Locations.Count == 0 )
+            ProgressBarMessage.EndProgressBar(pBar);
+
+            if ( !response.Succeeded || response.Result!.Locations.Count == 0 )
             {
-                if( response.Error != null )
+                StatusMessage.Send( "Couldn't retrieve last known location", StatusMessageType.Important );
+
+                if ( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
 
@@ -63,6 +66,8 @@ namespace J4JSoftware.InReach
             AddPushpin( lastLoc );
 
             OnPropertyChanged( nameof( LastLocation ) );
+
+            StatusMessage.Send( "Ready" );
         }
 
         public MapPoint? LastLocation => MapPoints.Any() ? MapPoints.Last() : null;

@@ -25,7 +25,7 @@ namespace J4JSoftware.InReach
         private readonly List<NetEventArgs> _netEvents = new();
 
         private bool _isValid;
-        private ProgressBarState? _progressBarState;
+        private ProgressBarMessage? _progressBarState;
         private int? _progressBarMax;
         private int? _progressBarValue;
         private StatusMessage? _statusMesg;
@@ -76,22 +76,22 @@ namespace J4JSoftware.InReach
 
         private void ProgressBarActionHandler(AppConfigViewModel recipient, ProgressBarActionMessage message)
         {
-            switch (message.MessageType)
+            switch (message.Action)
             {
-                case ProgressBarMessageType.Finish:
+                case ProgressBarAction.Finish:
                     ProgressBarState = null;
                     ProgressBarValue = null;
 
                     break;
 
-                case ProgressBarMessageType.Pause:
+                case ProgressBarAction.Pause:
                     ProgressBarState = null;
                     break;
 
-                case ProgressBarMessageType.Start:
-                    ProgressBarState = message.State;
+                case ProgressBarAction.Start:
+                    ProgressBarState = message.Message;
 
-                    if (message.State is DeterminantProgressBar dState)
+                    if (message.Message is DeterminantProgressBar dState)
                         ProgressBarMaximum = dState.Maximum;
                     else ProgressBarMaximum = null;
 
@@ -157,7 +157,7 @@ namespace J4JSoftware.InReach
         #region Progress bar
 
         [JsonIgnore]
-        public ProgressBarState? ProgressBarState
+        public ProgressBarMessage? ProgressBarState
         {
             get => _progressBarState;
             set => SetProperty(ref _progressBarState, value);

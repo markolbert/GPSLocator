@@ -67,6 +67,8 @@ namespace J4JSoftware.InReach
             if( !Validated )
                 return;
 
+            StatusMessage.Send("Saving configuration");
+
             _appConfigViewModel.Configuration.Website = Website;
             _appConfigViewModel.Configuration.UserName = UserName;
             _appConfigViewModel.Configuration.Password = Password;
@@ -91,6 +93,8 @@ namespace J4JSoftware.InReach
 
         private async Task ValidateHandlerAsync()
         {
+            var pBar = StatusMessage.SendWithIndeterminateProgressBar( "Validating configuration" );
+
             // test the proposed configuration
             var testConfig = new InReachConfig()
             {
@@ -102,7 +106,9 @@ namespace J4JSoftware.InReach
 
             Validated = await testConfig.ValidateAsync();
 
-            if( Validated )
+            ProgressBarMessage.EndProgressBar(pBar);
+
+            if ( Validated )
                 StatusMessage.Send("Ready");
             else
                 StatusMessage.Send( ( testConfig.ValidationState & ValidationState.CredentialsValid )

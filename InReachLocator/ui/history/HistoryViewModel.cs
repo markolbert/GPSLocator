@@ -77,18 +77,27 @@ namespace J4JSoftware.InReach
         private async Task RefreshCommandHandler()
         {
             if( !Configuration.IsValid )
+            {
+                StatusMessage.Send("Invalid configuration", StatusMessageType.Urgent);
                 return;
+            }
 
             var request = new HistoryRequest<Location>( Configuration.Configuration, Logger )
             {
                 Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
             };
 
+            var pBar = StatusMessage.SendWithIndeterminateProgressBar("Updating history");
+
             var response = await request.ExecuteAsync();
 
-            if( !response.Succeeded )
+            ProgressBarMessage.EndProgressBar(pBar);
+
+            if ( !response.Succeeded )
             {
-                if( response.Error != null )
+                StatusMessage.Send("Couldn't retrieve history", StatusMessageType.Important);
+
+                if ( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
 
@@ -109,6 +118,8 @@ namespace J4JSoftware.InReach
             DeferUpdatingMapCenter = false;
             UpdateMapCenter();
             RefreshEnabled = false;
+
+            StatusMessage.Send("Ready");
         }
 
         public bool RefreshEnabled

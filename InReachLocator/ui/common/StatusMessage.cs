@@ -24,6 +24,22 @@ namespace J4JSoftware.InReach
                                                  AppConfigViewModel.ResourceNames.StatusMessageToken );
         }
 
+        public static IndeterminateProgressBar SendWithIndeterminateProgressBar(
+            string mesg,
+            StatusMessageType type = StatusMessageType.Normal
+        )
+        {
+            WeakReferenceMessenger.Default.Send( new StatusMessage() { Message = mesg, Type = type },
+                                                 AppConfigViewModel.ResourceNames.StatusMessageToken );
+
+            var retVal = new IndeterminateProgressBar();
+
+            WeakReferenceMessenger.Default.Send( new ProgressBarActionMessage( retVal, ProgressBarAction.Start ),
+                                                 AppConfigViewModel.ResourceNames.ProgressBarMessageToken );
+
+            return retVal;
+        }
+
         private static readonly object NormalStyle;
         private static readonly object ImportantStyle;
         private static readonly object UrgentStyle;
