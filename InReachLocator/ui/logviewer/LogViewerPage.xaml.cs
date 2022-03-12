@@ -31,6 +31,13 @@ namespace J4JSoftware.InReach
             this.InitializeComponent();
 
             this.DataContext = App.Current.Host.Services.GetRequiredService<LogViewerViewModel>();
+
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded( object sender, RoutedEventArgs e )
+        {
+            ( (LogViewerViewModel) DataContext ).OnPageActivated();
         }
     }
 }

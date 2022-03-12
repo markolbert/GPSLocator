@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog.Events;
 
 namespace J4JSoftware.InReach
 {
@@ -10,5 +11,6 @@ namespace J4JSoftware.InReach
     {
         public bool UseImperialUnits { get; set; } = true;
         public bool UseCompassHeadings { get; set; } = true;
+        public LogEventLevel MinimumLogLevel { get; set; } = LogEventLevel.Verbose;
     }
 }

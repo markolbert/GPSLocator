@@ -29,6 +29,11 @@ namespace J4JSoftware.InReach
             ClearLogCommand = new RelayCommand( ClearLogHandler );
         }
 
+        public void OnPageActivated()
+        {
+            MinimumLogEventLevel = _appConfigViewModel.Configuration.MinimumLogLevel;
+        }
+
         public List<LogEventLevel> LogLevels { get; }
 
         public RelayCommand ClearLogCommand { get; }

@@ -48,6 +48,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -81,21 +82,27 @@
             Use compass headings
         </CheckBox>
 
-        <Button Grid.Row="6" Grid.Column="1"
+        <TextBlock Grid.Row="6" Grid.Column="0">Minimum Log Level</TextBlock>
+
+        <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"
+                  ItemsSource="{Binding LogLevels}"
+                  SelectedItem="{Binding MinimumLogLevel, Mode=TwoWay}"/>
+
+        <Button Grid.Row="7" Grid.Column="1"
                 IsEnabled="{Binding InReachConfigChanged}"
                 HorizontalAlignment="Center"
                 Command="{Binding ValidateCommand}">
             Validate
         </Button>
 
-        <Button Grid.Row="6" Grid.Column="2"  
+        <Button Grid.Row="7" Grid.Column="2"  
                 HorizontalAlignment="Center"
                 Command="{Binding RevertCommand}"
                 IsEnabled="{Binding InReachConfigChanged}">
             Revert
         </Button>
 
-        <Button Grid.Row="6" Grid.Column="3"
+        <Button Grid.Row="7" Grid.Column="3"
                 HorizontalAlignment="Center"
                 IsEnabled="{Binding CanSave}"
                 Command="{Binding SaveCommand}">

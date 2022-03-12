@@ -13,9 +13,11 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
+using Serilog.Events;
 
 namespace J4JSoftware.InReach
 {
@@ -31,6 +33,7 @@ namespace J4JSoftware.InReach
         private string _imei = string.Empty;
         private bool _compassHeadings;
         private bool _imperialUnits;
+        private LogEventLevel _minEventLevel;
         private bool _validated;
         private bool _inReachConfigChanged;
         private bool _otherConfigChanged;
@@ -49,6 +52,8 @@ namespace J4JSoftware.InReach
             SaveCommand = new AsyncRelayCommand( SaveHandlerAsync );
             ValidateCommand = new AsyncRelayCommand( ValidateHandlerAsync );
             RevertCommand = new RelayCommand( RevertHandler );
+
+            LogLevels = Enum.GetValues<LogEventLevel>().ToList();
         }
 
         public void OnLoaded()
@@ -75,8 +80,10 @@ namespace J4JSoftware.InReach
             _appConfigViewModel.Configuration.IMEI = Imei;
             _appConfigViewModel.Configuration.UseCompassHeadings = CompassHeadings;
             _appConfigViewModel.Configuration.UseImperialUnits = ImperialUnits;
+            _appConfigViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
 
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+            jsonOptions.Converters.Add( new JsonStringEnumConverter() );
 
             var text = JsonSerializer.Serialize( _appConfigViewModel.Configuration, jsonOptions );
             var dirPath = Path.GetDirectoryName( _userConfigPath );
@@ -129,6 +136,7 @@ namespace J4JSoftware.InReach
             Validated = _appConfigViewModel.Configuration.IsValid;
             CompassHeadings = _appConfigViewModel.Configuration.UseCompassHeadings;
             ImperialUnits = _appConfigViewModel.Configuration.UseImperialUnits;
+            MinimumLogLevel = _appConfigViewModel.Configuration.MinimumLogLevel;
 
             InReachConfigChanged = true;
         }
@@ -208,6 +216,19 @@ namespace J4JSoftware.InReach
             {
                 OtherConfigChanged = _imperialUnits != value;
                 SetProperty( ref _imperialUnits, value );
+            }
+        }
+
+        public List<LogEventLevel> LogLevels { get; }
+
+        public LogEventLevel MinimumLogLevel
+        {
+            get => _minEventLevel;
+
+            set
+            {
+                OtherConfigChanged = _minEventLevel != value;
+                SetProperty( ref _minEventLevel, value );
             }
         }
 
