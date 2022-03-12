@@ -98,7 +98,7 @@ namespace J4JSoftware.InReach
 
             foreach( var mapLocation in response.Result!.HistoryItems )
             {
-                AddMapLocation( mapLocation );
+                AddUnspecifiedPoint( mapLocation );
             }
 
             DeferUpdatingMapCenter = false;

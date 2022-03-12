@@ -67,31 +67,31 @@ namespace J4JSoftware.InReach
             UpdateMapCenter();
         }
 
-        protected MapPoint AddMapLocation( ILocation inReachLocation )
+        protected MapPoint AddUnspecifiedPoint( ILocation inReachLocation )
         {
-            var retVal = new MapPoint( inReachLocation );
-            AddMapLocation( retVal );
+            var retVal = new MapPoint(inReachLocation);
+            AddMapLocation(retVal);
 
             return retVal;
         }
 
         protected MapPoint AddPushpin( ILocation inReachLocation )
         {
-            var retVal = AddMapLocation( inReachLocation );
-            retVal.SelectedLocationType = LocationType.Pushpin;
+            var retVal = new MapPoint( inReachLocation ) { SelectedLocationType = LocationType.Pushpin };
+            AddMapLocation( retVal );
 
             return retVal;
         }
 
         protected MapPoint AddRoutePoint( ILocation inReachLocation )
         {
-            var retVal = AddMapLocation(inReachLocation);
-            retVal.SelectedLocationType = LocationType.RoutePoint;
+            var retVal = new MapPoint( inReachLocation ) { SelectedLocationType = LocationType.RoutePoint };
+            AddMapLocation(retVal);
 
             return retVal;
         }
 
-        protected void AddMapLocation( MapPoint mapPoint )
+        private void AddMapLocation( MapPoint mapPoint )
         {
             MapPoints.Add( mapPoint );
 
