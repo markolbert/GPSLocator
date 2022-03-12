@@ -12,7 +12,7 @@ namespace J4JSoftware.InReach
 {
     public class LogViewerViewModel : BaseViewModel
     {
-        private readonly AppConfig _appConfig;
+        private readonly AppConfigViewModel _appConfigViewModel;
 
         private LogEventLevel _minLevel = LogEventLevel.Verbose;
 
@@ -21,9 +21,9 @@ namespace J4JSoftware.InReach
         )
             : base( logger )
         {
-            _appConfig = ( App.Current.Resources[ "AppConfiguration" ] as AppConfig )!;
+            _appConfigViewModel = ( App.Current.Resources[ "AppConfiguration" ] as AppConfigViewModel )!;
 
-            FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( _appConfig.LogEvents );
+            FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( _appConfigViewModel.LogEvents );
 
             LogLevels = Enum.GetValues<LogEventLevel>().ToList();
             ClearLogCommand = new RelayCommand( ClearLogHandler );
@@ -33,7 +33,7 @@ namespace J4JSoftware.InReach
 
         public RelayCommand ClearLogCommand { get; }
 
-        private void ClearLogHandler() => _appConfig.LogEvents.Clear();
+        private void ClearLogHandler() => _appConfigViewModel.LogEvents.Clear();
 
         public ObservableCollection<IndexedLogEvent> FilteredLogEvents { get; }
 
@@ -65,7 +65,7 @@ namespace J4JSoftware.InReach
                 FilteredLogEvents.RemoveAt(idx);
             }
 
-            var newItems = _appConfig.LogEvents
+            var newItems = _appConfigViewModel.LogEvents
                                      .Where( x => x.LogEventLevel >= MinimumLogEventLevel
                                               && FilteredLogEvents.All( y => y.Index != x.Index ) )
                                      .ToList();

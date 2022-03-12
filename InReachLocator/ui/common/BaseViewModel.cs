@@ -16,7 +16,7 @@ public class BaseViewModel : ObservableRecipient
     {
         IsActive = true;
 
-        Configuration = (App.Current.Resources["AppConfiguration"] as AppConfig)!;
+        Configuration = (App.Current.Resources["AppConfiguration"] as AppConfigViewModel)!;
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );
@@ -27,7 +27,7 @@ public class BaseViewModel : ObservableRecipient
     }
 
     protected IJ4JLogger Logger { get; }
-    protected AppConfig Configuration { get; }
+    protected AppConfigViewModel Configuration { get; }
 
     protected override void OnDeactivated()
     {

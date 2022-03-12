@@ -108,18 +108,18 @@ namespace J4JSoftware.InReach
         {
             builder.Register( ( c ) =>
                     {
-                        InReachConfig? retVal = null;
+                        AppConfig? retVal = null;
 
                         try
                         {
-                            retVal = hbc.Configuration.Get<InReachConfig>() ?? new InReachConfig();
+                            retVal = hbc.Configuration.Get<AppConfig>() ?? new AppConfig();
                         }
                         catch( Exception )
                         {
                             _buildLogger.Error("Error processing user configuration file, new configuration created");
                         }
 
-                        retVal ??= new InReachConfig();
+                        retVal ??= new AppConfig();
 
                         retVal.Initialize( c.Resolve<IJ4JProtection>(), c.Resolve<IJ4JLogger>() );
 

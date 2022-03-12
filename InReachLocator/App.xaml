@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
 
-            <local:AppConfig x:Key="AppConfiguration"/>
+            <local:AppConfigViewModel x:Key="AppConfiguration"/>
 
             <local:NullToHiddenConverter x:Key="NullToHiddenConverter"/>
             <local:NullToVisibleConverter x:Key="NullToVisibleConverter"/>

@@ -23,8 +23,12 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
+            <Style TargetType="CheckBox">
+                <Setter Property="Margin" Value="14, 2, 14,0"/>
+            </Style>
+
             <Style TargetType="PasswordBox">
-                <Setter Property="Margin" Value="14, 7, 14,7"/>
+                <Setter Property="Margin" Value="14, 7, 14,0"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
@@ -38,6 +42,8 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -65,21 +71,31 @@
         <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
                  Text="{Binding Imei, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <Button Grid.Row="4" Grid.Column="1"
-                IsEnabled="{Binding Changed}"
+        <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4"
+                  IsChecked="{Binding ImperialUnits, Mode=TwoWay}">
+            Use imperial units
+        </CheckBox>
+
+        <CheckBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4"
+                  IsChecked="{Binding CompassHeadings, Mode=TwoWay}">
+            Use compass headings
+        </CheckBox>
+
+        <Button Grid.Row="6" Grid.Column="1"
+                IsEnabled="{Binding InReachConfigChanged}"
                 HorizontalAlignment="Center"
                 Command="{Binding ValidateCommand}">
             Validate
         </Button>
 
-        <Button Grid.Row="4" Grid.Column="2"  
+        <Button Grid.Row="6" Grid.Column="2"  
                 HorizontalAlignment="Center"
                 Command="{Binding RevertCommand}"
-                IsEnabled="{Binding Changed}">
+                IsEnabled="{Binding InReachConfigChanged}">
             Revert
         </Button>
 
-        <Button Grid.Row="4" Grid.Column="3"
+        <Button Grid.Row="6" Grid.Column="3"
                 HorizontalAlignment="Center"
                 IsEnabled="{Binding CanSave}"
                 Command="{Binding SaveCommand}">

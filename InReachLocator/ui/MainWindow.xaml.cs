@@ -22,7 +22,7 @@ namespace J4JSoftware.InReach
     public sealed partial class MainWindow : Window
     {
         private readonly IJ4JLogger _logger;
-        private readonly AppConfig _appConfig;
+        private readonly AppConfigViewModel _appConfigViewModel;
 
         private bool _initialized;
 
@@ -42,7 +42,7 @@ namespace J4JSoftware.InReach
         {
             this.InitializeComponent();
 
-            _appConfig = (App.Current.Resources["AppConfiguration"] as AppConfig)!;
+            _appConfigViewModel = (App.Current.Resources["AppConfiguration"] as AppConfigViewModel)!;
 
             Title = "InReach Locator";
 
@@ -59,8 +59,8 @@ namespace J4JSoftware.InReach
 
             _initialized = true;
 
-            var appConfig = App.Current.Resources["AppConfiguration"] as AppConfig;
-            appConfig!.IsValid = await appConfig.InReachConfig.ValidateAsync();
+            var appConfig = App.Current.Resources["AppConfiguration"] as AppConfigViewModel;
+            appConfig!.IsValid = await appConfig.Configuration.ValidateAsync();
 
             await ((ImageFileCache)TileImageLoader.Cache).Clean();
 

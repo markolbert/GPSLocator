@@ -37,7 +37,7 @@ namespace J4JSoftware.InReach
             if( !Configuration.IsValid )
                 return;
 
-            var request = new LastKnownLocationRequest<Location>( Configuration.InReachConfig, Logger );
+            var request = new LastKnownLocationRequest<Location>( Configuration.Configuration, Logger );
             var response = await request.ExecuteAsync();
 
             if( !response.Succeeded || response.Result!.Locations.Count == 0 )
@@ -51,7 +51,11 @@ namespace J4JSoftware.InReach
 
             ClearMapLocations();
 
-            AddPushpin( response.Result.Locations[ 0 ] );
+            var lastLoc = response.Result.Locations[0];
+            lastLoc.CompassHeadings = Configuration.UseCompassHeadings;
+            lastLoc.ImperialUnits = Configuration.UseImperialUnits;
+
+            AddPushpin( lastLoc );
 
             OnPropertyChanged( nameof( LastLocation ) );
         }

@@ -76,13 +76,12 @@ namespace J4JSoftware.InReach
             if( !Configuration.IsValid )
                 return;
 
-            var request = new HistoryRequest<Location>( Configuration.InReachConfig, Logger )
+            var request = new HistoryRequest<Location>( Configuration.Configuration, Logger )
             {
                 Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
             };
 
             var response = await request.ExecuteAsync();
-            var mapLocations = response.Result?.HistoryItems;
 
             if( !response.Succeeded )
             {
@@ -98,6 +97,9 @@ namespace J4JSoftware.InReach
 
             foreach( var mapLocation in response.Result!.HistoryItems )
             {
+                mapLocation.CompassHeadings = Configuration.UseCompassHeadings;
+                mapLocation.ImperialUnits = Configuration.UseImperialUnits;
+
                 AddUnspecifiedPoint( mapLocation );
             }
 

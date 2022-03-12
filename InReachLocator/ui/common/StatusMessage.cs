@@ -21,7 +21,7 @@ namespace J4JSoftware.InReach
         public static void Send( string mesg, StatusMessageType type = StatusMessageType.Normal )
         {
             WeakReferenceMessenger.Default.Send( new StatusMessage() { Message = mesg, Type = type },
-                                                 AppConfig.ResourceNames.StatusMessageToken );
+                                                 AppConfigViewModel.ResourceNames.StatusMessageToken );
         }
 
         private static readonly object NormalStyle;
@@ -30,9 +30,9 @@ namespace J4JSoftware.InReach
 
         static StatusMessage()
         {
-            NormalStyle = GetStyle( AppConfig.ResourceNames.NormalStyleKey );
-            ImportantStyle = GetStyle( AppConfig.ResourceNames.ImportantStyleKey );
-            UrgentStyle = GetStyle( AppConfig.ResourceNames.UrgentStyleKey );
+            NormalStyle = GetStyle( AppConfigViewModel.ResourceNames.NormalStyleKey );
+            ImportantStyle = GetStyle( AppConfigViewModel.ResourceNames.ImportantStyleKey );
+            UrgentStyle = GetStyle( AppConfigViewModel.ResourceNames.UrgentStyleKey );
 
             object GetStyle( string key ) =>
                 App.Current.Resources.ContainsKey( key )

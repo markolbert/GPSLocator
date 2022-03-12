@@ -21,7 +21,7 @@ namespace J4JSoftware.InReach
 {
     public class SettingsViewModel : ObservableObject
     {
-        private readonly AppConfig _appConfig;
+        private readonly AppConfigViewModel _appConfigViewModel;
         private readonly string _userConfigPath;
         private readonly IJ4JLogger _logger;
 
@@ -29,15 +29,18 @@ namespace J4JSoftware.InReach
         private string _userName = string.Empty;
         private string? _password;
         private string _imei = string.Empty;
+        private bool _compassHeadings;
+        private bool _imperialUnits;
         private bool _validated;
-        private bool _changed;
+        private bool _inReachConfigChanged;
+        private bool _otherConfigChanged;
 
         public SettingsViewModel(
             IJ4JHost host,
             IJ4JLogger logger
         )
         {
-            _appConfig = (App.Current.Resources["AppConfiguration"] as AppConfig)!;
+            _appConfigViewModel = (App.Current.Resources["AppConfiguration"] as AppConfigViewModel)!;
             _userConfigPath = host.UserConfigurationFiles.First();
 
             _logger = logger;
@@ -50,13 +53,11 @@ namespace J4JSoftware.InReach
 
         public void OnLoaded()
         {
-            Website = _appConfig.InReachConfig.Website;
-            UserName = _appConfig.InReachConfig.UserName;
-            Password = _appConfig.InReachConfig.Password;
-            Imei = _appConfig.InReachConfig.IMEI;
+            RevertHandler();
 
-            Validated = _appConfig.InReachConfig.IsValid;
-            Changed = false;
+            Validated = _appConfigViewModel.Configuration.IsValid;
+            InReachConfigChanged = false;
+            OtherConfigChanged = false;
         }
 
         public AsyncRelayCommand SaveCommand { get; }
@@ -66,20 +67,24 @@ namespace J4JSoftware.InReach
             if( !Validated )
                 return;
 
-            _appConfig.InReachConfig.Website = Website;
-            _appConfig.InReachConfig.UserName = UserName;
-            _appConfig.InReachConfig.Password = Password;
-            _appConfig.InReachConfig.IMEI = Imei;
+            _appConfigViewModel.Configuration.Website = Website;
+            _appConfigViewModel.Configuration.UserName = UserName;
+            _appConfigViewModel.Configuration.Password = Password;
+            _appConfigViewModel.Configuration.IMEI = Imei;
+            _appConfigViewModel.Configuration.UseCompassHeadings = CompassHeadings;
+            _appConfigViewModel.Configuration.UseImperialUnits = ImperialUnits;
 
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
-            var text = JsonSerializer.Serialize( _appConfig.InReachConfig, jsonOptions );
+            var text = JsonSerializer.Serialize( _appConfigViewModel.Configuration, jsonOptions );
             var dirPath = Path.GetDirectoryName( _userConfigPath );
 
             Directory.CreateDirectory( dirPath! );
             await File.WriteAllTextAsync( _userConfigPath, text );
 
             StatusMessage.Send("Configuration saved");
+            InReachConfigChanged = false;
+            OtherConfigChanged = false;
         }
 
         public AsyncRelayCommand ValidateCommand { get; }
@@ -111,11 +116,15 @@ namespace J4JSoftware.InReach
 
         private void RevertHandler()
         {
-            Website = _appConfig.InReachConfig.Website;
-            UserName = _appConfig.InReachConfig.UserName;
-            Password = _appConfig.InReachConfig.Password;
-            Validated = _appConfig.InReachConfig.IsValid;
-            Changed = true;
+            Website = _appConfigViewModel.Configuration.Website;
+            UserName = _appConfigViewModel.Configuration.UserName;
+            Password = _appConfigViewModel.Configuration.Password;
+            Imei = _appConfigViewModel.Configuration.IMEI;
+            Validated = _appConfigViewModel.Configuration.IsValid;
+            CompassHeadings = _appConfigViewModel.Configuration.UseCompassHeadings;
+            ImperialUnits = _appConfigViewModel.Configuration.UseImperialUnits;
+
+            InReachConfigChanged = true;
         }
 
         public string Website
@@ -124,7 +133,7 @@ namespace J4JSoftware.InReach
 
             set
             {
-                Changed = !string.Equals( _website, value, StringComparison.OrdinalIgnoreCase );
+                InReachConfigChanged = !string.Equals( _website, value, StringComparison.OrdinalIgnoreCase );
 
                 SetProperty( ref _website, value );
 
@@ -138,7 +147,7 @@ namespace J4JSoftware.InReach
 
             set
             {
-                Changed = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
+                InReachConfigChanged = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
 
                 SetProperty( ref _userName, value );
 
@@ -152,7 +161,7 @@ namespace J4JSoftware.InReach
 
             set
             {
-                Changed = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
+                InReachConfigChanged = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
 
                 SetProperty( ref _password, value );
 
@@ -166,11 +175,33 @@ namespace J4JSoftware.InReach
             
             set
             {
-                Changed = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
+                InReachConfigChanged = !string.Equals(_website, value, StringComparison.OrdinalIgnoreCase);
 
                 SetProperty( ref _imei, value );
                 
                 Validated = false;
+            }
+        }
+
+        public bool CompassHeadings
+        {
+            get => _compassHeadings;
+
+            set
+            {
+                OtherConfigChanged = _compassHeadings != value;
+                SetProperty( ref _compassHeadings, value );
+            }
+        }
+
+        public bool ImperialUnits
+        {
+            get => _imperialUnits;
+
+            set
+            {
+                OtherConfigChanged = _imperialUnits != value;
+                SetProperty( ref _imperialUnits, value );
             }
         }
 
@@ -184,17 +215,28 @@ namespace J4JSoftware.InReach
             }
         }
 
-        public bool Changed
+        public bool InReachConfigChanged
         {
-            get => _changed;
+            get => _inReachConfigChanged;
 
             set
             {
-                SetProperty( ref _changed, value );
+                SetProperty( ref _inReachConfigChanged, value );
                 OnPropertyChanged(nameof(CanSave));
             }
         }
 
-        public bool CanSave => Validated && Changed;
+        public bool OtherConfigChanged
+        {
+            get => _otherConfigChanged;
+
+            set
+            {
+                SetProperty( ref _otherConfigChanged, value );
+                OnPropertyChanged( nameof( CanSave ) );
+            }
+        }
+
+        public bool CanSave => Validated && (InReachConfigChanged || OtherConfigChanged);
     }
 }
