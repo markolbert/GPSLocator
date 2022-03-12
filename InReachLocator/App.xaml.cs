@@ -31,6 +31,8 @@ namespace J4JSoftware.InReach
     {
         public new static App Current => (App)Application.Current;
 
+        private readonly IJ4JLogger _buildLogger;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -53,6 +55,8 @@ namespace J4JSoftware.InReach
                             .AddServicesInitializers( InitializeServices )
                             .AddUserConfigurationFile( "userConfig.json", optional: true, reloadOnChange: true )
                             .FilePathTrimmer( FilePathTrimmer );
+
+            _buildLogger = hostConfig.Logger;
 
             if (hostConfig.MissingRequirements != J4JHostRequirements.AllMet)
                 throw new ApplicationException($"Missing J4JHostConfiguration items: {hostConfig.MissingRequirements}");
@@ -104,14 +108,24 @@ namespace J4JSoftware.InReach
         {
             builder.Register( ( c ) =>
                     {
-                        var retVal = hbc.Configuration.Get<InReachConfig>() ?? new InReachConfig();
-                        
-                        retVal.Password.Logger = c.Resolve<IJ4JLogger>();
-                        retVal.Password.Protector = c.Resolve<IJ4JProtection>();
+                        InReachConfig? retVal = null;
+
+                        try
+                        {
+                            retVal = hbc.Configuration.Get<InReachConfig>() ?? new InReachConfig();
+                        }
+                        catch( Exception )
+                        {
+                            _buildLogger.Error("Error processing user configuration file, new configuration created");
+                        }
+
+                        retVal ??= new InReachConfig();
+
+                        retVal.Initialize( c.Resolve<IJ4JProtection>(), c.Resolve<IJ4JLogger>() );
 
                         return retVal;
                     } )
-                   .AsImplementedInterfaces()
+                   .AsSelf()
                    .SingleInstance();
 
             builder.RegisterType<MainViewModel>()
