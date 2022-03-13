@@ -33,14 +33,16 @@ namespace J4JSoftware.InReach
         {
             InitializeComponent();
 
-            DataContext = App.Current.Host.Services.GetRequiredService<HistoryViewModel>();
+            ViewModel = App.Current.Host.Services.GetRequiredService<HistoryViewModel>();
 
             Loaded += OnLoaded;
         }
 
+        private HistoryViewModel ViewModel { get; }
+
         private async void OnLoaded( object sender, RoutedEventArgs e )
         {
-            await ( (HistoryViewModel) DataContext ).OnPageActivated();
+            await ViewModel.OnPageActivated();
         }
 
     }

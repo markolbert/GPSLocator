@@ -11,7 +11,7 @@
     xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid"
     xmlns:sfeditors="using:Syncfusion.UI.Xaml.Editors"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:HistoryViewModel}"
+    x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid x:Name="OuterContainer"
@@ -62,7 +62,7 @@
 
             <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
             <sfeditors:SfNumberBox Grid.Row="0" Grid.Column="1"
-                                   Value="{Binding DaysBack, Mode=TwoWay}"
+                                   Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
                                    Minimum="1"
                                    Maximum="31"
                                    CustomFormat="#"
@@ -70,16 +70,16 @@
                                    LargeChange="7" 
                                    UpDownPlacementMode="Inline"/>
             <Button Grid.Row="1" Grid.Column="1"
-                    IsEnabled="{Binding RefreshEnabled}"
-                    Command="{Binding RefreshCommand}">
+                    IsEnabled="{x:Bind ViewModel.RefreshEnabled}"
+                    Command="{x:Bind ViewModel.RefreshCommand}">
                 Refresh
             </Button>
 
             <TextBlock Grid.Row="2" Grid.Column="0">End Date</TextBlock>
-            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding EndDate}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
 
             <TextBlock Grid.Row="3" Grid.Column="0">Start Date</TextBlock>
-            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding StartDate}"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
 
         </Grid>
 
@@ -93,8 +93,8 @@
                            RowHeight="40"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Top"
-                           ItemsSource="{Binding AllPoints}"
-                           SelectedItem="{Binding SelectedPoint, Mode=TwoWay}"
+                           ItemsSource="{x:Bind ViewModel.AllPoints}"
+                           SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}"
                            AutoGenerateColumns="False"
                            AllowResizingColumns="True">
 
@@ -109,7 +109,7 @@
                 <i:Interaction.Behaviors>
                     <ic:EventTriggerBehavior EventName="DoubleTapped">
                         <ic:EventTriggerBehavior.Actions>
-                            <ic:InvokeCommandAction Command="{Binding MapPointCommand}"
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.MapPointCommand}"
                                                     CommandParameter="{Binding ElementName=LocationsGrid, Path=SelectedItem}"/>
                         </ic:EventTriggerBehavior.Actions>
                     </ic:EventTriggerBehavior>
@@ -118,8 +118,8 @@
             </sfgrid:SfDataGrid>
 
             <Button Grid.Row="1" Grid.Column="0" 
-                    IsEnabled="{Binding MappedPoints, Converter={StaticResource EmptyCollectionToBoolConverter}}"
-                    Command="{Binding ClearMapCommand}">
+                    IsEnabled="{x:Bind ViewModel.MappedPoints, Converter={StaticResource EmptyCollectionToBoolConverter}}"
+                    Command="{x:Bind ViewModel.ClearMapCommand}">
                 Clear Map
             </Button>
 
@@ -135,8 +135,8 @@
                  MaxZoomLevel="21" 
                  Margin="14,7,7,14"
                  ZoomLevel="12"
-                 Visibility="{Binding MapCenter, Converter={StaticResource NullToHiddenConverter}}"
-                 Center="{Binding MapCenter, Mode=TwoWay}">
+                 Visibility="{x:Bind ViewModel.MapCenter, Converter={StaticResource NullToHiddenConverter}}"
+                 Center="{x:Bind ViewModel.MapCenter, Mode=TwoWay}">
 
             <!--<map:Map.Center>
                 <map:Location Latitude="36.977405" Longitude="-122.015833"/>
@@ -151,7 +151,7 @@
 
             </map:MapTileLayer>
 
-            <map:MapItemsControl ItemsSource="{Binding MappedPoints}"
+            <map:MapItemsControl ItemsSource="{x:Bind ViewModel.MappedPoints}"
                                  ItemContainerStyle="{StaticResource MappedPointStyle}"/>
 
         </map:Map>
