@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:LogViewerViewModel}"
+    x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
@@ -36,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                  ItemsSource="{Binding FilteredLogEvents}">
+                  ItemsSource="{x:Bind ViewModel.FilteredLogEvents}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Message}"/>
@@ -50,14 +50,14 @@
 
             <TextBlock>Minimum Level</TextBlock>
             
-            <ComboBox ItemsSource="{Binding LogLevels}"
-                      SelectedItem="{Binding MinimumLogEventLevel, Mode=TwoWay}"/>
+            <ComboBox ItemsSource="{x:Bind ViewModel.LogLevels}"
+                      SelectedItem="{x:Bind ViewModel.MinimumLogEventLevel, Mode=TwoWay}"/>
 
         </StackPanel>
 
         <Button Grid.Row="1" Grid.Column="1"
                 HorizontalAlignment="Center"
-                Command="{Binding ClearLogCommand}">
+                Command="{x:Bind ViewModel.ClearLogCommand}">
             Clear Log
         </Button>
 
