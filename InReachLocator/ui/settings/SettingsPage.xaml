@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:SettingsViewModel}"
+    x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid Margin="7">
@@ -55,57 +55,57 @@
         <TextBlock Grid.Row="0" Grid.Column="0">Website</TextBlock>
 
         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
-                 Text="{Binding Website, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{x:Bind ViewModel.Website, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0">User Name</TextBlock>
 
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
-                 Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{x:Bind ViewModel.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Password</TextBlock>
 
         <PasswordBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
-                     Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                     Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0">Device IMEI</TextBlock>
 
         <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
-                 Text="{Binding Imei, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{x:Bind ViewModel.Imei, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4"
-                  IsChecked="{Binding ImperialUnits, Mode=TwoWay}">
+                  IsChecked="{x:Bind ViewModel.ImperialUnits, Mode=TwoWay}">
             Use imperial units
         </CheckBox>
 
         <CheckBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4"
-                  IsChecked="{Binding CompassHeadings, Mode=TwoWay}">
+                  IsChecked="{x:Bind ViewModel.CompassHeadings, Mode=TwoWay}">
             Use compass headings
         </CheckBox>
 
         <TextBlock Grid.Row="6" Grid.Column="0">Minimum Log Level</TextBlock>
 
         <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"
-                  ItemsSource="{Binding LogLevels}"
-                  SelectedItem="{Binding MinimumLogLevel, Mode=TwoWay}"/>
+                  ItemsSource="{x:Bind ViewModel.LogLevels}"
+                  SelectedItem="{x:Bind ViewModel.MinimumLogLevel, Mode=TwoWay}"/>
 
         <Button Grid.Row="7" Grid.Column="1"
-                IsEnabled="{Binding InReachConfigChanged}"
+                IsEnabled="{x:Bind ViewModel.InReachConfigChanged}"
                 HorizontalAlignment="Center"
-                Command="{Binding ValidateCommand}">
+                Command="{x:Bind ViewModel.ValidateCommand}">
             Validate
         </Button>
 
         <Button Grid.Row="7" Grid.Column="2"  
                 HorizontalAlignment="Center"
-                Command="{Binding RevertCommand}"
-                IsEnabled="{Binding InReachConfigChanged}">
+                Command="{x:Bind ViewModel.RevertCommand}"
+                IsEnabled="{x:Bind ViewModel.InReachConfigChanged}">
             Revert
         </Button>
 
         <Button Grid.Row="7" Grid.Column="3"
                 HorizontalAlignment="Center"
-                IsEnabled="{Binding CanSave}"
-                Command="{Binding SaveCommand}">
+                IsEnabled="{x:Bind ViewModel.CanSave}"
+                Command="{x:Bind ViewModel.SaveCommand}">
             Save
         </Button>
 

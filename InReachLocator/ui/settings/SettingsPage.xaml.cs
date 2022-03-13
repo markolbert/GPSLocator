@@ -28,14 +28,16 @@ namespace J4JSoftware.InReach
         {
             this.InitializeComponent();
 
-            DataContext = App.Current.Host.Services.GetRequiredService<SettingsViewModel>();
+            ViewModel = App.Current.Host.Services.GetRequiredService<SettingsViewModel>();
 
             this.Loaded += SettingsPage_Loaded;
         }
 
+        private SettingsViewModel ViewModel { get; }
+
         private void SettingsPage_Loaded( object sender, RoutedEventArgs e )
         {
-            ( (SettingsViewModel) DataContext ).OnLoaded();
+            ViewModel.OnLoaded();
         }
     }
 }
