@@ -17,6 +17,8 @@ namespace J4JSoftware.InReach
 {
     public class LastKnownViewModel : LocationMapViewModel
     {
+        private MapPoint? _lastKnownPoint;
+
         public LastKnownViewModel(
             IJ4JLogger logger
         )
@@ -67,7 +69,15 @@ namespace J4JSoftware.InReach
             var mapPoint = AddLocation( lastLoc );
             mapPoint.DisplayOnMap = true;
 
+            LastKnownPoint = MappedPoints[ 0 ];
+
             StatusMessage.Send( "Ready" );
+        }
+
+        public MapPoint? LastKnownPoint
+        {
+            get => _lastKnownPoint;
+            set => SetProperty( ref _lastKnownPoint, value );
         }
     }
 }

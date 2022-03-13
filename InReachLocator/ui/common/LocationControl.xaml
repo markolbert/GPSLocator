@@ -3,10 +3,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:J4JSoftware.InReach"
+    xmlns:irl="clr-namespace:J4JSoftware.InReach;assembly=J4JSoftware.InReachLib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:Location}">
+    x:DefaultBindMode="OneWay">
 
     <Grid>
 
@@ -46,25 +47,25 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0">Timestamp</TextBlock>
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Timestamp}"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ViewModel.Timestamp}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0">Latitude</TextBlock>
         <TextBlock Grid.Row="1" Grid.Column="1" 
                    HorizontalAlignment="Right"
-                   Text="{Binding Coordinate.Latitude}"/>
+                   Text="{x:Bind ViewModel.Coordinate.Latitude}"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Longitude</TextBlock>
         <TextBlock Grid.Row="2" Grid.Column="1" 
                    HorizontalAlignment="Right"
-                   Text="{Binding Coordinate.Longitude}"/>
+                   Text="{x:Bind ViewModel.Coordinate.Longitude}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0">Altitude</TextBlock>
         <StackPanel Grid.Row="3" Grid.Column="1" 
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Altitude}"
+            <TextBlock Text="{x:Bind ViewModel.Altitude}"
                        Margin="14,7,0, 7"/>
-            <TextBlock Text="{Binding AltitudeUnits}"
+            <TextBlock Text="{x:Bind ViewModel.AltitudeUnits}"
                        Margin="5,7,14,7"/>
         </StackPanel>
 
@@ -72,9 +73,9 @@
         <StackPanel Grid.Row="4" Grid.Column="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Speed}"
+            <TextBlock Text="{x:Bind ViewModel.Speed}"
                        Margin="14,7,0, 7"/>
-            <TextBlock Text="{Binding SpeedUnits}"
+            <TextBlock Text="{x:Bind ViewModel.SpeedUnits}"
                        Margin="5,7,14,7"/>
         </StackPanel>
 
@@ -82,24 +83,24 @@
         <StackPanel Grid.Row="5" Grid.Column="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <TextBlock Text="{Binding CourseDisplay}"
+            <TextBlock Text="{x:Bind ViewModel.CourseDisplay}"
                        Margin="14,7,0, 7"/>
             <TextBlock Margin="5,7,14,7"
-                       Text="{Binding CompassUnits}"/>
+                       Text="{x:Bind ViewModel.CompassUnits}"/>
         </StackPanel>
 
         <TextBlock Grid.Row="6" Grid.Column="0">GPS Fix Status</TextBlock>
         <TextBlock Grid.Row="6" Grid.Column="1" 
                    HorizontalAlignment="Right"
-                   Text="{Binding GPSFixStatus}"/>
+                   Text="{x:Bind ViewModel.GPSFixStatus}"/>
 
         <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-                      IsChecked="{Binding ImperialUnits, Mode=TwoWay}">
+                      IsChecked="{x:Bind ViewModel.ImperialUnits, Mode=TwoWay}">
             Use Imperial Units
         </CheckBox>
 
         <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
-                  IsChecked="{Binding CompassHeadings, Mode=TwoWay}">
+                  IsChecked="{x:Bind ViewModel.CompassHeadings, Mode=TwoWay}">
             Use Compass Headings
         </CheckBox>
 

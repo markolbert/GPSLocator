@@ -43,7 +43,7 @@
 
         <local:LocationControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                                Margin="14,14,14,14"
-                               DataContext="{Binding MappedPoints[0].InReachLocation, FallbackValue=null}" />
+                               DataContext="{Binding LastKnownPoint.InReachLocation, FallbackValue=null}" />
 
         <map:Map Grid.Row="0" Grid.Column="1" 
                  x:Name="TestMap" 
