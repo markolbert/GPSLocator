@@ -29,14 +29,6 @@ namespace J4JSoftware.InReach
             LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.RoutePoint, "Include in Route"));
             LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Pushpin, "Show as Pushpin"));
             LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Unspecified, "Don't Show"));
-
-            MapPoints = new MapPoint.Collection();
-            MapPoints.ListChanged += MapPoints_ListChanged;
-        }
-
-        private void MapPoints_ListChanged(object? sender, ListChangedEventArgs e)
-        {
-            OnMapPointsChanged();
         }
 
         protected virtual void OnMapPointsChanged()
@@ -45,7 +37,7 @@ namespace J4JSoftware.InReach
 
         public List<AnnotatedLocationType> LocationTypeChoices { get; } = new();
 
-        public MapPoint.Collection MapPoints { get; }
+        public ObservableCollection<MapPoint> MapPoints { get; } = new();
 
         public bool HasPoints => MapPoints.Any();
 
