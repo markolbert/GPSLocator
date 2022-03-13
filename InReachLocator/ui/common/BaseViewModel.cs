@@ -27,7 +27,7 @@ public class BaseViewModel : ObservableRecipient
     }
 
     protected IJ4JLogger Logger { get; }
-    protected AppConfigViewModel Configuration { get; }
+    public AppConfigViewModel Configuration { get; }
 
     protected override void OnDeactivated()
     {

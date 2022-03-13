@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance local:LastKnownViewModel}"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    x:DefaultBindMode="OneWay">
 
     <Grid Margin="7">
 
@@ -43,7 +44,7 @@
 
         <local:LocationControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                                Margin="14,14,14,14"
-                               DataContext="{Binding LastKnownPoint.InReachLocation, FallbackValue=null}" />
+                               DataContext="{x:Bind ViewModel.LastKnownPoint.InReachLocation, FallbackValue=null}" />
 
         <map:Map Grid.Row="0" Grid.Column="1" 
                  x:Name="TestMap" 
@@ -52,7 +53,7 @@
                  HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"
                  MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="17"
-                 Center="{Binding MapCenter}">
+                 Center="{x:Bind ViewModel.MapCenter}">
 
             <map:MapTileLayer SourceName="OpenStreetMap"
                               Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
@@ -63,7 +64,7 @@
 
             </map:MapTileLayer>
 
-            <map:MapItemsControl ItemsSource="{Binding MappedPoints}"
+            <map:MapItemsControl ItemsSource="{x:Bind ViewModel.MappedPoints}"
                                  ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
 
             <!--<map:Pushpin AutoCollapse="True" Content="DingDong!">
@@ -77,8 +78,8 @@
         <Button Grid.Row="1" Grid.Column="1" 
                 HorizontalAlignment="Right"
                 Margin="0,14,14,0"
-                IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppConfiguration}}"
-                Command="{Binding RefreshCommand}">
+                IsEnabled="{ x:Bind ViewModel.Configuration.IsValid}"
+                Command="{x:Bind ViewModel.RefreshCommand}">
             Refresh
         </Button>
 
