@@ -35,11 +35,6 @@ namespace J4JSoftware.InReach
 
             DataContext = App.Current.Host.Services.GetRequiredService<HistoryViewModel>();
 
-            WeakReferenceMessenger.Default.Register<HistoryPage, LocationTypeMessage, string>(
-                this,
-                "LocationTypeChanged",
-                LocationTypeChangedHandler );
-
             Loaded += OnLoaded;
         }
 
@@ -48,25 +43,5 @@ namespace J4JSoftware.InReach
             await ( (HistoryViewModel) DataContext ).OnPageActivated();
         }
 
-        private void LocationTypeChangedHandler( HistoryPage recipient, LocationTypeMessage message )
-        {
-            var dataRow = LocationsGrid.RowGenerator.Items[message.RowNumber];
-
-            if( dataRow.Element is not DataGridRowControl rowControl )
-                return;
-
-            var rowStyle = message.LocationType switch
-            {
-                LocationType.Pushpin => OuterContainer.Resources["PushpinRowStyle"] as Style,
-                LocationType.RoutePoint => OuterContainer.Resources["RoutePointRowStyle"] as Style,
-                LocationType.Unspecified => OuterContainer.Resources["UnspecifiedRowStyle"] as Style,
-                _ => null
-            };
-
-            if( rowStyle == null )
-                return;
-
-            rowControl.Style = rowStyle;
-        }
     }
 }

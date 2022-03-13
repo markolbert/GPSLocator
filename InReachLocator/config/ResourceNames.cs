@@ -18,5 +18,6 @@ namespace J4JSoftware.InReach
 
         public string StatusMessageToken => "StatusMessage";
         public string ProgressBarMessageToken => "ProgressBarMessage";
+        public string LocationTypeChangedMessageToken => "LocationTypeChanged";
     }
 }

@@ -37,18 +37,6 @@
                 <Setter Property="Margin" Value="14,7,14,7"></Setter>
             </Style>
 
-            <Style x:Key="PushpinRowStyle" TargetType="sfgrid:DataGridRowControl">
-                <Setter Property="Background" Value="AliceBlue"/>
-            </Style>
-
-            <Style x:Key="RoutePointRowStyle" TargetType="sfgrid:DataGridRowControl">
-                <Setter Property="Background" Value="LightGoldenrodYellow"/>
-            </Style>
-
-            <Style x:Key="UnspecifiedRowStyle" TargetType="sfgrid:DataGridRowControl">
-                <Setter Property="Background" Value="Transparent"/>
-            </Style>
-
             <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
                 <Setter Property="AutoCollapse" Value="True"/>
                 <Setter Property="LocationMemberPath" Value="DisplayPoint"/>
@@ -104,12 +92,10 @@
             <sfgrid:SfDataGrid x:Name="LocationsGrid" 
                            Grid.Row="0" Grid.Column="0"
                            MaxHeight="300"
-                           Width="200"
                            RowHeight="40"
                            SelectionMode="Extended"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Top"
-                           Visibility="{Binding Path=HasPoints, Converter={StaticResource BoolToVisibilityConverter }}"
                            ItemsSource="{Binding MapPoints}"
                            SelectedItems="{Binding SelectedMapPoints}"
                            AutoGenerateColumns="False"
@@ -120,6 +106,11 @@
                                        HeaderText="Timestamp"
                                        DisplayDateFormat="MM/dd/yyyy HH:mm:ss"
                                        Width="180"/>
+
+                    <sfgrid:GridTextColumn MappingName="LocationTypeText" 
+                                           HeaderText="Usage"
+                                           Width="130"/>
+
                 </sfgrid:SfDataGrid.Columns>
 
             </sfgrid:SfDataGrid>

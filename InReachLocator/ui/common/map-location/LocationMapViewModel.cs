@@ -50,11 +50,11 @@ namespace J4JSoftware.InReach
         public bool HasPoints => MapPoints.Any();
 
         public LocationCollection? Route =>
-            new( MapPoints.Where( x => x.SelectedLocationType == LocationType.RoutePoint )
+            new( MapPoints.Where( x => x.LocationType == LocationType.RoutePoint )
                            .Select( x => x.DisplayPoint ) );
 
         public IEnumerable<MapPoint> Pushpins =>
-            MapPoints.Where( x => x.SelectedLocationType == LocationType.Pushpin );
+            MapPoints.Where( x => x.LocationType == LocationType.Pushpin );
 
         protected virtual void ClearMapLocations()
         {
@@ -77,7 +77,7 @@ namespace J4JSoftware.InReach
 
         protected MapPoint AddPushpin( ILocation inReachLocation )
         {
-            var retVal = new MapPoint( inReachLocation ) { SelectedLocationType = LocationType.Pushpin };
+            var retVal = new MapPoint( inReachLocation ) { LocationType = LocationType.Pushpin };
             AddMapLocation( retVal );
 
             return retVal;
@@ -85,7 +85,7 @@ namespace J4JSoftware.InReach
 
         protected MapPoint AddRoutePoint( ILocation inReachLocation )
         {
-            var retVal = new MapPoint( inReachLocation ) { SelectedLocationType = LocationType.RoutePoint };
+            var retVal = new MapPoint( inReachLocation ) { LocationType = LocationType.RoutePoint };
             AddMapLocation(retVal);
 
             return retVal;
@@ -97,7 +97,7 @@ namespace J4JSoftware.InReach
 
             OnPropertyChanged(nameof(HasPoints));
 
-            switch( mapPoint.SelectedLocationType )
+            switch( mapPoint.LocationType )
             {
                 case LocationType.Pushpin:
                     OnPropertyChanged( nameof( Pushpins ) );
@@ -127,7 +127,7 @@ namespace J4JSoftware.InReach
                 return;
 
             var filteredPoints = MapPoints
-                                .Where( x => IncludeLocationType( x.SelectedLocationType ) )
+                                .Where( x => IncludeLocationType( x.LocationType ) )
                                 .ToList();
 
             MapCenter = filteredPoints.Count switch

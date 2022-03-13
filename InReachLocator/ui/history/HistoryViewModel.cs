@@ -146,12 +146,7 @@ namespace J4JSoftware.InReach
                                     .Cast<MapPoint>()
                                     .ToList() )
             {
-                mapPoint.SelectedLocationType = locationType;
-
-                var rowNum = MapPoints.IndexOf( mapPoint );
-
-                WeakReferenceMessenger.Default.Send( new LocationTypeMessage( rowNum + 1, locationType ),
-                                                     "LocationTypeChanged" );
+                mapPoint.LocationType = locationType;
             }
 
             SelectedMapPoints.Clear();
@@ -176,13 +171,13 @@ namespace J4JSoftware.InReach
 
             var mapChanged = false;
 
-            if( MapPoints.Any( x => x.SelectedLocationType == LocationType.Pushpin ) )
+            if( MapPoints.Any( x => x.LocationType == LocationType.Pushpin ) )
             {
                 OnPropertyChanged(nameof(Pushpins));
                 mapChanged = true;
             }
 
-            if( MapPoints.Any( x => x.SelectedLocationType == LocationType.RoutePoint ) )
+            if( MapPoints.Any( x => x.LocationType == LocationType.RoutePoint ) )
             {
                 OnPropertyChanged(nameof(Route));
                 mapChanged = true;

@@ -25,11 +25,13 @@ namespace J4JSoftware.InReach
                         $"Trying to add a {e.NewObject?.GetType()} but a {typeof( MapPoint )} is required" );
 
                 mapPoint.BelongsTo = this;
+                mapPoint.Index = this.IndexOf( mapPoint );
             }
 
             protected override void RemoveItem( int index )
             {
                 this[ index ].BelongsTo = null;
+                this[index].Index = -1;
 
                 base.RemoveItem( index );
             }
@@ -38,7 +40,8 @@ namespace J4JSoftware.InReach
             {
                 base.SetItem( index, item );
 
-                this[ index ].BelongsTo = this;
+                item.BelongsTo = this;
+                item.Index = index;
             }
 
             protected override void ClearItems()
@@ -46,13 +49,14 @@ namespace J4JSoftware.InReach
                 foreach( var item in this )
                 {
                     item.BelongsTo = null;
+                    item.Index = -1;
                 }
 
                 base.ClearItems();
             }
         }
 
-        private LocationType _selectedLocType = LocationType.Unspecified;
+        private LocationType _locType = LocationType.Unspecified;
 
         public MapPoint(
             ILocation inReachLocation
@@ -68,15 +72,30 @@ namespace J4JSoftware.InReach
         }
 
         public MapPoint.Collection? BelongsTo { get; private set; }
+        public int Index { get; private set; } = -1;
 
         public ILocation InReachLocation { get; }
         public MapControl.Location DisplayPoint { get; }
 
-        public LocationType SelectedLocationType
+        public LocationType LocationType
         {
-            get => _selectedLocType;
-            set => SetProperty( ref _selectedLocType, value );
+            get => _locType;
+
+            set
+            {
+                SetProperty( ref _locType, value );
+                OnPropertyChanged( nameof( LocationTypeText ) );
+            }
         }
+
+        public string LocationTypeText =>
+            _locType switch
+            {
+                LocationType.Pushpin => "Pushpin",
+                LocationType.RoutePoint => "Route Point",
+                LocationType.Unspecified => string.Empty,
+                _ => "Unknown"
+            };
 
         public string Label { get; }
     }
