@@ -12,9 +12,11 @@ using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach
 {
-    public class MapPoint : ObservableObject
+    public class MapPoint
     {
-        private LocationType _locType = LocationType.Unspecified;
+        public event EventHandler<bool>? Display;
+
+        private bool _displayOnMap;
 
         public MapPoint(
             ILocation inReachLocation
@@ -32,25 +34,22 @@ namespace J4JSoftware.InReach
         public ILocation InReachLocation { get; }
         public MapControl.Location DisplayPoint { get; }
 
-        public LocationType LocationType
+        public bool DisplayOnMap
         {
-            get => _locType;
+            get => _displayOnMap;
 
             set
             {
-                SetProperty( ref _locType, value );
-                OnPropertyChanged( nameof( LocationTypeText ) );
+                var changed = _displayOnMap != value;
+
+                _displayOnMap = value;
+
+                if( changed )
+                    Display?.Invoke( this, _displayOnMap );
             }
         }
 
-        public string LocationTypeText =>
-            _locType switch
-            {
-                LocationType.Pushpin => "Pushpin",
-                LocationType.RoutePoint => "Route Point",
-                LocationType.Unspecified => string.Empty,
-                _ => "Unknown"
-            };
+        public bool IsSelected { get; set; }
 
         public string Label { get; }
     }

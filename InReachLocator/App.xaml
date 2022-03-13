@@ -19,6 +19,7 @@
             <local:NullToHiddenConverter x:Key="NullToHiddenConverter"/>
             <local:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
             <local:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter"/>
+            <local:EmptyCollectionToBoolConverter x:Key="EmptyCollectionToBoolConverter"/>
             <sfcore:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
             <Style x:Key="NormalStatusMessageStyle" TargetType="TextBlock">

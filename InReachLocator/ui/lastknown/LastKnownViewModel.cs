@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -57,19 +58,16 @@ namespace J4JSoftware.InReach
                 return;
             }
 
-            ClearMapLocations();
+            ClearMappedPoints();
 
             var lastLoc = response.Result.Locations[0];
             lastLoc.CompassHeadings = Configuration.UseCompassHeadings;
             lastLoc.ImperialUnits = Configuration.UseImperialUnits;
 
-            AddPushpin( lastLoc );
-
-            OnPropertyChanged( nameof( LastLocation ) );
+            var mapPoint = AddLocation( lastLoc );
+            mapPoint.DisplayOnMap = true;
 
             StatusMessage.Send( "Ready" );
         }
-
-        public MapPoint? LastLocation => MapPoints.Any() ? MapPoints.Last() : null;
     }
 }

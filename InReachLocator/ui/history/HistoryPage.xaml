@@ -6,6 +6,8 @@
     xmlns:map="using:MapControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
     xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid"
     xmlns:sfeditors="using:Syncfusion.UI.Xaml.Editors"
     mc:Ignorable="d"
@@ -37,7 +39,7 @@
                 <Setter Property="Margin" Value="14,7,14,7"></Setter>
             </Style>
 
-            <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
+            <Style x:Key="MappedPointStyle" TargetType="map:MapItem">
                 <Setter Property="AutoCollapse" Value="True"/>
                 <Setter Property="LocationMemberPath" Value="DisplayPoint"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -51,10 +53,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
-            <DataTemplate x:Key="RouteTemplate">
-                <map:MapPolyline Locations="{Binding Locations}" Stroke="Red" StrokeThickness="3"/>
-            </DataTemplate>
 
         </Grid.Resources>
 
@@ -86,18 +84,17 @@
         </Grid>
 
         <Grid Grid.Row="0" Grid.Column="1" 
-              ColumnDefinitions="*, Auto"
-              RowDefinitions="Auto, Auto">
+              ColumnDefinitions="*"
+              RowDefinitions="Auto, Auto, Auto">
 
             <sfgrid:SfDataGrid x:Name="LocationsGrid" 
                            Grid.Row="0" Grid.Column="0"
                            MaxHeight="300"
                            RowHeight="40"
-                           SelectionMode="Extended"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Top"
-                           ItemsSource="{Binding MapPoints}"
-                           SelectedItems="{Binding SelectedMapPoints}"
+                           ItemsSource="{Binding AllPoints}"
+                           SelectedItem="{Binding SelectedPoint, Mode=TwoWay}"
                            AutoGenerateColumns="False"
                            AllowResizingColumns="True">
 
@@ -107,44 +104,28 @@
                                        DisplayDateFormat="MM/dd/yyyy HH:mm:ss"
                                        Width="180"/>
 
-                    <sfgrid:GridTextColumn MappingName="LocationTypeText" 
-                                           HeaderText="Usage"
-                                           Width="130"/>
-
                 </sfgrid:SfDataGrid.Columns>
+
+                <i:Interaction.Behaviors>
+                    <ic:EventTriggerBehavior EventName="DoubleTapped">
+                        <ic:EventTriggerBehavior.Actions>
+                            <ic:InvokeCommandAction Command="{Binding MapPointCommand}"
+                                                    CommandParameter="{Binding ElementName=LocationsGrid, Path=SelectedItem}"/>
+                        </ic:EventTriggerBehavior.Actions>
+                    </ic:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
 
             </sfgrid:SfDataGrid>
 
-            <StackPanel Grid.Row="0" Grid.Column="1" 
-                    Orientation="Vertical"
-                    Visibility="{Binding HasPoints, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Button Grid.Row="1" Grid.Column="0" 
+                    IsEnabled="{Binding MappedPoints, Converter={StaticResource EmptyCollectionToBoolConverter}}"
+                    Command="{Binding ClearMapCommand}">
+                Clear Map
+            </Button>
 
-                <Button Command="{Binding ChangeSelectedMapPointsCommand}">
-                    <Button.CommandParameter>
-                        <local:LocationType>Pushpin</local:LocationType>
-                    </Button.CommandParameter>
-                    -> Pushpin(s)
-                </Button>
-
-                <Button Command="{Binding ChangeSelectedMapPointsCommand}">
-                    <Button.CommandParameter>
-                        <local:LocationType>RoutePoint</local:LocationType>
-                    </Button.CommandParameter>
-                    -> Route Point(s)
-                </Button>
-
-                <Button Command="{Binding ChangeSelectedMapPointsCommand}">
-                    <Button.CommandParameter>
-                        <local:LocationType>Unspecified</local:LocationType>
-                    </Button.CommandParameter>
-                    -> Hidden
-                </Button>
-
-            </StackPanel>
-
-            <local:LocationControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-                               Visibility="{Binding ElementName=OuterContainer, Path=DataContext.MapPointToDisplay, Converter={StaticResource NullToHiddenConverter }}"
-                               DataContext="{Binding MapPointToDisplay.InReachLocation, FallbackValue=null}" />
+            <local:LocationControl Grid.Row="2" Grid.Column="0" 
+                                   Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
+                                   DataContext="{Binding ElementName=LocationsGrid, Path=SelectedItem.InReachLocation, FallbackValue=null}" />
 
         </Grid>
 
@@ -170,11 +151,8 @@
 
             </map:MapTileLayer>
 
-            <map:MapItemsControl ItemsSource="{Binding Pushpins}"
-                                 ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
-
-            <map:MapItemsControl ItemsSource="{Binding Route}"
-                                 ItemTemplate="{StaticResource RouteTemplate}"/>
+            <map:MapItemsControl ItemsSource="{Binding MappedPoints}"
+                                 ItemContainerStyle="{StaticResource MappedPointStyle}"/>
 
         </map:Map>
 

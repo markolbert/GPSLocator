@@ -17,89 +17,85 @@ namespace J4JSoftware.InReach
 {
     public class LocationMapViewModel : BaseViewModel
     {
+        private readonly List<MapPoint> _locations = new();
+
         private MapControl.Location? _mapCenter;
-        private double _mapHeight = 500;
-        private double _mapWidth = 500;
+        private bool _deferUpdatingMapCenter;
 
         protected LocationMapViewModel(
             IJ4JLogger logger
         )
             : base( logger )
         {
-            LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.RoutePoint, "Include in Route"));
-            LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Pushpin, "Show as Pushpin"));
-            LocationTypeChoices.Add(new AnnotatedLocationType(LocationType.Unspecified, "Don't Show"));
         }
 
-        protected virtual void OnMapPointsChanged()
+        public ObservableCollection<MapPoint> AllPoints { get; } = new();
+        public ObservableCollection<MapPoint> MappedPoints { get; } = new();
+
+        protected MapPoint AddLocation( ILocation location )
         {
+            var mapPoint = new MapPoint( location );
+            mapPoint.Display += ChangeMapPointDisplay;
+
+            _locations.Add( mapPoint );
+            AllPoints.Add( mapPoint );
+
+            return mapPoint;
         }
 
-        public List<AnnotatedLocationType> LocationTypeChoices { get; } = new();
-
-        public ObservableCollection<MapPoint> MapPoints { get; } = new();
-
-        public bool HasPoints => MapPoints.Any();
-
-        public LocationCollection? Route =>
-            new( MapPoints.Where( x => x.LocationType == LocationType.RoutePoint )
-                           .Select( x => x.DisplayPoint ) );
-
-        public IEnumerable<MapPoint> Pushpins =>
-            MapPoints.Where( x => x.LocationType == LocationType.Pushpin );
-
-        protected virtual void ClearMapLocations()
+        protected void AddLocations( IEnumerable<ILocation> locations, bool clearList = true )
         {
-            MapPoints.Clear();
+            _deferUpdatingMapCenter = true;
 
-            OnPropertyChanged(nameof(HasPoints));
-            OnPropertyChanged( nameof( Route ) );
-            OnPropertyChanged( nameof( Pushpins ) );
-
-            UpdateMapCenter();
-        }
-
-        protected MapPoint AddUnspecifiedPoint( ILocation inReachLocation )
-        {
-            var retVal = new MapPoint(inReachLocation);
-            AddMapLocation(retVal);
-
-            return retVal;
-        }
-
-        protected MapPoint AddPushpin( ILocation inReachLocation )
-        {
-            var retVal = new MapPoint( inReachLocation ) { LocationType = LocationType.Pushpin };
-            AddMapLocation( retVal );
-
-            return retVal;
-        }
-
-        protected MapPoint AddRoutePoint( ILocation inReachLocation )
-        {
-            var retVal = new MapPoint( inReachLocation ) { LocationType = LocationType.RoutePoint };
-            AddMapLocation(retVal);
-
-            return retVal;
-        }
-
-        private void AddMapLocation( MapPoint mapPoint )
-        {
-            MapPoints.Add( mapPoint );
-
-            OnPropertyChanged(nameof(HasPoints));
-
-            switch( mapPoint.LocationType )
+            if( clearList )
             {
-                case LocationType.Pushpin:
-                    OnPropertyChanged( nameof( Pushpins ) );
-                    break;
-
-                case LocationType.RoutePoint:
-                    OnPropertyChanged( nameof( Route ) );
-                    break;
+                _locations.Clear();
+                MappedPoints.Clear();
+                AllPoints.Clear();
             }
 
+            foreach( var location in locations )
+            {
+                AddLocation( location );
+            }
+
+            UpdateMapCenter();
+
+            _deferUpdatingMapCenter = false;
+        }
+
+        private void ChangeMapPointDisplay( object? sender, bool displayPoint )
+        {
+            if( sender is not MapPoint mapPoint || _deferUpdatingMapCenter )
+                return;
+
+            var ptIdx = MappedPoints.IndexOf( mapPoint );
+            if( ptIdx < 0 )
+            {
+                if( !displayPoint )
+                    return;
+
+                MappedPoints.Add( mapPoint );
+                UpdateMapCenter();
+            }
+            else
+            {
+                if( displayPoint )
+                    return;
+
+                MappedPoints.RemoveAt( ptIdx );
+                UpdateMapCenter();
+            }
+        }
+
+        protected virtual void ClearMappedPoints()
+        {
+            _deferUpdatingMapCenter = true;
+
+            MappedPoints.Clear();
+            _locations.ForEach( x => x.DisplayOnMap = false );
+
+            _deferUpdatingMapCenter = false;
             UpdateMapCenter();
         }
 
@@ -109,46 +105,35 @@ namespace J4JSoftware.InReach
             set => SetProperty( ref _mapCenter, value );
         }
 
-        protected bool DeferUpdatingMapCenter { get; set; }
-
-        protected virtual bool IncludeLocationType( LocationType locationType ) => true;
-
         protected void UpdateMapCenter()
         {
-            if( DeferUpdatingMapCenter )
-                return;
-
-            var filteredPoints = MapPoints
-                                .Where( x => IncludeLocationType( x.LocationType ) )
-                                .ToList();
-
-            MapCenter = filteredPoints.Count switch
+            MapCenter = MappedPoints.Count switch
             {
                 0 => null,
-                1 => filteredPoints[ 0 ].DisplayPoint,
-                _ => CalculateMapCenter(filteredPoints)
+                1 => MappedPoints[ 0 ].DisplayPoint,
+                _ => CalculateMapCenter()
             };
         }
 
         // https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
         // thanx to Gio and Yodacheese for this!
-        private MapControl.Location CalculateMapCenter( List<MapPoint> points )
+        private MapControl.Location CalculateMapCenter()
         {
             double x = 0;
             double y = 0;
             double z = 0;
 
-            foreach( var mapLocation in points )
+            foreach( var mappedPoint in MappedPoints )
             {
-                var latitude = mapLocation.DisplayPoint.Latitude * Math.PI / 180;
-                var longitude = mapLocation.DisplayPoint.Longitude * Math.PI / 180;
+                var latitude = mappedPoint.DisplayPoint.Latitude * Math.PI / 180;
+                var longitude = mappedPoint.DisplayPoint.Longitude * Math.PI / 180;
 
                 x += Math.Cos( latitude ) * Math.Cos( longitude );
                 y += Math.Cos( latitude ) * Math.Sin( longitude );
                 z += Math.Sin( latitude );
             }
 
-            var total = MapPoints.Count;
+            var total = MappedPoints.Count;
 
             x = x / total;
             y = y / total;
@@ -159,35 +144,6 @@ namespace J4JSoftware.InReach
             var centralLatitude = Math.Atan2(z, centralSquareRoot);
 
             return new MapControl.Location( centralLatitude * 180 / Math.PI, centralLongitude * 180 / Math.PI );
-        }
-
-        public double GridHeight { get; set; }
-        public double GridWidth { get; set; }
-
-        public double MapHeight
-        {
-            get => _mapHeight;
-
-            set
-            {
-                if( value < 50 )
-                    return;
-
-                SetProperty( ref _mapHeight, value );
-            }
-        }
-
-        public double MapWidth
-        {
-            get => _mapWidth;
-
-            set
-            {
-                if( value < 50 )
-                    return;
-
-                SetProperty( ref _mapWidth, value );
-            }
         }
     }
 }
