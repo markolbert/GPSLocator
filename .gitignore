@@ -12,6 +12,7 @@
 test-data/
 Migrations/
 *.db
+*.psd
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

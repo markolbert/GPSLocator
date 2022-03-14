@@ -82,7 +82,7 @@
             Use compass headings
         </CheckBox>
 
-        <TextBlock Grid.Row="6" Grid.Column="0">Minimum Log Level</TextBlock>
+        <TextBlock Grid.Row="6" Grid.Column="0">Minimum log level</TextBlock>
 
         <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"
                   ItemsSource="{x:Bind ViewModel.LogLevels}"
