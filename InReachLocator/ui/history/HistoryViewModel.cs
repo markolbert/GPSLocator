@@ -26,7 +26,7 @@ namespace J4JSoftware.InReach
         )
         : base(logger)
         {
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes( 1 ) };
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds( 1 ) };
             timer.Tick += Timer_Tick;
             timer.Start();
 
@@ -45,7 +45,6 @@ namespace J4JSoftware.InReach
         private void Timer_Tick(object? sender, object e)
         {
             EndDate = DateTimeOffset.Now;
-            RefreshEnabled = true;
         }
 
         public AsyncRelayCommand RefreshCommand { get; }
@@ -57,6 +56,8 @@ namespace J4JSoftware.InReach
                 StatusMessage.Send("Invalid configuration", StatusMessageType.Urgent);
                 return;
             }
+
+            RefreshEnabled = false;
 
             var request = new HistoryRequest<Location>( Configuration.Configuration, Logger )
             {
@@ -77,13 +78,14 @@ namespace J4JSoftware.InReach
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
 
+                RefreshEnabled = true;
+
                 return;
             }
 
             AddLocations( response.Result!.HistoryItems );
 
-            RefreshEnabled = false;
-
+            RefreshEnabled = true;
             StatusMessage.Send("Ready");
         }
 

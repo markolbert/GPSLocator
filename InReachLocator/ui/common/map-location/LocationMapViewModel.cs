@@ -31,6 +31,7 @@ namespace J4JSoftware.InReach
 
         public ObservableCollection<MapPoint> AllPoints { get; } = new();
         public ObservableCollection<MapPoint> MappedPoints { get; } = new();
+        public bool MapHasPoints => MappedPoints.Any();
 
         protected MapPoint AddLocation( ILocation location )
         {
@@ -52,6 +53,8 @@ namespace J4JSoftware.InReach
                 _locations.Clear();
                 MappedPoints.Clear();
                 AllPoints.Clear();
+
+                OnPropertyChanged( nameof( MapHasPoints ) );
             }
 
             foreach( var location in locations )
@@ -76,6 +79,8 @@ namespace J4JSoftware.InReach
                     return;
 
                 MappedPoints.Add( mapPoint );
+                OnPropertyChanged(nameof(MapHasPoints));
+
                 UpdateMapCenter();
             }
             else
@@ -84,6 +89,8 @@ namespace J4JSoftware.InReach
                     return;
 
                 MappedPoints.RemoveAt( ptIdx );
+                OnPropertyChanged(nameof(MapHasPoints));
+
                 UpdateMapCenter();
             }
         }
