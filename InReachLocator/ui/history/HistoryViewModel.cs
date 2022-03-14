@@ -34,7 +34,7 @@ namespace J4JSoftware.InReach
             EndDate = DateTimeOffset.Now;
 
             RefreshCommand = new AsyncRelayCommand( RefreshCommandHandler );
-            MapPointCommand = new RelayCommand<MapPoint>( MapPointHandler );
+            MapPointSetCommand = new RelayCommand<MapPoint>( MapPointSetHandler );
             ClearMapCommand = new RelayCommand( ClearMapHandler );
         }
 
@@ -132,16 +132,22 @@ namespace J4JSoftware.InReach
             UpdateMapCenter();
         }
 
-        public RelayCommand<MapPoint> MapPointCommand { get; }
+        public RelayCommand<MapPoint> MapPointSetCommand { get; }
 
-        private void MapPointHandler( MapPoint? selectedPoint )
+        private void MapPointSetHandler( MapPoint? selectedPoint )
         {
-            if( selectedPoint == null )
+            if( selectedPoint == null
+            || ( selectedPoint.InReachLocation.Coordinate.Latitude == 0
+                && selectedPoint.InReachLocation.Coordinate.Longitude == 0 ) )
                 return;
 
-            selectedPoint.DisplayOnMap = !selectedPoint.DisplayOnMap;
+            selectedPoint.DisplayOnMap = selectedPoint.DisplayOnMap switch
+            {
+                MapPointDisplay.DoNotDisplay => MapPointDisplay.Fixed,
+                _ => MapPointDisplay.DoNotDisplay
+            };
 
-            if( selectedPoint.DisplayOnMap )
+            if( selectedPoint.DisplayOnMap != MapPointDisplay.DoNotDisplay )
                 MapCenter = selectedPoint.DisplayPoint;
         }
 
@@ -175,12 +181,20 @@ namespace J4JSoftware.InReach
 
             set
             {
+                if( _selectedPoint?.DisplayOnMap == MapPointDisplay.Transitory )
+                    _selectedPoint.DisplayOnMap = MapPointDisplay.DoNotDisplay;
+
                 SetProperty( ref _selectedPoint, value );
 
                 if( _selectedPoint == null )
                     return;
 
-                if( _selectedPoint.DisplayOnMap )
+                if( _selectedPoint.DisplayOnMap == MapPointDisplay.DoNotDisplay
+                   && _selectedPoint.InReachLocation.Coordinate.Latitude != 0
+                   && _selectedPoint.InReachLocation.Coordinate.Longitude != 0 )
+                    _selectedPoint.DisplayOnMap = MapPointDisplay.Transitory;
+
+                if( _selectedPoint.DisplayOnMap != MapPointDisplay.DoNotDisplay )
                     MapCenter = _selectedPoint.DisplayPoint;
             }
         }

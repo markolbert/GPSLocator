@@ -13,9 +13,9 @@ namespace J4JSoftware.InReach
 {
     public class MapPoint
     {
-        public event EventHandler<bool>? Display;
+        public event EventHandler<MapPointDisplay>? Display;
 
-        private bool _displayOnMap;
+        private MapPointDisplay _displayOnMap;
 
         public MapPoint(
             ILocation inReachLocation
@@ -33,7 +33,7 @@ namespace J4JSoftware.InReach
         public ILocation InReachLocation { get; }
         public MapControl.Location DisplayPoint { get; }
 
-        public bool DisplayOnMap
+        public MapPointDisplay DisplayOnMap
         {
             get => _displayOnMap;
 

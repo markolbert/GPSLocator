@@ -67,7 +67,7 @@ namespace J4JSoftware.InReach
             lastLoc.ImperialUnits = Configuration.UseImperialUnits;
 
             var mapPoint = AddLocation( lastLoc );
-            mapPoint.DisplayOnMap = true;
+            mapPoint.DisplayOnMap = MapPointDisplay.Fixed;
 
             LastKnownPoint = MappedPoints[ 0 ];
 

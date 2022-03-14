@@ -31,7 +31,7 @@ namespace J4JSoftware.InReach
 
         public ObservableCollection<MapPoint> AllPoints { get; } = new();
         public ObservableCollection<MapPoint> MappedPoints { get; } = new();
-        public bool MapHasPoints => MappedPoints.Any();
+        public bool MapHasPoints => MappedPoints.Any( x => x.DisplayOnMap == MapPointDisplay.Fixed );
 
         protected MapPoint AddLocation( ILocation location )
         {
@@ -67,15 +67,18 @@ namespace J4JSoftware.InReach
             _deferUpdatingMapCenter = false;
         }
 
-        private void ChangeMapPointDisplay( object? sender, bool displayPoint )
+        private void ChangeMapPointDisplay( object? sender, MapPointDisplay displayPoint )
         {
-            if( sender is not MapPoint mapPoint || _deferUpdatingMapCenter )
+            if( sender is not MapPoint mapPoint
+            || _deferUpdatingMapCenter
+            || ( mapPoint.InReachLocation.Coordinate.Latitude == 0
+                && mapPoint.InReachLocation.Coordinate.Longitude == 0 ) )
                 return;
 
             var ptIdx = MappedPoints.IndexOf( mapPoint );
             if( ptIdx < 0 )
             {
-                if( !displayPoint )
+                if( displayPoint == MapPointDisplay.DoNotDisplay )
                     return;
 
                 MappedPoints.Add( mapPoint );
@@ -85,7 +88,7 @@ namespace J4JSoftware.InReach
             }
             else
             {
-                if( displayPoint )
+                if( displayPoint != MapPointDisplay.DoNotDisplay )
                     return;
 
                 MappedPoints.RemoveAt( ptIdx );
@@ -100,7 +103,7 @@ namespace J4JSoftware.InReach
             _deferUpdatingMapCenter = true;
 
             MappedPoints.Clear();
-            _locations.ForEach( x => x.DisplayOnMap = false );
+            _locations.ForEach( x => x.DisplayOnMap = MapPointDisplay.DoNotDisplay );
 
             _deferUpdatingMapCenter = false;
             UpdateMapCenter();
@@ -116,7 +119,7 @@ namespace J4JSoftware.InReach
         {
             MapCenter = MappedPoints.Count switch
             {
-                0 => null,
+                0 => MapCenter,
                 1 => MappedPoints[ 0 ].DisplayPoint,
                 _ => CalculateMapCenter()
             };
