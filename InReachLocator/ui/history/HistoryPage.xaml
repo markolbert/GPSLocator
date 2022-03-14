@@ -16,7 +16,7 @@
 
     <Grid
           ColumnDefinitions="Auto, Auto, Auto, *"
-          RowDefinitions="Auto, Auto, Auto, Auto, *, Auto">
+          RowDefinitions="Auto, Auto, Auto, Auto, Auto, *, Auto">
 
         <Grid.Resources>
 
@@ -28,6 +28,10 @@
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="14,7,14,7"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+
+            <Style TargetType="CheckBox">
+                <Setter Property="Margin" Value="14, 7, 14,0"/>
             </Style>
 
             <Style TargetType="sfeditors:SfNumberBox">
@@ -67,19 +71,24 @@
                                    LargeChange="7" 
                                    UpDownPlacementMode="Inline"/>
 
-        <Button Grid.Row="1" Grid.Column="1"
+        <CheckBox Grid.Row="1" Grid.Column="1"
+                  IsChecked="{x:Bind ViewModel.MustHaveMessages, Mode=TwoWay}">
+            Only points with messages
+        </CheckBox>
+
+        <Button Grid.Row="2" Grid.Column="1"
                     IsEnabled="{x:Bind ViewModel.RefreshEnabled}"
                     Command="{x:Bind ViewModel.RefreshCommand}">
             Refresh
         </Button>
 
-        <TextBlock Grid.Row="2" Grid.Column="0">End Date</TextBlock>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
+        <TextBlock Grid.Row="3" Grid.Column="0">End Date</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0">Start Date</TextBlock>
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
+        <TextBlock Grid.Row="4" Grid.Column="0">Start Date</TextBlock>
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0"
+        <TextBlock Grid.Row="5" Grid.Column="0"
                    VerticalAlignment="Top">
             <Run Text="Tracked Points ("/>
             <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
@@ -87,7 +96,7 @@
         </TextBlock>
 
         <sfgrid:SfDataGrid x:Name="LocationsGrid" 
-                               Grid.Row="4" Grid.Column="1"
+                               Grid.Row="5" Grid.Column="1"
                                RowHeight="40"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
@@ -99,8 +108,8 @@
             <sfgrid:SfDataGrid.Columns>
                 <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
                                        HeaderText="Timestamp"
-                                       DisplayDateFormat="MM/dd/yyyy HH:mm:ss"
-                                       Width="180"/>
+                                       ColumnWidthMode="Auto"
+                                       DisplayDateFormat="M/d/yyyy hh:mm:ss"/>
 
             </sfgrid:SfDataGrid.Columns>
 
@@ -115,7 +124,7 @@
 
         </sfgrid:SfDataGrid>
 
-        <Button Grid.Row="5" Grid.Column="1"
+        <Button Grid.Row="6" Grid.Column="1"
                 IsEnabled="{x:Bind ViewModel.MapHasPoints}"
                 Command="{x:Bind ViewModel.ClearMapCommand}">
             Clear Mapped Points
@@ -127,11 +136,11 @@
             Details for Selected Point
         </TextBlock>
 
-        <local:LocationControl Grid.Row="1" Grid.Column="2"  Grid.RowSpan="5"
+        <local:LocationControl Grid.Row="1" Grid.Column="2"  Grid.RowSpan="6"
                                Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
                                DataContext="{Binding ElementName=LocationsGrid, Path=SelectedItem.InReachLocation, FallbackValue=null}" />
 
-        <map:Map Grid.Row="0" Grid.Column="3" Grid.RowSpan="6"
+        <map:Map Grid.Row="0" Grid.Column="3" Grid.RowSpan="7"
                  ManipulationMode="All"
                  MinZoomLevel="2" 
                  MaxZoomLevel="21" 

@@ -44,6 +44,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0">Timestamp</TextBlock>
@@ -103,6 +105,32 @@
                   IsChecked="{x:Bind ViewModel.CompassHeadings, Mode=TwoWay}">
             Use Compass Headings
         </CheckBox>
+
+        <TextBlock Grid.Row="9" Grid.Column="0"
+                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}">
+            Message
+        </TextBlock>
+
+        <TextBlock Grid.Row="9" Grid.Column="1"
+                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}"
+                   Text="{x:Bind ViewModel.TextMessage}">
+            Message
+        </TextBlock>
+
+        <TextBlock Grid.Row="10" Grid.Column="0"
+                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}">
+            Recipients
+        </TextBlock>
+
+        <ListView Grid.Row="10" Grid.Column="1"
+                  Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}"
+                  ItemsSource="{x:Bind ViewModel.Recipients}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
     </Grid>
 

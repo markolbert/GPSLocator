@@ -19,6 +19,7 @@ namespace J4JSoftware.InReach
         private DateTimeOffset _endDate;
         private double _daysBack = 7;
         private bool _refreshEnabled;
+        private bool _mustHaveMessages;
         private MapPoint? _selectedPoint;
 
         public HistoryViewModel(
@@ -83,7 +84,10 @@ namespace J4JSoftware.InReach
                 return;
             }
 
-            AddLocations( response.Result!.HistoryItems );
+            AddLocations( response.Result!.HistoryItems
+                                  .Where( x => !MustHaveMessages || x.HasMessage ) );
+
+            WeakReferenceMessenger.Default.Send( new UpdateColumnWidthMessage(), "primary" );
 
             RefreshEnabled = true;
             StatusMessage.Send("Ready");
@@ -93,6 +97,31 @@ namespace J4JSoftware.InReach
         {
             get => _refreshEnabled;
             set => SetProperty(ref _refreshEnabled, value);
+        }
+
+        public bool MustHaveMessages
+        {
+            get => _mustHaveMessages;
+
+            set
+            {
+                var changed = value != _mustHaveMessages;
+
+                SetProperty( ref _mustHaveMessages, value );
+
+                if( !changed || !_mustHaveMessages )
+                    return;
+
+                if( SelectedPoint != null && !SelectedPoint.InReachLocation.HasMessage )
+                    SelectedPoint = null;
+
+                var locations = AllPoints.Where( x => x.InReachLocation.HasMessage )
+                                          .Select( x => x.InReachLocation )
+                                          .ToList();
+                AddLocations( locations );
+
+                UpdateMapCenter();
+            }
         }
 
         public RelayCommand ClearMapCommand { get; }
