@@ -90,7 +90,7 @@ namespace J4JSoftware.InReach
 
             var winSize = appWindow.Size;
             winSize.Height = winSize.Height > 720 ? 720 : winSize.Height;
-            winSize.Width = winSize.Width > 1000 ? 1000 : winSize.Width;
+            winSize.Width = winSize.Width > 1500 ? 1500 : winSize.Width;
 
             appWindow.Resize(winSize);
 

@@ -36,6 +36,16 @@ namespace J4JSoftware.InReach
             ViewModel = App.Current.Host.Services.GetRequiredService<HistoryViewModel>();
 
             Loaded += OnLoaded;
+
+            WeakReferenceMessenger.Default.Register<HistoryPage, UpdateColumnWidthMessage, string>(
+                this,
+                "primary",
+                UpdateColumnWidthHandler);
+        }
+
+        private void UpdateColumnWidthHandler( HistoryPage recipient, UpdateColumnWidthMessage message )
+        {
+            this.LocationsGrid.ColumnSizer.ResetAutoCalculationforAllColumns();
         }
 
         private HistoryViewModel ViewModel { get; }

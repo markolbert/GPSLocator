@@ -9,6 +9,8 @@ namespace J4JSoftware.InReach
 {
     public record ConfigurationChangedMessage(bool Changed);
 
+    public record UpdateColumnWidthMessage();
+
     public record SizeMessage(double Height, double Width)
     {
         public SizeMessage(Size size)

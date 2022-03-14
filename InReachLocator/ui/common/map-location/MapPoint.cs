@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
@@ -50,7 +49,6 @@ namespace J4JSoftware.InReach
         }
 
         public bool IsSelected { get; set; }
-
         public string Label { get; }
     }
 }
