@@ -20,6 +20,6 @@ public interface ILocation : INotifyPropertyChanged
     public string CompassUnits { get; }
 
     bool HasMessage { get; }
-    string Message { get; set; }
+    string TextMessage { get; set; }
     List<string> Recipients { get; set; }
 }

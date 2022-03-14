@@ -130,8 +130,8 @@ public class Location : ILocation
     public string SpeedUnits => ImperialUnits ? "mph" : "km/h";
     public string CompassUnits => CompassHeadings ? string.Empty : "degrees";
 
-    public bool HasMessage => !string.IsNullOrEmpty(Message);
-    public string Message { get; set; } = string.Empty;
+    public bool HasMessage => !string.IsNullOrEmpty(TextMessage);
+    public string TextMessage { get; set; } = string.Empty;
     public List<string> Recipients { get; set; } = new();
 
     [NotifyPropertyChangedInvocator ]
