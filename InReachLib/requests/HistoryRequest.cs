@@ -27,12 +27,12 @@ public class HistoryRequest<TLoc> : InReachRequest<History<TLoc>>
     public DateTime Start
     {
         get => _startDate;
-        set => SetQueryProperty( ref _startDate, value, x=>x.ToShortDateString() );
+        set => SetQueryProperty( ref _startDate, value, x=>x.ToString("o") );
     }
 
     public DateTime End
     {
         get => _endDate;
-        set => SetQueryProperty( ref _endDate, value, x=>x.ToShortDateString() );
+        set => SetQueryProperty( ref _endDate, value, x=>x.ToString("o") );
     }
 }
