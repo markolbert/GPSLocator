@@ -5,7 +5,6 @@
     xmlns:local="using:J4JSoftware.InReach"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:map="using:MapControl"
     mc:Ignorable="d">
 
     <Grid x:Name="OuterElement" 
@@ -58,6 +57,11 @@
                                     ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
             </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Icon="Help"
+                                    Tag="{Binding ResourceNames.HelpTag, Source={StaticResource AppConfiguration}}"/>
+            </NavigationView.FooterMenuItems>
 
             <Frame x:Name="ContentFrame"/>
 

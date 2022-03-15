@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using MapControl;
@@ -59,8 +61,7 @@ namespace J4JSoftware.InReach
 
             _initialized = true;
 
-            var appConfig = App.Current.Resources["AppConfiguration"] as AppConfigViewModel;
-            appConfig!.IsValid = await appConfig.Configuration.ValidateAsync();
+            _appConfigViewModel.IsValid = await _appConfigViewModel.Configuration.ValidateAsync();
 
             await ((ImageFileCache)TileImageLoader.Cache).Clean();
 
@@ -76,10 +77,16 @@ namespace J4JSoftware.InReach
             }
 
             var item = args.SelectedItemContainer as NavigationViewItem;
-            if( item?.Tag == null )
+            if( item?.Tag is not string tag )
                 return;
 
-            var pageType = ( item.Tag as string ) switch
+            if( tag.Equals( AppConfigViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase ) )
+            {
+                OpenUrl( AppConfigViewModel.ResourceNames.HelpLink );
+                return;
+            }
+
+            var pageType = tag switch
             {
                 LastKnownPage.PageName => typeof( LastKnownPage ),
                 HistoryPage.PageName => typeof( HistoryPage ),
@@ -91,6 +98,35 @@ namespace J4JSoftware.InReach
                 return;
 
             ContentFrame.Navigate(pageType);
+        }
+
+        private void OpenUrl(string url)
+        {
+            try
+            {
+                Process.Start(url);
+            }
+            catch
+            {
+                // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    url = url.Replace("&", "^&");
+                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        Process.Start("xdg-open", url);
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                        {
+                            Process.Start("open", url);
+                        }
+                        else
+                        {
+                            throw;
+                        }
+            }
         }
     }
 }
