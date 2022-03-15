@@ -60,9 +60,6 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Syncfusion.Calendar.WinUI" Version="19.4.0.55" />
-	<PackageReference Include="Syncfusion.Core.WinUI" Version="19.4.0.55" />
-	<PackageReference Include="Syncfusion.Editors.WinUI" Version="19.4.0.55" />
 	<PackageReference Include="Syncfusion.Grid.WinUI" Version="19.4.0.55" />
 	<PackageReference Include="Syncfusion.Licensing" Version="19.4.0.55" />
 	<PackageReference Include="XAML.MapControl" Version="7.2.0" />

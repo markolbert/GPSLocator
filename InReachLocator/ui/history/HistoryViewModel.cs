@@ -87,8 +87,6 @@ namespace J4JSoftware.InReach
             AddLocations( response.Result!.HistoryItems
                                   .Where( x => !MustHaveMessages || x.HasMessage ) );
 
-            WeakReferenceMessenger.Default.Send( new UpdateColumnWidthMessage(), "primary" );
-
             RefreshEnabled = true;
             StatusMessage.Send("Ready");
         }

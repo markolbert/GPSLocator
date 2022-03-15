@@ -8,8 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:sfgrid="using:Syncfusion.UI.Xaml.DataGrid"
-    xmlns:sfeditors="using:Syncfusion.UI.Xaml.Editors"
     mc:Ignorable="d"
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -34,12 +32,12 @@
                 <Setter Property="Margin" Value="14, 7, 14,0"/>
             </Style>
 
-            <Style TargetType="sfeditors:SfNumberBox">
+            <Style TargetType="NumberBox">
                 <Setter Property="Margin" Value="14,7,14,7"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="sfgrid:SfDataGrid">
+            <Style TargetType="ListView">
                 <Setter Property="Margin" Value="14,7,14,7"></Setter>
             </Style>
 
@@ -62,14 +60,13 @@
 
         <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
 
-        <sfeditors:SfNumberBox Grid.Row="0" Grid.Column="1"
-                                   Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
-                                   Minimum="1"
-                                   Maximum="31"
-                                   CustomFormat="#"
-                                   SmallChange="1"
-                                   LargeChange="7" 
-                                   UpDownPlacementMode="Inline"/>
+        <NumberBox Grid.Row="0" Grid.Column="1"
+                   Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
+                   Minimum="1"
+                   Maximum="31"
+                   SmallChange="1"
+                   LargeChange="7" 
+                   SpinButtonPlacementMode="Compact"/>
 
         <CheckBox Grid.Row="1" Grid.Column="1"
                   IsChecked="{x:Bind ViewModel.MustHaveMessages, Mode=TwoWay}">
@@ -95,34 +92,38 @@
             <Run Text=")"/>
         </TextBlock>
 
-        <sfgrid:SfDataGrid x:Name="LocationsGrid" 
-                               Grid.Row="5" Grid.Column="1"
-                               RowHeight="40"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Top"
-                               ItemsSource="{x:Bind ViewModel.AllPoints}"
-                               SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}"
-                               AutoGenerateColumns="False"
-                               AllowResizingColumns="True">
+        <Border Grid.Row="5" Grid.Column="1"
+                BorderThickness="2"
+                BorderBrush="DarkGray">
 
-            <sfgrid:SfDataGrid.Columns>
-                <sfgrid:GridDateColumn MappingName="InReachLocation.Timestamp" 
-                                       HeaderText="Timestamp"
-                                       ColumnWidthMode="Auto"
-                                       DisplayDateFormat="M/d/yyyy hh:mm:ss"/>
+            <ListView x:Name="LocationsGrid" 
+                      Grid.Row="5" Grid.Column="1"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      ItemsSource="{x:Bind ViewModel.AllPoints}"
+                      SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}">
 
-            </sfgrid:SfDataGrid.Columns>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="DarkGray"
+                                BorderThickness="0,0,0,2">
+                            <TextBlock Text="{Binding InReachLocation.Timestamp}"></TextBlock>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
 
-            <i:Interaction.Behaviors>
-                <ic:EventTriggerBehavior EventName="DoubleTapped">
-                    <ic:EventTriggerBehavior.Actions>
-                        <ic:InvokeCommandAction Command="{x:Bind ViewModel.MapPointSetCommand}"
-                                                    CommandParameter="{Binding ElementName=LocationsGrid, Path=SelectedItem}"/>
-                    </ic:EventTriggerBehavior.Actions>
-                </ic:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
+                <i:Interaction.Behaviors>
+                    <ic:EventTriggerBehavior EventName="DoubleTapped">
+                        <ic:EventTriggerBehavior.Actions>
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.MapPointSetCommand}"
+                                                        CommandParameter="{Binding ElementName=LocationsGrid, Path=SelectedItem}"/>
+                        </ic:EventTriggerBehavior.Actions>
+                    </ic:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
 
-        </sfgrid:SfDataGrid>
+            </ListView>
+
+        </Border>
 
         <Button Grid.Row="6" Grid.Column="1"
                 IsEnabled="{x:Bind ViewModel.MapHasPoints}"
