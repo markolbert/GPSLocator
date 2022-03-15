@@ -24,7 +24,6 @@ namespace J4JSoftware.InReach
         )
         : base(logger)
         {
-            RefreshCommand = new AsyncRelayCommand( RefreshHandlerAsync );
         }
 
         public async Task OnPageActivated()
@@ -32,9 +31,9 @@ namespace J4JSoftware.InReach
             await RefreshHandlerAsync();
         }
 
-        public AsyncRelayCommand RefreshCommand { get; }
+        //public AsyncRelayCommand RefreshCommand { get; }
 
-        private async Task RefreshHandlerAsync()
+        protected override async Task RefreshHandlerAsync()
         {
             if( !Configuration.IsValid )
             {

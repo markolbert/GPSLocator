@@ -21,12 +21,23 @@ namespace J4JSoftware.InReach
 
         private MapControl.Location? _mapCenter;
         private bool _deferUpdatingMapCenter;
+        private int _zoomLevel = 17;
 
         protected LocationMapViewModel(
             IJ4JLogger logger
         )
             : base( logger )
         {
+            RefreshCommand = new AsyncRelayCommand(RefreshHandlerAsync);
+            IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);
+            DecreaseZoomCommand = new RelayCommand(DecreaseZoomHandler);
+        }
+
+        public AsyncRelayCommand RefreshCommand { get; }
+
+        protected virtual Task RefreshHandlerAsync()
+        {
+            return Task.CompletedTask;
         }
 
         public ObservableCollection<MapPoint> AllPoints { get; } = new();
@@ -113,6 +124,32 @@ namespace J4JSoftware.InReach
         {
             get => _mapCenter;
             set => SetProperty( ref _mapCenter, value );
+        }
+
+        public int ZoomLevel
+        {
+            get => _zoomLevel;
+            set => SetProperty(ref _zoomLevel, value);
+        }
+
+        public RelayCommand IncreaseZoomCommand { get; }
+
+        private void IncreaseZoomHandler()
+        {
+            if (_zoomLevel >= 21)
+                return;
+
+            ZoomLevel++;
+        }
+
+        public RelayCommand DecreaseZoomCommand { get; }
+
+        private void DecreaseZoomHandler()
+        {
+            if (_zoomLevel <= 2)
+                return;
+
+            ZoomLevel--;
         }
 
         protected void UpdateMapCenter()

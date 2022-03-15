@@ -13,25 +13,6 @@
 
     <Grid Margin="7">
 
-        <Grid.Resources>
-
-            <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
-                <Setter Property="AutoCollapse" Value="True"/>
-                <Setter Property="LocationMemberPath" Value="DisplayPoint"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Bottom"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="map:MapItem">
-                            <map:Pushpin Content="{Binding Label, FallbackValue=?}"
-                                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-        </Grid.Resources>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
@@ -46,42 +27,9 @@
                                Margin="14,14,14,14"
                                DataContext="{x:Bind ViewModel.LastKnownPoint.InReachLocation, FallbackValue=null}" />
 
-        <map:Map Grid.Row="0" Grid.Column="1" 
-                 x:Name="TestMap" 
-                 ManipulationMode="All"
-                 Margin="14,14,14,14"
-                 HorizontalAlignment="Stretch"
-                 VerticalAlignment="Stretch"
-                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="17"
-                 Center="{x:Bind ViewModel.MapCenter}">
-
-            <map:MapTileLayer SourceName="OpenStreetMap"
-                              Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
-
-                <map:MapTileLayer.TileSource>
-                    <map:TileSource UriFormat="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-                </map:MapTileLayer.TileSource>
-
-            </map:MapTileLayer>
-
-            <map:MapItemsControl ItemsSource="{x:Bind ViewModel.MappedPoints}"
-                                 ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
-
-            <!--<map:Pushpin AutoCollapse="True" Content="DingDong!">
-                <map:Pushpin.Location>
-                    <map:Location Latitude="37.51179" Longitude="-122.26682"/>
-                </map:Pushpin.Location>
-            </map:Pushpin>-->
-
-        </map:Map>
-
-        <Button Grid.Row="1" Grid.Column="1" 
-                HorizontalAlignment="Right"
-                Margin="0,14,14,0"
-                IsEnabled="{ x:Bind ViewModel.Configuration.IsValid}"
-                Command="{x:Bind ViewModel.RefreshCommand}">
-            Refresh
-        </Button>
+        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="1"
+                                    DataContext="{x:Bind ViewModel}"/>
 
     </Grid>
+
 </Page>

@@ -41,21 +41,6 @@
                 <Setter Property="Margin" Value="14,7,14,7"></Setter>
             </Style>
 
-            <Style x:Key="MappedPointStyle" TargetType="map:MapItem">
-                <Setter Property="AutoCollapse" Value="True"/>
-                <Setter Property="LocationMemberPath" Value="DisplayPoint"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Bottom"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="map:MapItem">
-                            <map:Pushpin Content="{Binding Label, FallbackValue=?}"
-                                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
         </Grid.Resources>
 
         <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
@@ -97,7 +82,6 @@
                 BorderBrush="DarkGray">
 
             <ListView x:Name="LocationsGrid" 
-                      Grid.Row="5" Grid.Column="1"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       ItemsSource="{x:Bind ViewModel.AllPoints}"
@@ -141,31 +125,9 @@
                                Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
                                DataContext="{Binding ElementName=LocationsGrid, Path=SelectedItem.InReachLocation, FallbackValue=null}" />
 
-        <map:Map Grid.Row="0" Grid.Column="3" Grid.RowSpan="7"
-                 ManipulationMode="All"
-                 MinZoomLevel="2" 
-                 MaxZoomLevel="21" 
-                 Margin="14,7,7,14"
-                 ZoomLevel="12"
-                 Visibility="{x:Bind ViewModel.MapCenter, Converter={StaticResource NullToHiddenConverter}}"
-                 Center="{x:Bind ViewModel.MapCenter, Mode=TwoWay}">
+        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="7"
+                                    Margin="0,0,0,14"
+                                    DataContext="{x:Bind ViewModel}"/>
 
-            <!--<map:Map.Center>
-                <map:Location Latitude="36.977405" Longitude="-122.015833"/>
-            </map:Map.Center>-->
-
-            <map:MapTileLayer SourceName="OpenStreetMap"
-                              Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
-
-                <map:MapTileLayer.TileSource>
-                    <map:TileSource UriFormat="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-                </map:MapTileLayer.TileSource>
-
-            </map:MapTileLayer>
-
-            <map:MapItemsControl ItemsSource="{x:Bind ViewModel.MappedPoints}"
-                                 ItemContainerStyle="{StaticResource MappedPointStyle}"/>
-
-        </map:Map>
     </Grid>
 </Page>
