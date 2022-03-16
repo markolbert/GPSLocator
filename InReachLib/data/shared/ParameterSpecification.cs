@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace J4JSoftware.InReach;
+﻿namespace J4JSoftware.InReach;
 
 public class ParameterSpecification
 {

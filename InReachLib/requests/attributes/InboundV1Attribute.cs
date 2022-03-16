@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace J4JSoftware.InReach;
+﻿namespace J4JSoftware.InReach;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class InboundV1Attribute : InboundAttribute
