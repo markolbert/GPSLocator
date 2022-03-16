@@ -64,9 +64,7 @@ namespace J4JSoftware.InReach
 
             await Task.Run( async () =>
             {
-                var isValid = await ViewModel.Configuration.ValidateAsync( RequestStarted, RequestEnded );
-
-                _dQueue.TryEnqueue( () => { ViewModel.IsValid = isValid; } );
+                await ViewModel.Configuration.ValidateAsync( RequestStarted, RequestEnded );
             } );
 
             await ((ImageFileCache)TileImageLoader.Cache).Clean();

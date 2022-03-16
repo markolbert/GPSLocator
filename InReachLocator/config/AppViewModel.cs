@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 using J4JSoftware.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,9 +25,15 @@ namespace J4JSoftware.InReach
         public AppViewModel()
         {
             Configuration = App.Current.Host.Services.GetRequiredService<AppConfig>();
+            Configuration.PropertyChanged += ConfigurationOnPropertyChanged;
 
             var logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
             logger.LogEvent += Logger_LogEvent;
+        }
+
+        private void ConfigurationOnPropertyChanged( object? sender, PropertyChangedEventArgs e )
+        {
+            OnPropertyChanged(nameof(Configuration));
         }
 
         private void Logger_LogEvent(object? sender, NetEventArgs e)
@@ -36,45 +43,45 @@ namespace J4JSoftware.InReach
 
         public AppConfig Configuration { get; set; }
 
-        [JsonIgnore]
-        public bool IsValid
-        {
-            get=> _isValid;
+        //[JsonIgnore]
+        //public bool IsValid
+        //{
+        //    get=> _isValid;
 
-            set
-            {
-                var changed = value != _isValid;
-                _isValid = value;
+        //    set
+        //    {
+        //        var changed = value != _isValid;
+        //        _isValid = value;
 
-                if( changed )
-                    OnPropertyChanged( nameof( IsValid ) );
-            }
-        }
+        //        if( changed )
+        //            OnPropertyChanged( nameof( IsValid ) );
+        //    }
+        //}
 
         [JsonIgnore]
         public IndexedLogEvent.Collection LogEvents { get; } = new();
 
-        public bool UseImperialUnits
-        {
-            get => Configuration.UseImperialUnits;
+        //public bool UseImperialUnits
+        //{
+        //    get => Configuration.UseImperialUnits;
 
-            set
-            {
-                Configuration.UseImperialUnits = value;
-                OnPropertyChanged( nameof( UseImperialUnits ) );
-            }
-        }
+        //    set
+        //    {
+        //        Configuration.UseImperialUnits = value;
+        //        OnPropertyChanged( nameof( UseImperialUnits ) );
+        //    }
+        //}
 
-        public bool UseCompassHeadings
-        {
-            get => Configuration.UseCompassHeadings;
+        //public bool UseCompassHeadings
+        //{
+        //    get => Configuration.UseCompassHeadings;
 
-            set
-            {
-                Configuration.UseCompassHeadings = value;
-                OnPropertyChanged( nameof( UseCompassHeadings ) );
-            }
-        }
+        //    set
+        //    {
+        //        Configuration.UseCompassHeadings = value;
+        //        OnPropertyChanged( nameof( UseCompassHeadings ) );
+        //    }
+        //}
 
         #region Progress bar
 

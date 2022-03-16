@@ -47,7 +47,7 @@ namespace J4JSoftware.InReach
 
         protected override async Task RefreshHandlerAsync()
         {
-            if( !AppViewModel.IsValid )
+            if( !AppViewModel.Configuration.IsValid )
             {
                 AppViewModel.SetStatusMessage("Invalid configuration", StatusMessageType.Urgent);
                 return;

@@ -27,7 +27,7 @@ namespace J4JSoftware.InReach
 
         protected override async Task RefreshHandlerAsync()
         {
-            if( !AppViewModel.IsValid )
+            if( !AppViewModel.Configuration.IsValid )
             {
                 AppViewModel.SetStatusMessage( "Invalid configuration", StatusMessageType.Urgent );
                 return;
@@ -57,8 +57,8 @@ namespace J4JSoftware.InReach
             ClearMappedPoints();
 
             var lastLoc = response.Result.Locations[0];
-            lastLoc.CompassHeadings = AppViewModel.UseCompassHeadings;
-            lastLoc.ImperialUnits = AppViewModel.UseImperialUnits;
+            lastLoc.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
+            lastLoc.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
 
             var mapPoint = AddLocation( lastLoc );
             mapPoint.DisplayOnMap = MapPointDisplay.Fixed;

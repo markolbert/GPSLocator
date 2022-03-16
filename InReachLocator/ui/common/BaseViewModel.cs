@@ -16,7 +16,7 @@ public class BaseViewModel : ObservableRecipient
         Logger = logger;
         Logger.SetLoggedType( GetType() );
 
-        if( AppViewModel.IsValid )
+        if( AppViewModel.Configuration.IsValid )
             AppViewModel.SetStatusMessage("Ready" );
         else AppViewModel.SetStatusMessage("Invalid configuration", StatusMessageType.Important );
     }
