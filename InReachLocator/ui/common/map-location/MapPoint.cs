@@ -1,13 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.UI;
-using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach
 {

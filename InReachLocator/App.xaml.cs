@@ -1,11 +1,8 @@
 ﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Shapes;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Windows.Graphics.Printing;
 using Autofac;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.Logging;
@@ -14,10 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Serilog;
-using Path = ABI.Microsoft.UI.Xaml.Shapes.Path;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

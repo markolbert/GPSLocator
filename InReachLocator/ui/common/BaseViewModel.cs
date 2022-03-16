@@ -1,10 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using J4JSoftware.Logging;
-using Microsoft.Extensions.Options;
+﻿using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach;
 

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.Input;
 using Serilog.Events;
