@@ -245,6 +245,7 @@ namespace J4JSoftware.InReach
         public bool Validated
         {
             get => _validated;
+
             set
             {
                 SetProperty( ref _validated, value );
