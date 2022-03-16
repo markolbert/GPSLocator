@@ -62,10 +62,7 @@ namespace J4JSoftware.InReach
 
             _initialized = true;
 
-            await Task.Run( async () =>
-            {
-                await ViewModel.Configuration.ValidateAsync( RequestStarted, RequestEnded );
-            } );
+            await ViewModel.Configuration.ValidateAsync( RequestStarted, RequestEnded );
 
             await ((ImageFileCache)TileImageLoader.Cache).Clean();
 
