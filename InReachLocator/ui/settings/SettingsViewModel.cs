@@ -72,13 +72,7 @@ namespace J4JSoftware.InReach
 
             _appViewModel.SetStatusMessage("Saving configuration");
 
-            _appViewModel.Configuration.Website = Website;
-            _appViewModel.Configuration.UserName = UserName;
-            _appViewModel.Configuration.Password = Password;
-            _appViewModel.Configuration.IMEI = Imei;
-            _appViewModel.Configuration.UseCompassHeadings = CompassHeadings;
-            _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
-            _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
+            UpdateAppConfig();
 
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
             jsonOptions.Converters.Add( new JsonStringEnumConverter() );
@@ -92,6 +86,17 @@ namespace J4JSoftware.InReach
             _appViewModel.SetStatusMessage("Configuration saved");
             InReachConfigChanged = false;
             OtherConfigChanged = false;
+        }
+
+        private void UpdateAppConfig()
+        {
+            _appViewModel.Configuration.Website = Website;
+            _appViewModel.Configuration.UserName = UserName;
+            _appViewModel.Configuration.Password = Password;
+            _appViewModel.Configuration.IMEI = Imei;
+            _appViewModel.Configuration.UseCompassHeadings = CompassHeadings;
+            _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
+            _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
         }
 
         public AsyncRelayCommand ValidateCommand { get; }
@@ -111,8 +116,12 @@ namespace J4JSoftware.InReach
 
             Validated = await testConfig.ValidateAsync( RequestStarted, RequestEnded );
 
-            if ( Validated )
+            if( Validated )
+            {
+                UpdateAppConfig();
+                _appViewModel.Configuration.ValidationState = ValidationState.Validated;
                 _appViewModel.SetStatusMessage("Ready");
+            }
             else
                 _appViewModel.SetStatusMessage(( testConfig.ValidationState & ValidationState.CredentialsValid )
                                             == ValidationState.CredentialsValid
