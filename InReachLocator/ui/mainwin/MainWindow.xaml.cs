@@ -97,7 +97,7 @@ namespace J4JSoftware.InReach
 
             if( tag.Equals( AppViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase ) )
             {
-                OpenUrl( AppViewModel.ResourceNames.HelpLink );
+                OpenUrl( ViewModel.Configuration.HelpLink );
                 return;
             }
 

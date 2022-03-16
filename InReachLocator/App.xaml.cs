@@ -48,6 +48,7 @@ namespace J4JSoftware.InReach
                             .AddDependencyInjectionInitializers( SetupDependencyInjection )
                             .AddServicesInitializers( InitializeServices )
                             .AddUserConfigurationFile( "userConfig.json", optional: true, reloadOnChange: true )
+                            .AddApplicationConfigurationFile( "appConfig.json", optional: false )
                             .FilePathTrimmer( FilePathTrimmer );
 
             _buildLogger = hostConfig.Logger;

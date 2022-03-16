@@ -7,7 +7,6 @@
         public string LogViewerPageName => LogViewerPage.PageName;
 
         public string HelpTag => "Help";
-        public string HelpLink => "https://github.com/markolbert/InReach/blob/main/docs/main.md";
 
         public string OpenMapCopyrightUri => "https://www.openstreetmap.org/copyright";
 

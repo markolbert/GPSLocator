@@ -77,7 +77,20 @@ namespace J4JSoftware.InReach
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
             jsonOptions.Converters.Add( new JsonStringEnumConverter() );
 
-            var text = JsonSerializer.Serialize( _appViewModel.Configuration, jsonOptions );
+            // create a temporary object to write because we don't want to include
+            // appConfig stuff in the userConfig file
+            var tempConfig = new
+            {
+                Website = _appViewModel.Configuration.Website,
+                UserName = _appViewModel.Configuration.UserName,
+                EncryptedPassword = _appViewModel.Configuration.EncryptedPassword,
+                IMEI = _appViewModel.Configuration.IMEI,
+                UseCompassHeadings = _appViewModel.Configuration.UseCompassHeadings,
+                UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
+                MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel
+            };
+
+            var text = JsonSerializer.Serialize( tempConfig, jsonOptions );
             var dirPath = Path.GetDirectoryName( _userConfigPath );
 
             Directory.CreateDirectory( dirPath! );
