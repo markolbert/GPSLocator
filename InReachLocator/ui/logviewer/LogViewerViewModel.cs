@@ -12,7 +12,7 @@ namespace J4JSoftware.InReach
 {
     public class LogViewerViewModel : BaseViewModel
     {
-        private readonly AppConfigViewModel _appConfigViewModel;
+        private readonly AppViewModel _appViewModel;
 
         private LogEventLevel _minLevel = LogEventLevel.Verbose;
 
@@ -21,9 +21,9 @@ namespace J4JSoftware.InReach
         )
             : base( logger )
         {
-            _appConfigViewModel = ( App.Current.Resources[ "AppConfiguration" ] as AppConfigViewModel )!;
+            _appViewModel = ( App.Current.Resources[ "AppConfiguration" ] as AppViewModel )!;
 
-            FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( _appConfigViewModel.LogEvents );
+            FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( _appViewModel.LogEvents );
 
             LogLevels = Enum.GetValues<LogEventLevel>().ToList();
             ClearLogCommand = new RelayCommand( ClearLogHandler );
@@ -31,14 +31,14 @@ namespace J4JSoftware.InReach
 
         public void OnPageActivated()
         {
-            MinimumLogEventLevel = _appConfigViewModel.Configuration.MinimumLogLevel;
+            MinimumLogEventLevel = _appViewModel.Configuration.MinimumLogLevel;
         }
 
         public List<LogEventLevel> LogLevels { get; }
 
         public RelayCommand ClearLogCommand { get; }
 
-        private void ClearLogHandler() => _appConfigViewModel.LogEvents.Clear();
+        private void ClearLogHandler() => _appViewModel.LogEvents.Clear();
 
         public ObservableCollection<IndexedLogEvent> FilteredLogEvents { get; }
 
@@ -70,7 +70,7 @@ namespace J4JSoftware.InReach
                 FilteredLogEvents.RemoveAt(idx);
             }
 
-            var newItems = _appConfigViewModel.LogEvents
+            var newItems = _appViewModel.LogEvents
                                      .Where( x => x.LogEventLevel >= MinimumLogEventLevel
                                               && FilteredLogEvents.All( y => y.Index != x.Index ) )
                                      .ToList();

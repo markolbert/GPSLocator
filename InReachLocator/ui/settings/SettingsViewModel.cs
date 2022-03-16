@@ -17,15 +17,17 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using Serilog.Events;
 
 namespace J4JSoftware.InReach
 {
     public class SettingsViewModel : ObservableObject
     {
-        private readonly AppConfigViewModel _appConfigViewModel;
+        private readonly AppViewModel _appViewModel;
         private readonly string _userConfigPath;
         private readonly IJ4JLogger _logger;
+        private readonly DispatcherQueue _dQueue;
 
         private string _website = string.Empty;
         private string _userName = string.Empty;
@@ -43,11 +45,13 @@ namespace J4JSoftware.InReach
             IJ4JLogger logger
         )
         {
-            _appConfigViewModel = (App.Current.Resources["AppConfiguration"] as AppConfigViewModel)!;
+            _appViewModel = (App.Current.Resources["AppConfiguration"] as AppViewModel)!;
             _userConfigPath = host.UserConfigurationFiles.First();
 
             _logger = logger;
             _logger.SetLoggedType( GetType() );
+
+            _dQueue = DispatcherQueue.GetForCurrentThread();
 
             SaveCommand = new AsyncRelayCommand( SaveHandlerAsync );
             ValidateCommand = new AsyncRelayCommand( ValidateHandlerAsync );
@@ -60,7 +64,7 @@ namespace J4JSoftware.InReach
         {
             RevertHandler();
 
-            Validated = _appConfigViewModel.Configuration.IsValid;
+            Validated = _appViewModel.Configuration.IsValid;
             InReachConfigChanged = false;
             OtherConfigChanged = false;
         }
@@ -72,26 +76,26 @@ namespace J4JSoftware.InReach
             if( !Validated )
                 return;
 
-            StatusMessage.Send("Saving configuration");
+            _appViewModel.SetStatusMessage("Saving configuration");
 
-            _appConfigViewModel.Configuration.Website = Website;
-            _appConfigViewModel.Configuration.UserName = UserName;
-            _appConfigViewModel.Configuration.Password = Password;
-            _appConfigViewModel.Configuration.IMEI = Imei;
-            _appConfigViewModel.Configuration.UseCompassHeadings = CompassHeadings;
-            _appConfigViewModel.Configuration.UseImperialUnits = ImperialUnits;
-            _appConfigViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
+            _appViewModel.Configuration.Website = Website;
+            _appViewModel.Configuration.UserName = UserName;
+            _appViewModel.Configuration.Password = Password;
+            _appViewModel.Configuration.IMEI = Imei;
+            _appViewModel.Configuration.UseCompassHeadings = CompassHeadings;
+            _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
+            _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
 
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
             jsonOptions.Converters.Add( new JsonStringEnumConverter() );
 
-            var text = JsonSerializer.Serialize( _appConfigViewModel.Configuration, jsonOptions );
+            var text = JsonSerializer.Serialize( _appViewModel.Configuration, jsonOptions );
             var dirPath = Path.GetDirectoryName( _userConfigPath );
 
             Directory.CreateDirectory( dirPath! );
             await File.WriteAllTextAsync( _userConfigPath, text );
 
-            StatusMessage.Send("Configuration saved");
+            _appViewModel.SetStatusMessage("Configuration saved");
             InReachConfigChanged = false;
             OtherConfigChanged = false;
         }
@@ -100,7 +104,7 @@ namespace J4JSoftware.InReach
 
         private async Task ValidateHandlerAsync()
         {
-            var pBar = StatusMessage.SendWithIndeterminateProgressBar( "Validating configuration" );
+            _appViewModel.SetStatusMessage("Validating configuration" );
 
             // test the proposed configuration
             var testConfig = new InReachConfig()
@@ -111,32 +115,44 @@ namespace J4JSoftware.InReach
             var protector = App.Current.Host.Services.GetRequiredService<IJ4JProtection>();
             testConfig.Initialize( protector, _logger );
 
-            Validated = await testConfig.ValidateAsync();
-
-            ProgressBarMessage.EndProgressBar(pBar);
+            Validated = await testConfig.ValidateAsync( RequestStarted, RequestEnded );
 
             if ( Validated )
-                StatusMessage.Send("Ready");
+                _appViewModel.SetStatusMessage("Ready");
             else
-                StatusMessage.Send( ( testConfig.ValidationState & ValidationState.CredentialsValid )
-                                 == ValidationState.CredentialsValid
-                                        ? "Invalid IMEI"
-                                        : "Invalid user name and/or password",
-                                    StatusMessageType.Urgent );
+                _appViewModel.SetStatusMessage(( testConfig.ValidationState & ValidationState.CredentialsValid )
+                                            == ValidationState.CredentialsValid
+                                                   ? "Invalid IMEI"
+                                                   : "Invalid user name and/or password",
+                                               StatusMessageType.Urgent );
+        }
+
+        private void RequestStarted(object? sender, EventArgs e)
+        {
+            _dQueue.TryEnqueue(() =>
+            {
+                _appViewModel.SetStatusMessage("Validating");
+                _appViewModel.IndeterminateVisibility = Visibility.Visible;
+            });
+        }
+
+        private void RequestEnded(object? sender, EventArgs e)
+        {
+            _dQueue.TryEnqueue(() => { _appViewModel.IndeterminateVisibility = Visibility.Collapsed; });
         }
 
         public RelayCommand RevertCommand { get; }
 
         private void RevertHandler()
         {
-            Website = _appConfigViewModel.Configuration.Website;
-            UserName = _appConfigViewModel.Configuration.UserName;
-            Password = _appConfigViewModel.Configuration.Password;
-            Imei = _appConfigViewModel.Configuration.IMEI;
-            Validated = _appConfigViewModel.Configuration.IsValid;
-            CompassHeadings = _appConfigViewModel.Configuration.UseCompassHeadings;
-            ImperialUnits = _appConfigViewModel.Configuration.UseImperialUnits;
-            MinimumLogLevel = _appConfigViewModel.Configuration.MinimumLogLevel;
+            Website = _appViewModel.Configuration.Website;
+            UserName = _appViewModel.Configuration.UserName;
+            Password = _appViewModel.Configuration.Password;
+            Imei = _appViewModel.Configuration.IMEI;
+            Validated = _appViewModel.Configuration.IsValid;
+            CompassHeadings = _appViewModel.Configuration.UseCompassHeadings;
+            ImperialUnits = _appViewModel.Configuration.UseImperialUnits;
+            MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
 
             InReachConfigChanged = true;
         }

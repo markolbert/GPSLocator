@@ -16,18 +16,18 @@ public class BaseViewModel : ObservableRecipient
     {
         IsActive = true;
 
-        Configuration = (App.Current.Resources["AppConfiguration"] as AppConfigViewModel)!;
+        AppViewModel = (App.Current.Resources["AppConfiguration"] as AppViewModel)!;
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );
 
-        if( Configuration.IsValid )
-            StatusMessage.Send( "Ready" );
-        else StatusMessage.Send( "Invalid configuration", StatusMessageType.Important );
+        if( AppViewModel.IsValid )
+            AppViewModel.SetStatusMessage("Ready" );
+        else AppViewModel.SetStatusMessage("Invalid configuration", StatusMessageType.Important );
     }
 
     protected IJ4JLogger Logger { get; }
-    public AppConfigViewModel Configuration { get; }
+    public AppViewModel AppViewModel { get; }
 
     protected override void OnDeactivated()
     {

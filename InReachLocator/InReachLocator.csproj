@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <None Remove="ui\common\LocationControl.xaml" />
-    <None Remove="ui\common\OpenStreetMapControl.xaml" />
     <None Remove="ui\logviewer\LogViewerPage.xaml" />
   </ItemGroup>
 

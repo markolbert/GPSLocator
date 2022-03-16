@@ -22,6 +22,7 @@ namespace J4JSoftware.InReach
         private MapControl.Location? _mapCenter;
         private bool _deferUpdatingMapCenter;
         private int _zoomLevel = 17;
+        private bool _refreshEnabled;
 
         protected LocationMapViewModel(
             IJ4JLogger logger
@@ -38,6 +39,12 @@ namespace J4JSoftware.InReach
         protected virtual Task RefreshHandlerAsync()
         {
             return Task.CompletedTask;
+        }
+
+        public bool RefreshEnabled
+        {
+            get => _refreshEnabled;
+            set => SetProperty(ref _refreshEnabled, value);
         }
 
         public ObservableCollection<MapPoint> AllPoints { get; } = new();
