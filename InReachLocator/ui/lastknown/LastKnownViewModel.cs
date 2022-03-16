@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using MapControl;
@@ -12,11 +13,14 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach
 {
     public class LastKnownViewModel : LocationMapViewModel
     {
+        private readonly DispatcherQueue _dQueue;
+
         private MapPoint? _lastKnownPoint;
 
         public LastKnownViewModel(
@@ -24,6 +28,7 @@ namespace J4JSoftware.InReach
         )
         : base(logger)
         {
+            _dQueue = DispatcherQueue.GetForCurrentThread();
         }
 
         public async Task OnPageActivated()
@@ -31,26 +36,27 @@ namespace J4JSoftware.InReach
             await RefreshHandlerAsync();
         }
 
-        //public AsyncRelayCommand RefreshCommand { get; }
-
         protected override async Task RefreshHandlerAsync()
         {
-            if( !Configuration.IsValid )
+            if( !AppViewModel.IsValid )
             {
-                StatusMessage.Send( "Invalid configuration", StatusMessageType.Urgent );
+                AppViewModel.SetStatusMessage( "Invalid configuration", StatusMessageType.Urgent );
                 return;
             }
 
-            var pBar = StatusMessage.SendWithIndeterminateProgressBar("Updating last known location");
+            var request = new LastKnownLocationRequest<Location>( AppViewModel.Configuration, Logger );
+            request.Started += RequestStarted;
+            request.Ended += RequestEnded;
 
-            var request = new LastKnownLocationRequest<Location>( Configuration.Configuration, Logger );
-            var response = await request.ExecuteAsync();
-
-            ProgressBarMessage.EndProgressBar(pBar);
-
-            if ( !response.Succeeded || response.Result!.Locations.Count == 0 )
+            InReachResponse<LastKnownLocation<Location>>? response = null;
+            await Task.Run( async () =>
             {
-                StatusMessage.Send( "Couldn't retrieve last known location", StatusMessageType.Important );
+                response = await request.ExecuteAsync();
+            } );
+
+            if ( !response!.Succeeded || response.Result!.Locations.Count == 0 )
+            {
+                AppViewModel.SetStatusMessage("Couldn't retrieve last known location", StatusMessageType.Important );
 
                 if ( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
@@ -62,15 +68,34 @@ namespace J4JSoftware.InReach
             ClearMappedPoints();
 
             var lastLoc = response.Result.Locations[0];
-            lastLoc.CompassHeadings = Configuration.UseCompassHeadings;
-            lastLoc.ImperialUnits = Configuration.UseImperialUnits;
+            lastLoc.CompassHeadings = AppViewModel.UseCompassHeadings;
+            lastLoc.ImperialUnits = AppViewModel.UseImperialUnits;
 
             var mapPoint = AddLocation( lastLoc );
             mapPoint.DisplayOnMap = MapPointDisplay.Fixed;
 
             LastKnownPoint = MappedPoints[ 0 ];
 
-            StatusMessage.Send( "Ready" );
+            AppViewModel.SetStatusMessage("Ready" );
+        }
+
+        private void RequestStarted( object? sender, EventArgs e )
+        {
+            _dQueue.TryEnqueue( () =>
+            {
+                AppViewModel.SetStatusMessage( "Updating last known location" );
+                AppViewModel.IndeterminateVisibility = Visibility.Visible;
+                RefreshEnabled = false;
+            });
+        }
+
+        private void RequestEnded(object? sender, EventArgs e)
+        {
+            _dQueue.TryEnqueue( () =>
+            {
+                AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
+                RefreshEnabled = true;
+            } );
         }
 
         public MapPoint? LastKnownPoint

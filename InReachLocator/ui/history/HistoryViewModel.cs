@@ -10,12 +10,15 @@ using MapControl;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.InReach
 {
     public class HistoryViewModel : LocationMapViewModel
     {
+        private readonly DispatcherQueue _dQueue;
+
         private DateTimeOffset _endDate;
         private double _daysBack = 7;
         private bool _refreshEnabled;
@@ -27,20 +30,21 @@ namespace J4JSoftware.InReach
         )
         : base(logger)
         {
+            _dQueue = DispatcherQueue.GetForCurrentThread();
+
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds( 1 ) };
             timer.Tick += Timer_Tick;
             timer.Start();
 
             EndDate = DateTimeOffset.Now;
 
-            RefreshCommand = new AsyncRelayCommand( RefreshCommandHandler );
             MapPointSetCommand = new RelayCommand<MapPoint>( MapPointSetHandler );
             ClearMapCommand = new RelayCommand( ClearMapHandler );
         }
 
         public async Task OnPageActivated()
         {
-            await RefreshCommandHandler();
+            await RefreshHandlerAsync();
         }
 
         private void Timer_Tick(object? sender, object e)
@@ -48,32 +52,32 @@ namespace J4JSoftware.InReach
             EndDate = DateTimeOffset.Now;
         }
 
-        public AsyncRelayCommand RefreshCommand { get; }
-
-        private async Task RefreshCommandHandler()
+        protected override async Task RefreshHandlerAsync()
         {
-            if( !Configuration.IsValid )
+            if( !AppViewModel.IsValid )
             {
-                StatusMessage.Send("Invalid configuration", StatusMessageType.Urgent);
+                AppViewModel.SetStatusMessage("Invalid configuration", StatusMessageType.Urgent);
                 return;
             }
 
-            RefreshEnabled = false;
-
-            var request = new HistoryRequest<Location>( Configuration.Configuration, Logger )
+            var request = new HistoryRequest<Location>(AppViewModel.Configuration, Logger)
             {
-                Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
+                Start = StartDate.UtcDateTime,
+                End = EndDate.UtcDateTime
             };
 
-            var pBar = StatusMessage.SendWithIndeterminateProgressBar("Updating history");
+            request.Started += RequestStarted;
+            request.Ended += RequestEnded;
 
-            var response = await request.ExecuteAsync();
-
-            ProgressBarMessage.EndProgressBar(pBar);
-
-            if ( !response.Succeeded )
+            InReachResponse<History<Location>>? response = null;
+            await Task.Run(async () =>
             {
-                StatusMessage.Send("Couldn't retrieve history", StatusMessageType.Important);
+                response = await request.ExecuteAsync();
+            });
+
+            if ( !response!.Succeeded )
+            {
+                AppViewModel.SetStatusMessage("Couldn't retrieve history", StatusMessageType.Important);
 
                 if ( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
@@ -88,13 +92,26 @@ namespace J4JSoftware.InReach
                                   .Where( x => !MustHaveMessages || x.HasMessage ) );
 
             RefreshEnabled = true;
-            StatusMessage.Send("Ready");
+            AppViewModel.SetStatusMessage("Ready");
         }
 
-        public bool RefreshEnabled
+        private void RequestStarted(object? sender, EventArgs e)
         {
-            get => _refreshEnabled;
-            set => SetProperty(ref _refreshEnabled, value);
+            _dQueue.TryEnqueue(() =>
+            {
+                AppViewModel.SetStatusMessage("Updating history");
+                AppViewModel.IndeterminateVisibility = Visibility.Visible;
+                RefreshEnabled = false;
+            });
+        }
+
+        private void RequestEnded(object? sender, EventArgs e)
+        {
+            _dQueue.TryEnqueue( () =>
+            {
+                AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
+                RefreshEnabled = true;
+            });
         }
 
         public bool MustHaveMessages

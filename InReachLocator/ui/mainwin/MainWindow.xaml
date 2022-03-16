@@ -68,17 +68,21 @@
         </NavigationView>
 
         <ProgressBar Grid.Row="1" Grid.Column="0"
-                     Visibility="{Binding ProgressBarVisibility, Source={StaticResource AppConfiguration} }"
-                     HorizontalAlignment="Left"
-                     IsIndeterminate="{Binding ProgressBarState.Indeterminate, FallbackValue=false, Source={StaticResource AppConfiguration} }"
-                     Maximum="{Binding ProgressBarMaximum, Source={StaticResource AppConfiguration} }"
-                     Value="{Binding ProgressBarValue, Source={StaticResource AppConfiguration} }"/>
+                     x:Name="Determinant"
+                     Visibility="{Binding DeterminateVisibility, Source={StaticResource AppConfiguration}}"
+                     IsIndeterminate="False"
+                     Maximum="{x:Bind ViewModel.ProgressBarMaximum}"
+                     Value="{x:Bind ViewModel.ProgressBarValue}"/>
+
+        <ProgressBar Grid.Row="1" Grid.Column="0"
+                     x:Name="Indeterminate"
+                     Visibility="{Binding IndeterminateVisibility, Source={StaticResource AppConfiguration}}"
+                     IsIndeterminate="true"/>
 
         <TextBlock Grid.Row="1" Grid.Column="1"
-                   Visibility="{Binding StatusMessageVisibility, Source={StaticResource AppConfiguration} }"
                    HorizontalAlignment="Right"
-                   Text="{Binding StatusMessage.Message, Source={StaticResource AppConfiguration}, FallbackValue=null }"
-                   Style="{Binding StatusMessage.MessageStyle, Source={StaticResource AppConfiguration}, FallbackValue=null}"/>
+                   Text="{Binding StatusMessage, Source={StaticResource AppConfiguration}}"
+                   Style="{Binding StatusMessageStyle, Source={StaticResource AppConfiguration}}"/>
 
     </Grid>
 

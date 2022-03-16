@@ -9,6 +9,7 @@ using MapControl;
 using MapControl.Caching;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -24,7 +25,7 @@ namespace J4JSoftware.InReach
     public sealed partial class MainWindow : Window
     {
         private readonly IJ4JLogger _logger;
-        private readonly AppConfigViewModel _appConfigViewModel;
+        private readonly DispatcherQueue _dQueue;
 
         private bool _initialized;
 
@@ -37,22 +38,26 @@ namespace J4JSoftware.InReach
             //TileImageLoader.Cache = new FileDbCache(TileImageLoader.DefaultCacheFolder);
             //TileImageLoader.Cache = new SQLiteCache(TileImageLoader.DefaultCacheFolder);
 
-            BingMapsTileLayer.ApiKey = "Ameqf9cCPjqwawIcun91toGQ-F85jSDu8-XyEFeHEdTDr60dV9ySmZt800aHj6PS";
+            //BingMapsTileLayer.ApiKey = "Ameqf9cCPjqwawIcun91toGQ-F85jSDu8-XyEFeHEdTDr60dV9ySmZt800aHj6PS";
         }
 
         public MainWindow()
         {
             this.InitializeComponent();
 
-            _appConfigViewModel = (App.Current.Resources["AppConfiguration"] as AppConfigViewModel)!;
+            ViewModel = (App.Current.Resources["AppConfiguration"] as AppViewModel)!;
 
             Title = "InReach Locator";
 
             _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
             _logger.SetLoggedType( GetType() );
 
+            _dQueue = DispatcherQueue.GetForCurrentThread();
+
             this.Activated += MainWindow_Activated;
         }
+
+        private AppViewModel ViewModel { get; }
 
         private async void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
@@ -61,11 +66,30 @@ namespace J4JSoftware.InReach
 
             _initialized = true;
 
-            _appConfigViewModel.IsValid = await _appConfigViewModel.Configuration.ValidateAsync();
+            await Task.Run( async () =>
+            {
+                var isValid = await ViewModel.Configuration.ValidateAsync( RequestStarted, RequestEnded );
+
+                _dQueue.TryEnqueue( () => { ViewModel.IsValid = isValid; } );
+            } );
 
             await ((ImageFileCache)TileImageLoader.Cache).Clean();
 
             OuterElement.DataContext = App.Current.Host.Services.GetRequiredService<MainViewModel>();
+        }
+
+        private void RequestStarted(object? sender, EventArgs e)
+        {
+            _dQueue.TryEnqueue(() =>
+            {
+                ViewModel.SetStatusMessage("Validating configuration");
+                ViewModel.IndeterminateVisibility = Visibility.Visible;
+            });
+        }
+
+        private void RequestEnded(object? sender, EventArgs e)
+        {
+            _dQueue.TryEnqueue(() => { ViewModel.IndeterminateVisibility = Visibility.Collapsed; });
         }
 
         private void NavigationView_OnSelectionChanged( NavigationView sender, NavigationViewSelectionChangedEventArgs args )
@@ -80,9 +104,9 @@ namespace J4JSoftware.InReach
             if( item?.Tag is not string tag )
                 return;
 
-            if( tag.Equals( AppConfigViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase ) )
+            if( tag.Equals( AppViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase ) )
             {
-                OpenUrl( AppConfigViewModel.ResourceNames.HelpLink );
+                OpenUrl( AppViewModel.ResourceNames.HelpLink );
                 return;
             }
 

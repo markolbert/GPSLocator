@@ -90,43 +90,55 @@ public class InReachConfig
     [JsonIgnore]
     public bool IsValid => ( ValidationState & ValidationState.Validated ) == ValidationState.Validated;
 
-    public async Task<bool> ValidateAsync()
+    public async Task<bool> ValidateAsync( EventHandler startEvent, EventHandler endEvent )
     {
         if( ( ValidationState & ValidationState.Validated ) == ValidationState.Validated )
             return true;
 
         if( _logger == null || EncryptedPassword.Protector == null )
         {
-            _logger?.Error("Configuration not initialized");
+            _logger?.Error( "Configuration not initialized" );
             return false;
         }
 
         if( ( ValidationState & ValidationState.CredentialsValid ) == ValidationState.CredentialsValid )
-            return await ValidateImeiAsync();
+            return await ValidateImeiAsync( startEvent, endEvent );
 
-        if( !await ValidateCredentialsAsync() )
+        if( !await ValidateCredentialsAsync( startEvent, endEvent ) )
             return false;
 
-        return await ValidateImeiAsync();
+        return await ValidateImeiAsync( startEvent, endEvent );
     }
 
-    private async Task<bool> ValidateCredentialsAsync()
+    private async Task<bool> ValidateCredentialsAsync( EventHandler startEvent, EventHandler endEvent )
     {
         var testReq = new DeviceConfigRequest(this, _logger!);
+        testReq.Started += startEvent;
+        testReq.Ended += endEvent;
+
         var result = await testReq.ExecuteAsync();
 
-        if( result.Succeeded )
+        testReq.Started -= startEvent;
+        testReq.Ended -= endEvent;
+
+        if ( result.Succeeded )
             ValidationState |= ValidationState.CredentialsValid;
 
         return result.Succeeded;
     }
 
-    private async Task<bool> ValidateImeiAsync()
+    private async Task<bool> ValidateImeiAsync(EventHandler startEvent, EventHandler endEvent)
     {
         var testReq = new LastKnownLocationRequest<Location>( this, _logger! );
+        testReq.Started += startEvent;
+        testReq.Ended += endEvent;
+
         var response = await testReq.ExecuteAsync();
 
-        if( !response.Succeeded || response.Result!.Locations.Count <= 0 )
+        testReq.Started -= startEvent;
+        testReq.Ended -= endEvent;
+
+        if ( !response.Succeeded || response.Result!.Locations.Count <= 0 )
             return false;
 
         ValidationState |= ValidationState.ImeiValid;

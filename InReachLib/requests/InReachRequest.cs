@@ -18,6 +18,9 @@ namespace J4JSoftware.InReach
     public class InReachRequest<T>
         where T : class, new()
     {
+        public event EventHandler? Started;
+        public event EventHandler? Ended;
+
         private readonly Dictionary<string, string> _queryStrings = new( StringComparer.OrdinalIgnoreCase );
 
         protected InReachRequest(
@@ -74,6 +77,8 @@ namespace J4JSoftware.InReach
 
         public async Task<InReachResponse<T>> ExecuteAsync()
         {
+            Started?.Invoke(this, EventArgs.Empty);
+            
             var website = Configuration.Website.Replace( "http://", "", StringComparison.OrdinalIgnoreCase )
                                        .Replace( "https://", "", StringComparison.OrdinalIgnoreCase );
 
@@ -112,6 +117,8 @@ namespace J4JSoftware.InReach
                     HttpResponseCode = httpEx.StatusCode ?? HttpStatusCode.NotFound
                 };
 
+                Ended?.Invoke(this, EventArgs.Empty  );
+
                 return retVal;
             }
             catch ( Exception ex )
@@ -125,6 +132,8 @@ namespace J4JSoftware.InReach
                 Logger.Error<string?>(
                     $"{Direction}/V{Version}/{ServiceGroup}/{Version} request failed, message was {0}",
                     ex.Message);
+
+                Ended?.Invoke(this, EventArgs.Empty);
 
                 return retVal;
             }
@@ -153,6 +162,8 @@ namespace J4JSoftware.InReach
                 if( retVal.Error != null )
                     retVal.Error.HttpResponseCode = response.StatusCode;
 
+                Ended?.Invoke(this, EventArgs.Empty);
+
                 return retVal;
             }
 
@@ -173,6 +184,8 @@ namespace J4JSoftware.InReach
                                             typeof( T ),
                                             ex.Message );
             }
+
+            Ended?.Invoke(this, EventArgs.Empty);
 
             return retVal;
         }
