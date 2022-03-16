@@ -1,15 +1,32 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using J4JSoftware.DependencyInjection;
+using J4JSoftware.InReach.Annotations;
 using J4JSoftware.Logging;
 
 namespace J4JSoftware.InReach;
 
-public class InReachConfig
+public class InReachConfig : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     private string _website = string.Empty;
     private string _imei = string.Empty;
     private string _userName = string.Empty;
+    private ValidationState _validationState = ValidationState.Unvalidated;
     private IJ4JLogger? _logger;
+
+    public InReachConfig()
+    {
+        EncryptedPassword = new EncryptedString();
+        EncryptedPassword.PropertyChanged += EncryptedPasswordOnPropertyChanged;
+    }
+
+    private void EncryptedPasswordOnPropertyChanged( object? sender, PropertyChangedEventArgs e )
+    {
+        OnPropertyChanged( nameof( EncryptedPassword ) );
+    }
 
     public void Initialize( IJ4JProtection protector, IJ4JLogger logger )
     {
@@ -26,8 +43,7 @@ public class InReachConfig
         set
         {
             var changed = !string.Equals( _website, value, StringComparison.OrdinalIgnoreCase );
-
-            _website = value;
+            SetProperty( ref _website, value );
 
             if( changed )
                 ValidationState = ValidationState.Unvalidated;
@@ -41,8 +57,7 @@ public class InReachConfig
         set
         {
             var changed = !string.Equals(_imei, value, StringComparison.OrdinalIgnoreCase);
-
-            _imei = value;
+            SetProperty( ref _imei, value );
 
             if( changed )
                 ValidationState &= ~ValidationState.ImeiValid;
@@ -56,8 +71,7 @@ public class InReachConfig
         set
         {
             var changed = !string.Equals(_userName, value, StringComparison.OrdinalIgnoreCase);
-
-            _userName = value;
+            SetProperty( ref _userName, value );
 
             if (changed)
                 ValidationState = ValidationState.Unvalidated;
@@ -80,11 +94,23 @@ public class InReachConfig
         }
     }
 
-    public EncryptedString EncryptedPassword { get; } = new();
+    public EncryptedString EncryptedPassword { get; }
 
-    [JsonIgnore]
-    public ValidationState ValidationState { get; private set; }
-    
+    [ JsonIgnore ]
+    public ValidationState ValidationState
+    {
+        get => _validationState;
+
+        set
+        {
+            var changed = _validationState != value;
+            SetProperty( ref _validationState, value );
+
+            if( changed )
+                OnPropertyChanged( nameof( IsValid ) );
+        }
+    }
+
     [JsonIgnore]
     public bool IsValid => ( ValidationState & ValidationState.Validated ) == ValidationState.Validated;
 
@@ -142,5 +168,15 @@ public class InReachConfig
         ValidationState |= ValidationState.ImeiValid;
 
         return true;
+    }
+
+    [ NotifyPropertyChangedInvocator ]
+    protected virtual void OnPropertyChanged( [ CallerMemberName ] string? propertyName = null ) =>
+        PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
+
+    protected void SetProperty<T>( ref T field, T value, [ CallerMemberName ] string? propertyName = null )
+    {
+        field = value;
+        OnPropertyChanged( propertyName );
     }
 }
