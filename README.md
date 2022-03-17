@@ -1,6 +1,6 @@
-# InReachLocator
+# GPSLocator
 
-InReachLocator is a simple Windows desktop app for interacting with your InReach account. It lets you keep track of an InReach device's last known location, and its 31 day history of tracking points and messages.
+GPSLocator is a simple Windows desktop app for interacting with your GPS device. It currently supports Garmin's InReach, and  lets you keep track of a device's last known location, and its history of tracking points and messages.
 
 Garmin, InReach and associated trademarks are copyright Garmin.
 
