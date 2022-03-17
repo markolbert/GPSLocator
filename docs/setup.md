@@ -12,7 +12,7 @@ To configure the app click the gear icon in the upper left corner of the window.
 
 ![settings page](assets/settings.png)
 
-Fill out  the fields with information for your InReach device. Note that the app works with one InReach device at a time.
+Fill out  the fields with information for your InReach device. Note that the app works with one device at a time.
 
 * The **User Name** and **Password** fields come from the web services access account you [set up with Garmin](web-services.md).
 * The **IMEI** field identifies your specific InReach device. You can find it on the [Devices](https://explore.garmin.com/Devices) website page. You'll have to log in with your regular Garmin credentials to get to the page.

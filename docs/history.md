@@ -6,13 +6,13 @@ This displays the history of tracking points:
 
 ![history initial view](assets/history-initial.png)
 
-It may take a few seconds to populate because data has to be retrieved from Garmin's servers.
+It may take a few seconds to populate because data has to be retrieved from servers.
 
 The **End Date** and **Start Date** fields will update, once a second, to show you the timespan that was retrieved or will be retrieved when you click the **Refresh** button.
 
 By default the history page retrieves everything from the past week. That time frame can be increased by adjusting the Days Back setting. After changing Days Back click the Refresh button to apply the new time frame.
 
-You can also limit what's retrieved to only those tracking points associated with messages sent from the InReach device (all InReach messages are automatically associated with a tracking point whether or not you have tracking enabled on the InReach device).
+You can also limit what's retrieved to only those tracking points associated with messages sent from the device (all InReach messages are automatically associated with a tracking point whether or not you have tracking enabled on the InReach device).
 
 Checking the box will delete any previously-retrieved points that do **not** have messages associated with them. However, **unchecking** the box will not automatically retrieve "unmessaged" points. You have to click the Refresh button to do that.
 

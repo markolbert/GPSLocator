@@ -1,6 +1,6 @@
 # Setting Up Your Garmin Web Services Account
 
-This is a brief discussion of how to set up a web services account with Garmin. It's free with a professional subscription (and not available with a personal subscription, which is why **InReach Locator** won't work with a personal subscription).
+This is a brief discussion of how to set up a web services account with Garmin. It's free with a professional subscription (and not available with a personal subscription, which is why **GPS Locator** won't work with a personal subscription).
 
 *These instructions may not be complete* because I'm writing them after having set up my own account. Unfortunately, while there is documentation available on the Garmin site about how to do this they're hard to find. If all else fails contact Garmin technical support and ask them for instructions on setting up a web services account.
 
