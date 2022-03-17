@@ -1,0 +1,132 @@
+﻿<Page
+    x:Class="J4JSoftware.GPSLocator.HistoryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:J4JSoftware.GPSLocator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
+    mc:Ignorable="d"
+    x:DefaultBindMode="OneWay"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid
+          ColumnDefinitions="Auto, Auto, Auto, *"
+          RowDefinitions="Auto, Auto, Auto, Auto, Auto, *, Auto">
+
+        <Grid.Resources>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+
+            <Style TargetType="CheckBox">
+                <Setter Property="Margin" Value="14, 7, 14,0"/>
+            </Style>
+
+            <Style TargetType="NumberBox">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="ListView">
+                <Setter Property="Margin" Value="14,7,14,7"></Setter>
+            </Style>
+
+        </Grid.Resources>
+
+        <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
+
+        <NumberBox Grid.Row="0" Grid.Column="1"
+                   Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
+                   Minimum="1"
+                   Maximum="31"
+                   SmallChange="1"
+                   LargeChange="7" 
+                   SpinButtonPlacementMode="Compact"/>
+
+        <CheckBox Grid.Row="1" Grid.Column="1"
+                  IsChecked="{x:Bind ViewModel.MustHaveMessages, Mode=TwoWay}">
+            Only points with messages
+        </CheckBox>
+
+        <Button Grid.Row="2" Grid.Column="1"
+                    IsEnabled="{x:Bind ViewModel.RefreshEnabled}"
+                    Command="{x:Bind ViewModel.RefreshCommand}">
+            Refresh
+        </Button>
+
+        <TextBlock Grid.Row="3" Grid.Column="0">End Date</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0">Start Date</TextBlock>
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0"
+                   VerticalAlignment="Top">
+            <Run Text="Tracked Points ("/>
+            <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
+            <Run Text=")"/>
+        </TextBlock>
+
+        <Border Grid.Row="5" Grid.Column="1"
+                BorderThickness="2"
+                BorderBrush="DarkGray">
+
+            <ListView x:Name="LocationsGrid" 
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      ItemsSource="{x:Bind ViewModel.AllPoints}"
+                      SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="DarkGray"
+                                BorderThickness="0,0,0,2">
+                            <TextBlock Text="{Binding DeviceLocation.Timestamp}"></TextBlock>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <i:Interaction.Behaviors>
+                    <ic:EventTriggerBehavior EventName="DoubleTapped">
+                        <ic:EventTriggerBehavior.Actions>
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.MapPointSetCommand}"
+                                                        CommandParameter="{Binding ElementName=LocationsGrid, Path=SelectedItem}"/>
+                        </ic:EventTriggerBehavior.Actions>
+                    </ic:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
+
+            </ListView>
+
+        </Border>
+
+        <Button Grid.Row="6" Grid.Column="1"
+                IsEnabled="{x:Bind ViewModel.MapHasPoints}"
+                Command="{x:Bind ViewModel.ClearMapCommand}">
+            Clear Mapped Points
+        </Button>
+
+        <TextBlock Grid.Row="0" Grid.Column="2"
+                   HorizontalAlignment="Center"
+                   Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}">
+            Details for Selected Point
+        </TextBlock>
+
+        <local:LocationControl Grid.Row="1" Grid.Column="2"  Grid.RowSpan="6"
+                               Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
+                               DataContext="{Binding ElementName=LocationsGrid, Path=SelectedItem.DeviceLocation, FallbackValue=null}" />
+
+        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="7"
+                                    Margin="0,0,0,14"
+                                    DataContext="{x:Bind ViewModel}"/>
+
+    </Grid>
+</Page>

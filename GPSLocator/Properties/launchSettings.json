@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GPSLocator (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "GPSLocator (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

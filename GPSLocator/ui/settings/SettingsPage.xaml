@@ -1,0 +1,130 @@
+﻿<Page
+    x:Class="J4JSoftware.GPSLocator.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:J4JSoftware.GPSLocator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:DefaultBindMode="OneWay"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Margin="7">
+
+        <Grid.Resources>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="14,7,14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="14, 7, 14,7"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="CheckBox">
+                <Setter Property="Margin" Value="14, 2, 14,0"/>
+            </Style>
+
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="14, 2, 14,0"/>
+            </Style>
+
+            <Style TargetType="PasswordBox">
+                <Setter Property="Margin" Value="14, 7, 14,0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0">Website</TextBlock>
+
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+                 Text="{x:Bind ViewModel.Website, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0">User Name</TextBlock>
+
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                 Text="{x:Bind ViewModel.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="0">Password</TextBlock>
+
+        <PasswordBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+                     Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0">Device IMEI</TextBlock>
+
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
+                 Text="{x:Bind ViewModel.Imei, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0">Minimum log level</TextBlock>
+
+        <ComboBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+                  ItemsSource="{x:Bind ViewModel.LogLevels}"
+                  SelectedItem="{x:Bind ViewModel.MinimumLogLevel, Mode=TwoWay}"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0">Launch Page</TextBlock>
+
+        <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"
+                  ItemsSource="{Binding PageNames, Source={StaticResource AppViewModel}}"
+                  SelectedItem="{x:Bind ViewModel.LaunchPage, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="local:SingleSelectableItem">
+                    <TextBlock Text="{x:Bind Label}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4"
+                  IsChecked="{x:Bind ViewModel.ImperialUnits, Mode=TwoWay}">
+            Use imperial units
+        </CheckBox>
+
+        <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4"
+                  IsChecked="{x:Bind ViewModel.CompassHeadings, Mode=TwoWay}">
+            Use compass headings
+        </CheckBox>
+
+        <Button Grid.Row="8" Grid.Column="1"
+                IsEnabled="{x:Bind ViewModel.DeviceConfigChanged}"
+                HorizontalAlignment="Center"
+                Command="{x:Bind ViewModel.ValidateCommand}">
+            Validate
+        </Button>
+
+        <Button Grid.Row="8" Grid.Column="2"  
+                HorizontalAlignment="Center"
+                Command="{x:Bind ViewModel.RevertCommand}"
+                IsEnabled="{x:Bind ViewModel.DeviceConfigChanged}">
+            Revert
+        </Button>
+
+        <Button Grid.Row="8" Grid.Column="3"
+                HorizontalAlignment="Center"
+                IsEnabled="{x:Bind ViewModel.CanSave}"
+                Command="{x:Bind ViewModel.SaveCommand}">
+            Save
+        </Button>
+
+    </Grid>
+</Page>
