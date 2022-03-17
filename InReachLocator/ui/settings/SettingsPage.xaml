@@ -27,6 +27,10 @@
                 <Setter Property="Margin" Value="14, 2, 14,0"/>
             </Style>
 
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="14, 2, 14,0"/>
+            </Style>
+
             <Style TargetType="PasswordBox">
                 <Setter Property="Margin" Value="14, 7, 14,0"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -36,12 +40,13 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -72,37 +77,49 @@
         <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
                  Text="{x:Bind ViewModel.Imei, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4"
+        <TextBlock Grid.Row="4" Grid.Column="0">Minimum log level</TextBlock>
+
+        <ComboBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+                  ItemsSource="{x:Bind ViewModel.LogLevels}"
+                  SelectedItem="{x:Bind ViewModel.MinimumLogLevel, Mode=TwoWay}"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0">Launch Page</TextBlock>
+
+        <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"
+                  ItemsSource="{Binding PageNames, Source={StaticResource AppViewModel}}"
+                  SelectedItem="{x:Bind ViewModel.LaunchPage, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="local:SingleSelectableItem">
+                    <TextBlock Text="{x:Bind Label}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4"
                   IsChecked="{x:Bind ViewModel.ImperialUnits, Mode=TwoWay}">
             Use imperial units
         </CheckBox>
 
-        <CheckBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4"
+        <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4"
                   IsChecked="{x:Bind ViewModel.CompassHeadings, Mode=TwoWay}">
             Use compass headings
         </CheckBox>
 
-        <TextBlock Grid.Row="6" Grid.Column="0">Minimum log level</TextBlock>
-
-        <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"
-                  ItemsSource="{x:Bind ViewModel.LogLevels}"
-                  SelectedItem="{x:Bind ViewModel.MinimumLogLevel, Mode=TwoWay}"/>
-
-        <Button Grid.Row="7" Grid.Column="1"
+        <Button Grid.Row="8" Grid.Column="1"
                 IsEnabled="{x:Bind ViewModel.InReachConfigChanged}"
                 HorizontalAlignment="Center"
                 Command="{x:Bind ViewModel.ValidateCommand}">
             Validate
         </Button>
 
-        <Button Grid.Row="7" Grid.Column="2"  
+        <Button Grid.Row="8" Grid.Column="2"  
                 HorizontalAlignment="Center"
                 Command="{x:Bind ViewModel.RevertCommand}"
                 IsEnabled="{x:Bind ViewModel.InReachConfigChanged}">
             Revert
         </Button>
 
-        <Button Grid.Row="7" Grid.Column="3"
+        <Button Grid.Row="8" Grid.Column="3"
                 HorizontalAlignment="Center"
                 IsEnabled="{x:Bind ViewModel.CanSave}"
                 Command="{x:Bind ViewModel.SaveCommand}">

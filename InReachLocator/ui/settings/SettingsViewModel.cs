@@ -30,6 +30,7 @@ namespace J4JSoftware.InReach
         private bool _compassHeadings;
         private bool _imperialUnits;
         private LogEventLevel _minEventLevel;
+        private SingleSelectableItem? _launchPage;
         private bool _validated;
         private bool _inReachConfigChanged;
         private bool _otherConfigChanged;
@@ -39,7 +40,7 @@ namespace J4JSoftware.InReach
             IJ4JLogger logger
         )
         {
-            _appViewModel = (App.Current.Resources["AppConfiguration"] as AppViewModel)!;
+            _appViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
             _userConfigPath = host.UserConfigurationFiles.First();
 
             _logger = logger;
@@ -87,7 +88,8 @@ namespace J4JSoftware.InReach
                 IMEI = _appViewModel.Configuration.IMEI,
                 UseCompassHeadings = _appViewModel.Configuration.UseCompassHeadings,
                 UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
-                MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel
+                MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel,
+                LaunchPage = _appViewModel.Configuration.LaunchPage,
             };
 
             var text = JsonSerializer.Serialize( tempConfig, jsonOptions );
@@ -110,6 +112,7 @@ namespace J4JSoftware.InReach
             _appViewModel.Configuration.UseCompassHeadings = CompassHeadings;
             _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
             _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
+            _appViewModel.Configuration.LaunchPage = LaunchPage?.Value;
         }
 
         public AsyncRelayCommand ValidateCommand { get; }
@@ -169,6 +172,9 @@ namespace J4JSoftware.InReach
             CompassHeadings = _appViewModel.Configuration.UseCompassHeadings;
             ImperialUnits = _appViewModel.Configuration.UseImperialUnits;
             MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
+            LaunchPage = AppViewModel.PageNames
+                                     .FirstOrDefault( x => x.Value.Equals( _appViewModel.Configuration.LaunchPage,
+                                                                           StringComparison.OrdinalIgnoreCase ) );
 
             InReachConfigChanged = true;
         }
@@ -235,7 +241,7 @@ namespace J4JSoftware.InReach
 
             set
             {
-                OtherConfigChanged = _compassHeadings != value;
+                OtherConfigChanged = true;
                 SetProperty( ref _compassHeadings, value );
             }
         }
@@ -246,7 +252,7 @@ namespace J4JSoftware.InReach
 
             set
             {
-                OtherConfigChanged = _imperialUnits != value;
+                OtherConfigChanged = true;
                 SetProperty( ref _imperialUnits, value );
             }
         }
@@ -259,8 +265,23 @@ namespace J4JSoftware.InReach
 
             set
             {
-                OtherConfigChanged = _minEventLevel != value;
+                OtherConfigChanged = true;
                 SetProperty( ref _minEventLevel, value );
+            }
+        }
+
+        public SingleSelectableItem? LaunchPage
+        {
+            get => _launchPage;
+
+            set
+            {
+                if ( value != null && value.Value.Equals( ResourceNames.NullPageName, StringComparison.OrdinalIgnoreCase ) )
+                    value = null;
+
+                OtherConfigChanged = true;
+
+                SetProperty( ref _launchPage, value );
             }
         }
 

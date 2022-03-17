@@ -8,6 +8,7 @@ namespace J4JSoftware.InReach
         private bool _useCompass;
         private LogEventLevel _minLevel = LogEventLevel.Verbose;
         private string _helpLink = string.Empty;
+        private string? _launchPage;
 
         public bool UseImperialUnits
         {
@@ -31,6 +32,12 @@ namespace J4JSoftware.InReach
         {
             get => _helpLink;
             set => SetProperty( ref _helpLink, value );
+        }
+
+        public string? LaunchPage
+        {
+            get => _launchPage;
+            set => SetProperty( ref _launchPage, value );
         }
     }
 }

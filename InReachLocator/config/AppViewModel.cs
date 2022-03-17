@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Text.Json.Serialization;
 using J4JSoftware.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace J4JSoftware.InReach
 {
@@ -12,9 +14,18 @@ namespace J4JSoftware.InReach
     {
         public static ResourceNames ResourceNames { get; } = new();
 
+        public static List<SingleSelectableItem> PageNames { get; } = new()
+        {
+            new SingleSelectableItem( null, ResourceNames.NullPageName ),
+            new SingleSelectableItem( typeof( LastKnownPage ),
+                                      ResourceNames.LastKnownPageName,
+                                      "Last Known Location" ),
+            new SingleSelectableItem( typeof( HistoryPage ), ResourceNames.HistoryPageName, "History" ),
+            new SingleSelectableItem( typeof( LogViewerPage ), ResourceNames.LogViewerPageName, "Log Viewer" )
+        };
+
         private readonly List<NetEventArgs> _netEvents = new();
 
-        private bool _isValid;
         private string? _statusMesg;
         private Style? _statusStyle;
         private Visibility _determinateVisibility = Visibility.Collapsed;

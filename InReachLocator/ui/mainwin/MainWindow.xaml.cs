@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
@@ -41,7 +42,7 @@ namespace J4JSoftware.InReach
         {
             this.InitializeComponent();
 
-            ViewModel = (App.Current.Resources["AppConfiguration"] as AppViewModel)!;
+            ViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
 
             Title = "InReach Locator";
 
@@ -67,6 +68,8 @@ namespace J4JSoftware.InReach
             await ((ImageFileCache)TileImageLoader.Cache).Clean();
 
             OuterElement.DataContext = App.Current.Host.Services.GetRequiredService<MainViewModel>();
+
+            SetLaunchPage();
         }
 
         private void RequestStarted(object? sender, EventArgs e)
@@ -101,18 +104,31 @@ namespace J4JSoftware.InReach
                 return;
             }
 
-            var pageType = tag switch
-            {
-                LastKnownPage.PageName => typeof( LastKnownPage ),
-                HistoryPage.PageName => typeof( HistoryPage ),
-                LogViewerPage.PageName => typeof( LogViewerPage ),
-                _ => null
-            };
+            var newPage =
+                AppViewModel.PageNames.FirstOrDefault( x => x.Value.Equals( tag, StringComparison.OrdinalIgnoreCase ) );
 
-            if( pageType == null )
+            if( newPage == null )
                 return;
 
-            ContentFrame.Navigate(pageType);
+            ContentFrame.Navigate( newPage.Item, newPage.Value );
+        }
+
+        private void SetLaunchPage()
+        {
+            if( !ViewModel.Configuration.IsValid )
+            {
+                ContentFrame.Navigate( typeof( SettingsPage ) );
+                return;
+            }
+
+            var launchPage = AppViewModel.PageNames
+                                         .FirstOrDefault( x => x.Value.Equals( ViewModel.Configuration.LaunchPage,
+                                                                               StringComparison.OrdinalIgnoreCase ) );
+
+            if( launchPage == null )
+                return;
+
+            ContentFrame.Navigate( launchPage.Item, launchPage.Value );
         }
 
         private void OpenUrl(string url)

@@ -1,10 +1,13 @@
-﻿namespace J4JSoftware.InReach
+﻿using System.Collections.Generic;
+
+namespace J4JSoftware.InReach
 {
     public class ResourceNames
     {
         public string HistoryPageName => HistoryPage.PageName;
         public string LastKnownPageName => LastKnownPage.PageName;
         public string LogViewerPageName => LogViewerPage.PageName;
+        public static string NullPageName => "-- none --";
 
         public string HelpTag => "Help";
 
