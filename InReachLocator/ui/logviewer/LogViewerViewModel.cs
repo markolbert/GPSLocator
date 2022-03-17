@@ -19,7 +19,7 @@ namespace J4JSoftware.InReach
         )
             : base( logger )
         {
-            _appViewModel = ( App.Current.Resources[ "AppConfiguration" ] as AppViewModel )!;
+            _appViewModel = ( App.Current.Resources[ "AppViewModel" ] as AppViewModel )!;
 
             FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( _appViewModel.LogEvents );
 

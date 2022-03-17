@@ -11,7 +11,7 @@ public class BaseViewModel : ObservableRecipient
     {
         IsActive = true;
 
-        AppViewModel = (App.Current.Resources["AppConfiguration"] as AppViewModel)!;
+        AppViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );
