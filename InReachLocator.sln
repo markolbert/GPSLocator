@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InReachLocator", "InReachLocator\InReachLocator.csproj", "{9E647761-B8C2-4A89-946F-CFCE9693894B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinUILocator", "InReachLocator\WinUILocator.csproj", "{9E647761-B8C2-4A89-946F-CFCE9693894B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "externals", "externals", "{56629A9B-E8F6-4970-99B4-4B06268C6A37}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "J4JLogging", "..\J4JLogging
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjection", "..\ProgrammingUtilities\DependencyInjection\DependencyInjection.csproj", "{94C7B137-3989-4D2B-B9F0-B1FF88E8A57D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InReachLib", "InReachLib\InReachLib.csproj", "{A2B96A37-3F3A-404C-B7C3-5842653DECF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocatorLib", "InReachLib\LocatorLib.csproj", "{A2B96A37-3F3A-404C-B7C3-5842653DECF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{10150435-AF73-44E1-B324-204EB3B813D4}"
 	ProjectSection(SolutionItems) = preProject

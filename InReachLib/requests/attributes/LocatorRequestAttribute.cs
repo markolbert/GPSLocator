@@ -1,9 +1,9 @@
 ﻿namespace J4JSoftware.InReach;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public class InReachRequestAttribute : Attribute
+public class LocatorRequestAttribute : Attribute
 {
-    public InReachRequestAttribute(
+    public LocatorRequestAttribute(
         Direction direction,
         string version,
         string svcGroup,

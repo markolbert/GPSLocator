@@ -3,13 +3,13 @@
 namespace J4JSoftware.InReach;
 
 [InboundV1("Location.svc","LastKnownLocation", true)]
-public class LastKnownLocationRequest<TLoc> : InReachRequest<LastKnownLocation<TLoc>>
+public class LastKnownLocationRequest<TLoc> : LocatorRequest<LastKnownLocation<TLoc>>
     where TLoc : ILocation
 {
     private string _imei = string.Empty;
 
     public LastKnownLocationRequest( 
-        InReachConfig config, 
+        LocatorConfig config, 
         IJ4JLogger logger )
         : base( config, logger )
     {

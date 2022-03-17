@@ -62,7 +62,7 @@ namespace J4JSoftware.InReach
             request.Started += RequestStarted;
             request.Ended += RequestEnded;
 
-            InReachResponse<History<Location>>? response = null;
+            LocatorResponse<History<Location>>? response = null;
             await Task.Run(async () =>
             {
                 response = await request.ExecuteAsync();

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace J4JSoftware.InReach
 {
-    public class InReachRequest<T>
+    public class LocatorRequest<T>
         where T : class, new()
     {
         public event EventHandler? Started;
@@ -14,15 +14,15 @@ namespace J4JSoftware.InReach
 
         private readonly Dictionary<string, string> _queryStrings = new( StringComparer.OrdinalIgnoreCase );
 
-        protected InReachRequest(
-            InReachConfig config,
+        protected LocatorRequest(
+            LocatorConfig config,
             IJ4JLogger logger
         )
         {
             if( GetType()
                .GetCustomAttributes( false )
-               .FirstOrDefault( x => x is InReachAttribute ) is not InReachAttribute svcAttr )
-                throw new NullReferenceException( $"{nameof(InReachRequest<T>)} not decorated with {nameof(InReachAttribute)}" );
+               .FirstOrDefault( x => x is LocatorAttribute ) is not LocatorAttribute svcAttr )
+                throw new NullReferenceException( $"{nameof(LocatorRequest<T>)} not decorated with {nameof(LocatorAttribute)}" );
 
             Configuration = config;
             ServiceGroup = svcAttr!.ServiceGroup;
@@ -41,7 +41,7 @@ namespace J4JSoftware.InReach
         protected string Service { get; }
         protected Direction Direction { get; }
         protected string Version { get; }
-        protected InReachConfig Configuration { get; }
+        protected LocatorConfig Configuration { get; }
         protected bool RequiresAuthentication { get; }
 
         protected void SetQueryProperty<TProp>(
@@ -66,14 +66,14 @@ namespace J4JSoftware.InReach
             else _queryStrings.Add( memberName, toTextFunc( value ) );
         }
 
-        public async Task<InReachResponse<T>> ExecuteAsync()
+        public async Task<LocatorResponse<T>> ExecuteAsync()
         {
             Started?.Invoke(this, EventArgs.Empty);
             
             var website = Configuration.Website.Replace( "http://", "", StringComparison.OrdinalIgnoreCase )
                                        .Replace( "https://", "", StringComparison.OrdinalIgnoreCase );
 
-            var retVal = new InReachResponse<T>( QueryHelpers.AddQueryString(
+            var retVal = new LocatorResponse<T>( QueryHelpers.AddQueryString(
                                                      $"https://{website}/{Direction}/V{Version}/{ServiceGroup}/{Service}",
                                                      _queryStrings ) );
 

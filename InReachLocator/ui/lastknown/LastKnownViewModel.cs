@@ -37,7 +37,7 @@ namespace J4JSoftware.InReach
             request.Started += RequestStarted;
             request.Ended += RequestEnded;
 
-            InReachResponse<LastKnownLocation<Location>>? response = null;
+            LocatorResponse<LastKnownLocation<Location>>? response = null;
             await Task.Run( async () =>
             {
                 response = await request.ExecuteAsync();

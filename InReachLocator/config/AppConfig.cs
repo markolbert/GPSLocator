@@ -2,7 +2,7 @@
 
 namespace J4JSoftware.InReach
 {
-    public class AppConfig : InReachConfig
+    public class AppConfig : LocatorConfig
     {
         private bool _useImperial;
         private bool _useCompass;

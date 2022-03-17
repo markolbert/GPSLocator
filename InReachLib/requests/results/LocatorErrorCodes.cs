@@ -2,7 +2,7 @@
 
 namespace J4JSoftware.InReach
 {
-    public enum GarminErrorCodes
+    public enum LocatorErrorCodes
     {
         [Description("An unexpected error occurred (returned when the error does not fall into any other category).")]
         InternalError = 1,

@@ -7,7 +7,7 @@ using J4JSoftware.Logging;
 
 namespace J4JSoftware.InReach;
 
-public class InReachConfig : INotifyPropertyChanged
+public class LocatorConfig : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -17,7 +17,7 @@ public class InReachConfig : INotifyPropertyChanged
     private ValidationState _validationState = ValidationState.Unvalidated;
     private IJ4JLogger? _logger;
 
-    public InReachConfig()
+    public LocatorConfig()
     {
         EncryptedPassword = new EncryptedString();
         EncryptedPassword.PropertyChanged += EncryptedPasswordOnPropertyChanged;

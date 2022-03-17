@@ -122,7 +122,7 @@ namespace J4JSoftware.InReach
             _appViewModel.SetStatusMessage("Validating configuration" );
 
             // test the proposed configuration
-            var testConfig = new InReachConfig()
+            var testConfig = new LocatorConfig()
             {
                 IMEI = Imei, UserName = UserName, Website = Website, Password = Password
             };

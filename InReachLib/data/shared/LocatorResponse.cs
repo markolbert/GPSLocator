@@ -1,9 +1,9 @@
 ﻿namespace J4JSoftware.InReach;
 
-public class InReachResponse<T>
+public class LocatorResponse<T>
     where T : class, new()
 {
-    public InReachResponse(
+    public LocatorResponse(
         string requestUri
         )
     {

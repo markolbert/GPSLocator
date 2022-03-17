@@ -3,7 +3,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>InReachLocator</RootNamespace>
+    <RootNamespace>J4JSoftware.Locator</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64;arm64</Platforms>
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
@@ -11,8 +11,7 @@
     <UseWinUI>true</UseWinUI>
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
     <Nullable>enable</Nullable>
-	  <AssemblyName>J4JSoftware.InReachLocator</AssemblyName>
-	  <RootNamespace>J4JSoftware.InReach</RootNamespace>
+	  <AssemblyName>J4JSoftware.WinUILocator</AssemblyName>
 	  <Authors>Mark A. Olbert</Authors>
 	  <Company>Jump for Joy Software</Company>
 	  <Product>J4JSoftware InReach Locator</Product>
@@ -75,7 +74,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\J4JLogging\J4JLogging\J4JLogging.csproj" />
     <ProjectReference Include="..\..\ProgrammingUtilities\DependencyInjection\DependencyInjection.csproj" />
-    <ProjectReference Include="..\InReachLib\InReachLib.csproj" />
+    <ProjectReference Include="..\InReachLib\LocatorLib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appConfig.json">

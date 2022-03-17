@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace J4JSoftware.InReach
 {
     // for handling dumb date formats like \/Date(1646336692443)\/
-    public class InReachDateTimeConverter : JsonConverter<DateTime>
+    public class Iso8601DateTimeConverter : JsonConverter<DateTime>
     {
         public override DateTime Read( ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options )
         {

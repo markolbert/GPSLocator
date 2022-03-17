@@ -1,7 +1,7 @@
 ﻿namespace J4JSoftware.InReach;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public class InboundAttribute : InReachAttribute
+public class InboundAttribute : LocatorAttribute
 {
     public InboundAttribute(
         string version,

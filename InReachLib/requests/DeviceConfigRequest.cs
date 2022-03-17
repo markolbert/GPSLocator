@@ -3,10 +3,10 @@
 namespace J4JSoftware.InReach;
 
 [InboundV1("Configuration.svc","DeviceConfig", true)]
-public class DeviceConfigRequest : InReachRequest<DeviceConfig>
+public class DeviceConfigRequest : LocatorRequest<DeviceConfig>
 {
     public DeviceConfigRequest( 
-        InReachConfig config, 
+        LocatorConfig config, 
         IJ4JLogger logger )
         : base( config, logger )
     {

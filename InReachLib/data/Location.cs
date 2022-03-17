@@ -19,7 +19,7 @@ public class Location : ILocation
 
     public long IMEI { get; set; }
 
-    [JsonConverter(typeof(InReachDateTimeConverter))]
+    [JsonConverter(typeof(Iso8601DateTimeConverter))]
     public DateTime Timestamp { get; set; }
 
     public GeoLocation Coordinate { get; set; } = new();

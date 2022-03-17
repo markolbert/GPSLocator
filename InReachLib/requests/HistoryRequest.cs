@@ -3,7 +3,7 @@
 namespace J4JSoftware.InReach;
 
 [InboundV1("Location.svc","History", true)]
-public class HistoryRequest<TLoc> : InReachRequest<History<TLoc>>
+public class HistoryRequest<TLoc> : LocatorRequest<History<TLoc>>
     where TLoc : ILocation
 {
     private string _imei = string.Empty;
@@ -11,7 +11,7 @@ public class HistoryRequest<TLoc> : InReachRequest<History<TLoc>>
     private DateTime _endDate = DateTime.Today;
 
     public HistoryRequest( 
-        InReachConfig config, 
+        LocatorConfig config, 
         IJ4JLogger logger )
         : base( config, logger )
     {
