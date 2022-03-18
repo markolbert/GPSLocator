@@ -106,21 +106,21 @@
         </CheckBox>
 
         <TextBlock Grid.Row="9" Grid.Column="0"
-                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}">
+                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource TrueToVisibleConverter}}">
             Message
         </TextBlock>
 
         <TextBlock Grid.Row="9" Grid.Column="1"
-                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}"
+                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource TrueToVisibleConverter}}"
                    Text="{x:Bind ViewModel.TextMessage}"/>
 
         <TextBlock Grid.Row="10" Grid.Column="0"
-                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}">
+                   Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource TrueToVisibleConverter}}">
             Recipients
         </TextBlock>
 
         <ListView Grid.Row="10" Grid.Column="1"
-                  Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}"
+                  Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource TrueToVisibleConverter}}"
                   ItemsSource="{x:Bind ViewModel.Recipients}">
             <ListView.ItemTemplate>
                 <DataTemplate>

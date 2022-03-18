@@ -87,12 +87,13 @@ public class BaseViewModel : ObservableValidator
 
     #endregion
 
-    protected virtual async Task<DeviceResponse<TResponse>> ExecuteRequestAsync<TResponse>(
-        DeviceRequestBase<TResponse> request,
+    protected virtual async Task<DeviceResponse<TResponse>> ExecuteRequestAsync<TResponse, TError>(
+        DeviceRequestBase<TResponse, TError> request,
         Action? onRequestStarted,
         Action? onRequestEnded
     )
         where TResponse : class, new()
+        where TError : GarminErrorBase, new()
     {
         _onRequestStarted = onRequestStarted;
         _onRequestEnded = onRequestEnded;

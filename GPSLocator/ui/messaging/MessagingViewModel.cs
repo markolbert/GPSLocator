@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using ABI.Windows.System;
@@ -15,8 +16,9 @@ namespace J4JSoftware.GPSLocator
     public class MessagingViewModel :HistoryViewModelBase
     {
         private string? _messageToSend;
-        private string? _replyToEmail;
-        private bool _sendMessageEnabled;
+        private string? _callback;
+        private bool _callbackIsValid;
+        private bool _sendAllowed = true;
         private bool _msgTooLong;
 
         public MessagingViewModel( 
@@ -33,6 +35,9 @@ namespace J4JSoftware.GPSLocator
 
         private async Task SendMessageHandlerAsync()
         {
+            if( !ValidateCallback() )
+                return;
+
             var messages = new List<string>();
 
             // break long messages up into separate ones
@@ -65,35 +70,38 @@ namespace J4JSoftware.GPSLocator
                         }
                     }
                 }
+
+                if( sb.Length > 0 )
+                    messages.Add( sb.ToString() );
             }
 
             var success = true;
+            var request = new SendMessageRequest( AppViewModel.Configuration, Logger );
+            int msgNum = 1;
 
-            for( var idx=0; idx < messages.Count; idx++ )
+            foreach( var message in messages )
             {
-                var request = new SendMessageRequest(AppViewModel.Configuration, Logger)
-                {
-                    Text = messages[idx],
-                    Sender = ReplyToEmail!
-                };
+                request.AddMessage( Callback!, message );
 
-                var response = await ExecuteRequestAsync(request, OnSendMessageRequestStarted, OnSendMessageRequestEnded);
+                var response =
+                    await ExecuteRequestAsync( request, OnSendMessageRequestStarted, OnSendMessageRequestEnded );
 
                 if( response!.Succeeded )
+                {
+                    msgNum++;
                     continue;
+                }
 
-                AppViewModel.SetStatusMessage($"Couldn't send message #{idx}", StatusMessageType.Important);
+                AppViewModel.SetStatusMessage( $"Couldn't send message #{msgNum}", StatusMessageType.Important );
 
-                if (response.Error != null)
-                    Logger.Error<string>("Invalid configuration, message was '{0}'", response.Error.Description);
-                else Logger.Error("Invalid configuration");
+                if( response.Error != null )
+                    Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
+                else Logger.Error( "Invalid configuration" );
 
                 success = false;
 
                 break;
             }
-
-            SendMessageEnabled = true;
 
             if( success )
                 AppViewModel.SetStatusMessage( "Ready" );
@@ -103,13 +111,31 @@ namespace J4JSoftware.GPSLocator
         {
             AppViewModel.SetStatusMessage("Sending message");
             AppViewModel.IndeterminateVisibility = Visibility.Visible;
-            SendMessageEnabled = false;
+
+            _sendAllowed = true;
+            OnPropertyChanged(nameof(SendMessageEnabled));
         }
 
         private void OnSendMessageRequestEnded()
         {
             AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
-            SendMessageEnabled = true;
+
+            _sendAllowed = true;
+            OnPropertyChanged(nameof(SendMessageEnabled));
+        }
+
+        private bool ValidateCallback( bool acceptEmpty = false)
+        {
+            if( string.IsNullOrEmpty( Callback ) )
+                return acceptEmpty;
+
+            if( MailAddress.TryCreate( Callback, out _ ) )
+                return true;
+
+            if( Callback.All( char.IsDigit ) )
+                return Callback.Length >= 10;
+
+            return false;
         }
 
         public string? MessageToSend
@@ -120,8 +146,8 @@ namespace J4JSoftware.GPSLocator
             {
                 SetProperty( ref _messageToSend, value );
 
-                SendMessageEnabled = !string.IsNullOrEmpty( _messageToSend ) && !string.IsNullOrEmpty( _replyToEmail );
-                MessageTooLong = ( _messageToSend?.Length ?? 0 ) > 0;
+                MessageTooLong = ( _messageToSend?.Length ?? 0 ) > AppViewModel.Configuration.MaxSmsLength;
+                OnPropertyChanged(nameof(SendMessageEnabled));
             }
         }
 
@@ -131,21 +157,33 @@ namespace J4JSoftware.GPSLocator
             set => SetProperty( ref _msgTooLong, value );
         }
 
-        public string? ReplyToEmail
+        public string? Callback
         {
-            get => _replyToEmail;
+            get => _callback;
 
             set
             {
-                SetProperty( ref _replyToEmail, value, true );
-                SendMessageEnabled = !string.IsNullOrEmpty( _messageToSend ) && !string.IsNullOrEmpty( _replyToEmail );
+                SetProperty( ref _callback, value, true );
+
+                CallbackIsValid = ValidateCallback();
+                OnPropertyChanged( nameof( SendMessageEnabled ) );
+            }
+        }
+
+        public bool CallbackIsValid
+        {
+            get => _callbackIsValid;
+
+            set
+            {
+                SetProperty( ref _callbackIsValid, value );
+                OnPropertyChanged(nameof(SendMessageEnabled));
             }
         }
 
         public bool SendMessageEnabled
         {
-            get => _sendMessageEnabled;
-            set => SetProperty( ref _sendMessageEnabled, value );
+            get => _sendAllowed && !string.IsNullOrEmpty(_messageToSend) && CallbackIsValid;
         }
     }
 }
