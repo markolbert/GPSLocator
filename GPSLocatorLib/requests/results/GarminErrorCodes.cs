@@ -2,7 +2,7 @@
 
 namespace J4JSoftware.GPSLocator
 {
-    public enum DeviceErrorCodes
+    public enum GarminErrorCodes
     {
         [Description("An unexpected error occurred (returned when the error does not fall into any other category).")]
         InternalError = 1,
