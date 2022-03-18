@@ -21,6 +21,7 @@ namespace J4JSoftware.GPSLocator
                                       ResourceNames.LastKnownPageName,
                                       "Last Known Location" ),
             new SingleSelectableItem( typeof( HistoryPage ), ResourceNames.HistoryPageName, "History" ),
+            new SingleSelectableItem( typeof( MessagingPage ), ResourceNames.MessagingPageName, "Messaging" ),
             new SingleSelectableItem( typeof( LogViewerPage ), ResourceNames.LogViewerPageName, "Log Viewer" )
         };
 

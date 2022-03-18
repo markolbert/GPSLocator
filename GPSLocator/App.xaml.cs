@@ -139,6 +139,10 @@ namespace J4JSoftware.GPSLocator
                    .AsSelf()
                    .SingleInstance();
 
+            builder.RegisterType<MessagingViewModel>()
+                   .AsSelf()
+                   .SingleInstance();
+
             builder.RegisterType<LogViewerViewModel>()
                    .AsSelf()
                    .SingleInstance();

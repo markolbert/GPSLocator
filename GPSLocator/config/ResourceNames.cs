@@ -7,6 +7,7 @@ namespace J4JSoftware.GPSLocator
         public string HistoryPageName => HistoryPage.PageName;
         public string LastKnownPageName => LastKnownPage.PageName;
         public string LogViewerPageName => LogViewerPage.PageName;
+        public string MessagingPageName => MessagingPage.PageName;
         public static string NullPageName => "-- none --";
 
         public string HelpTag => "Help";
