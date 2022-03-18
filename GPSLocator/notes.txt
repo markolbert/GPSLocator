@@ -6,16 +6,11 @@ https://us0-origin.explore.garmin.com/IPCInbound/docs/#!/Location.svc/LastKnownL
 https://{IPCInboundBaseUrl}/IPCInbound/V1/Location.svc
 
 {
-	"Messages": [
-		{
-			"Sender":"mark@arcabama.com",
-			"Timestamp":"/Date(1647560816754)/",
-			"Message":"This is a test message",
-			"Recipients": [
-				"300434030634300"
-			]
-		}
-	]
+    "Code":7,
+    "Description":"The sender's address, markolbert, is not recognized as an email or SMS.",
+    "IMEI":[300434030634300],
+    "Message":"The message sender is invalid",
+    "URL":"https:\/\/prod-us0-inreach-web\/IPCInbound\/V1\/Messaging.svc"
 }
 
 Worked:

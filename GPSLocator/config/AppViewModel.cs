@@ -55,45 +55,8 @@ namespace J4JSoftware.GPSLocator
 
         public AppConfig Configuration { get; set; }
 
-        //[JsonIgnore]
-        //public bool IsValid
-        //{
-        //    get=> _isValid;
-
-        //    set
-        //    {
-        //        var changed = value != _isValid;
-        //        _isValid = value;
-
-        //        if( changed )
-        //            OnPropertyChanged( nameof( IsValid ) );
-        //    }
-        //}
-
         [JsonIgnore]
         public IndexedLogEvent.Collection LogEvents { get; } = new();
-
-        //public bool UseImperialUnits
-        //{
-        //    get => Configuration.UseImperialUnits;
-
-        //    set
-        //    {
-        //        Configuration.UseImperialUnits = value;
-        //        OnPropertyChanged( nameof( UseImperialUnits ) );
-        //    }
-        //}
-
-        //public bool UseCompassHeadings
-        //{
-        //    get => Configuration.UseCompassHeadings;
-
-        //    set
-        //    {
-        //        Configuration.UseCompassHeadings = value;
-        //        OnPropertyChanged( nameof( UseCompassHeadings ) );
-        //    }
-        //}
 
         #region Progress bar
 
