@@ -9,6 +9,7 @@ namespace J4JSoftware.GPSLocator
         private LogEventLevel _minLevel = LogEventLevel.Verbose;
         private string _helpLink = string.Empty;
         private string? _launchPage;
+        private int _maxSmsLength;
 
         public bool UseImperialUnits
         {
@@ -38,6 +39,12 @@ namespace J4JSoftware.GPSLocator
         {
             get => _launchPage;
             set => SetProperty( ref _launchPage, value );
+        }
+
+        public int MaxSmsLength
+        {
+            get => _maxSmsLength;
+            set => SetProperty( ref _maxSmsLength, value );
         }
     }
 }
