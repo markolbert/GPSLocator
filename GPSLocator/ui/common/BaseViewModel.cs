@@ -2,21 +2,34 @@
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.Toolkit.Mvvm.Messaging.Messages;
 using Microsoft.UI.Dispatching;
 
 namespace J4JSoftware.GPSLocator;
 
-public class BaseViewModel : ObservableRecipient
+public class BaseViewModel : ObservableValidator
 {
     private readonly DispatcherQueue _dQueue;
 
     private Action? _onRequestStarted;
     private Action? _onRequestEnded;
+    private bool _isActive;
 
     protected BaseViewModel(
         IJ4JLogger logger
     )
+        : this( WeakReferenceMessenger.Default, logger )
     {
+    }
+
+    protected BaseViewModel(
+        IMessenger messenger,
+        IJ4JLogger logger
+    )
+    {
+        Messenger = messenger;
+
         _dQueue = DispatcherQueue.GetForCurrentThread();
 
         IsActive = true;
@@ -34,12 +47,45 @@ public class BaseViewModel : ObservableRecipient
     protected IJ4JLogger Logger { get; }
     public AppViewModel AppViewModel { get; }
 
-    protected override void OnDeactivated()
+    #region stuff to mimic ObservableRecipient
+
+    protected IMessenger Messenger { get; }
+
+    public bool IsActive
     {
-        base.OnDeactivated();
+        get => _isActive;
+
+        set
+        {
+            if (SetProperty(ref _isActive, value, true))
+            {
+                if (value)
+                    OnActivated();
+                else OnDeactivated();
+            }
+        }
+    }
+
+    protected virtual void OnActivated()
+    {
+        Messenger.RegisterAll(this);
+    }
+
+    protected virtual void OnDeactivated()
+    {
+        Messenger.UnregisterAll(this);
 
         Messenger.UnregisterAll(this);
     }
+
+    protected virtual void Broadcast<T>(T oldValue, T newValue, string? propertyName)
+    {
+        PropertyChangedMessage<T> message = new(this, propertyName, oldValue, newValue);
+
+        _ = Messenger.Send(message);
+    }
+
+    #endregion
 
     protected virtual async Task<DeviceResponse<TResponse>> ExecuteRequestAsync<TResponse>(
         DeviceRequestBase<TResponse> request,
