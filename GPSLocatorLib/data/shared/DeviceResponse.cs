@@ -13,5 +13,5 @@ public class DeviceResponse<T>
     public T? Result { get; set; }
     public string RequestUri { get; }
     public bool Succeeded => Error == null;
-    public DeviceError? Error { get; set; }
+    public GarminErrorBase? Error { get; set; }
 }

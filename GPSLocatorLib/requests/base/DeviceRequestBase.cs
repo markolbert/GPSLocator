@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace J4JSoftware.GPSLocator
 {
-    public abstract class DeviceRequestBase<TResponse>
+    public abstract class DeviceRequestBase<TResponse, TError>
         where TResponse : class, new()
+        where TError : GarminErrorBase, new()
     {
         public event EventHandler? Started;
         public event EventHandler? Ended;
@@ -29,7 +30,7 @@ namespace J4JSoftware.GPSLocator
                .GetCustomAttributes( false )
                .FirstOrDefault( x => x is LocatorAttribute ) is not LocatorAttribute svcAttr )
                 throw new NullReferenceException(
-                    $"{nameof( DeviceGetRequest<TResponse> )} not decorated with {nameof( LocatorAttribute )}" );
+                    $"{nameof(DeviceRequestBase<TResponse, TError> )} not decorated with {nameof( LocatorAttribute )}" );
 
             Configuration = config;
             _svcGroup = svcAttr!.ServiceGroup;
@@ -151,7 +152,7 @@ namespace J4JSoftware.GPSLocator
                 ex?.Message);
 
             var retVal = new DeviceResponse<TResponse>( requestUri ) { 
-                Error = new DeviceError()
+                Error = new TError()
                 {
                     Description = ex?.Message ?? string.Empty,
                     HttpResponseCode = ex is HttpRequestException reqEx
@@ -167,13 +168,13 @@ namespace J4JSoftware.GPSLocator
 
         protected async Task<DeviceResponse<TResponse>> HandleInvalidResponseAsync( string requestUri, HttpResponseMessage response )
         {
-            DeviceError? devError;
+            GarminErrorBase? devError;
             DeviceResponse<TResponse>? retVal;
 
             try
             {
                 var respText = await response.Content.ReadAsStringAsync();
-                devError = JsonSerializer.Deserialize<DeviceError>( respText );
+                devError = JsonSerializer.Deserialize<TError>( respText );
 
                 retVal = HandleError( null, requestUri );
                 retVal.Error = devError;
@@ -191,7 +192,7 @@ namespace J4JSoftware.GPSLocator
         protected void HandleContentParsingError(DeviceResponse<TResponse> response, Exception ex )
         {
             response.Error =
-                new DeviceError { Description = $"Response parsing failed, message was '{ex.Message}'" };
+                new TError() { Description = $"Response parsing failed, message was '{ex.Message}'" };
 
             Logger.Error<Type, string>("Parsing response to {0} failed, message was '{1}'",
                                        typeof(TResponse),

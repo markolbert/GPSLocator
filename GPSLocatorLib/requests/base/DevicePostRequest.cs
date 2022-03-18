@@ -9,9 +9,9 @@ using Microsoft.Net.Http.Headers;
 
 namespace J4JSoftware.GPSLocator
 {
-    public abstract class DevicePostRequest<TResponse, TPost> : DeviceRequestBase<TResponse>
+    public abstract class DevicePostRequest<TResponse, TError> : DeviceRequestBase<TResponse, TError>
         where TResponse : class, new()
-        where TPost : class
+        where TError : GarminErrorBase, new()
     {
         protected DevicePostRequest(
             DeviceConfig config,

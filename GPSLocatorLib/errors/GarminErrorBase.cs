@@ -3,12 +3,15 @@ using System.Text;
 
 namespace J4JSoftware.GPSLocator;
 
-public class DeviceError
+public abstract class GarminErrorBase
 {
+    protected GarminErrorBase()
+    {
+    }
+
     public GarminErrorCodes Code { get; set; }
     public string Description { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
-    public string IMEI { get; set; } = string.Empty;
     public HttpStatusCode HttpResponseCode { get; set; }
 
     public override string ToString()
@@ -21,8 +24,9 @@ public class DeviceError
         if( Code != 0 )
             sb.AppendText( $"ErrorCode: {Code}" );
 
-        if( !string.IsNullOrEmpty( IMEI ) )
-            sb.AppendText( $"IMEI: {IMEI}" );
+        var imeiText = GetImeiAsText();
+        if( !string.IsNullOrEmpty( imeiText ) )
+            sb.AppendText( $"IMEI: {imeiText}" );
 
         if( !string.IsNullOrEmpty( Message ) )
             sb.AppendText( $"Message: {Message}" );
@@ -32,4 +36,6 @@ public class DeviceError
 
         return sb.ToString();
     }
+
+    protected abstract string? GetImeiAsText();
 }

@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace J4JSoftware.GPSLocator
 {
-    public class DeviceGetRequest<TResponse> : DeviceRequestBase<TResponse>
+    public class DeviceGetRequest<TResponse, TError> : DeviceRequestBase<TResponse, TError>
         where TResponse : class, new()
+        where TError : GarminErrorBase, new()
     {
         protected DeviceGetRequest(
             DeviceConfig config,
