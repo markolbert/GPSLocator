@@ -3,7 +3,7 @@
 namespace J4JSoftware.GPSLocator;
 
 [LocatorInboundV1Request("Location.svc","Version", false)]
-public class DeviceVersionRequest : DeviceGetRequest<DeviceVersion, GarminErrorSingleImei>
+public class DeviceVersionRequest : DeviceGetRequest<DeviceVersion, ErrorSingleImei>
 {
     public DeviceVersionRequest( 
         DeviceConfig config, 

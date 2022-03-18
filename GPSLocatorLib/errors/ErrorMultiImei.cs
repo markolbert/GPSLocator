@@ -1,6 +1,6 @@
 ﻿namespace J4JSoftware.GPSLocator;
 
-public class GarminErrorMultiImei : GarminErrorBase
+public class ErrorMultiImei : ErrorBase
 {
     public long[] IMEI { get; set; } = Array.Empty<long>();
 

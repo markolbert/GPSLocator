@@ -9,7 +9,7 @@ namespace J4JSoftware.GPSLocator
 {
     public abstract class DeviceRequestBase<TResponse, TError>
         where TResponse : class, new()
-        where TError : GarminErrorBase, new()
+        where TError : ErrorBase, new()
     {
         public event EventHandler? Started;
         public event EventHandler? Ended;
@@ -168,7 +168,7 @@ namespace J4JSoftware.GPSLocator
 
         protected async Task<DeviceResponse<TResponse>> HandleInvalidResponseAsync( string requestUri, HttpResponseMessage response )
         {
-            GarminErrorBase? devError;
+            ErrorBase? devError;
             DeviceResponse<TResponse>? retVal;
 
             try

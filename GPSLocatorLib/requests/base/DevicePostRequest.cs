@@ -11,7 +11,7 @@ namespace J4JSoftware.GPSLocator
 {
     public abstract class DevicePostRequest<TResponse, TError> : DeviceRequestBase<TResponse, TError>
         where TResponse : class, new()
-        where TError : GarminErrorBase, new()
+        where TError : ErrorBase, new()
     {
         protected DevicePostRequest(
             DeviceConfig config,

@@ -1,6 +1,6 @@
 ﻿namespace J4JSoftware.GPSLocator;
 
-public class GarminErrorSingleImei : GarminErrorBase
+public class ErrorSingleImei : ErrorBase
 {
     public string? IMEI { get; set; }
 

@@ -3,7 +3,7 @@
 namespace J4JSoftware.GPSLocator;
 
 [InboundV1("Configuration.svc","DeviceConfig", true)]
-public class DeviceConfigRequest : DeviceGetRequest<DeviceParameters, GarminErrorSingleImei>
+public class DeviceConfigRequest : DeviceGetRequest<DeviceParameters, ErrorSingleImei>
 {
     public DeviceConfigRequest( 
         DeviceConfig config, 

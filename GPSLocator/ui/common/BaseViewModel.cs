@@ -93,7 +93,7 @@ public class BaseViewModel : ObservableValidator
         Action? onRequestEnded
     )
         where TResponse : class, new()
-        where TError : GarminErrorBase, new()
+        where TError : ErrorBase, new()
     {
         _onRequestStarted = onRequestStarted;
         _onRequestEnded = onRequestEnded;

@@ -9,7 +9,7 @@ namespace J4JSoftware.GPSLocator
 {
     public class DeviceGetRequest<TResponse, TError> : DeviceRequestBase<TResponse, TError>
         where TResponse : class, new()
-        where TError : GarminErrorBase, new()
+        where TError : ErrorBase, new()
     {
         protected DeviceGetRequest(
             DeviceConfig config,

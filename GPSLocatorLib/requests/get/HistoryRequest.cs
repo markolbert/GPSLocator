@@ -3,7 +3,7 @@
 namespace J4JSoftware.GPSLocator;
 
 [InboundV1("Location.svc","History", true)]
-public class HistoryRequest<TLoc> : DeviceGetRequest<History<TLoc>, GarminErrorSingleImei>
+public class HistoryRequest<TLoc> : DeviceGetRequest<History<TLoc>, ErrorSingleImei>
     where TLoc : ILocation
 {
     private string _imei = string.Empty;

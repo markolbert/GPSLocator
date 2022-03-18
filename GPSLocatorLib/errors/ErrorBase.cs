@@ -3,9 +3,9 @@ using System.Text;
 
 namespace J4JSoftware.GPSLocator;
 
-public abstract class GarminErrorBase
+public abstract class ErrorBase
 {
-    protected GarminErrorBase()
+    protected ErrorBase()
     {
     }
 

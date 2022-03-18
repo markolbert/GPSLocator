@@ -6,7 +6,7 @@ using J4JSoftware.Logging;
 namespace J4JSoftware.GPSLocator;
 
 [InboundV1("Messaging.svc","Message", true)]
-public class SendMessageRequest : DevicePostRequest<SendMessageCount, GarminErrorMultiImei>
+public class SendMessageRequest : DevicePostRequest<SendMessageCount, ErrorMultiImei>
 {
     public record MessageInfo( string Callback, string Text );
 
