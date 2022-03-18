@@ -18,7 +18,8 @@
             <local:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
             <local:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter"/>
             <local:EmptyCollectionToBoolConverter x:Key="EmptyCollectionToBoolConverter"/>
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <local:TrueToVisibleConverter x:Key="TrueToVisibleConverter"/>
+            <local:FalseToVisibleConverter x:Key="FalseToVisibleConverter"/>
 
             <Style x:Key="NormalStatusMessageStyle" TargetType="TextBlock">
                 <Setter Property="Margin" Value="14,7,14,7"/>

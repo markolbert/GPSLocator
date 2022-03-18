@@ -1,3 +1,4 @@
 {
-	"HelpLink": "https://github.com/markolbert/GPSLocator/blob/main/docs/main.md"
+	"HelpLink": "https://github.com/markolbert/GPSLocator/blob/main/docs/main.md",
+	"MaxSmsLength": 160 
 }
