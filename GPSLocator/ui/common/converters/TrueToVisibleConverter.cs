@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace J4JSoftware.GPSLocator
 {
-    public class BoolToVisibilityConverter : IValueConverter
+    public class TrueToVisibleConverter : IValueConverter
     {
         public object Convert( object? value, Type targetType, object parameter, string language )
         {
