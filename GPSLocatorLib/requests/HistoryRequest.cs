@@ -3,7 +3,7 @@
 namespace J4JSoftware.GPSLocator;
 
 [InboundV1("Location.svc","History", true)]
-public class HistoryRequest<TLoc> : DeviceRequest<History<TLoc>>
+public class HistoryRequest<TLoc> : DeviceGetRequest<History<TLoc>>
     where TLoc : ILocation
 {
     private string _imei = string.Empty;

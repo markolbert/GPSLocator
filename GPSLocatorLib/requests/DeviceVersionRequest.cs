@@ -3,7 +3,7 @@
 namespace J4JSoftware.GPSLocator;
 
 [LocatorInboundV1Request("Location.svc","Version", false)]
-public class DeviceVersionRequest : DeviceRequest<DeviceVersion>
+public class DeviceVersionRequest : DeviceGetRequest<DeviceVersion>
 {
     public DeviceVersionRequest( 
         DeviceConfig config, 

@@ -3,7 +3,7 @@
 namespace J4JSoftware.GPSLocator;
 
 [InboundV1("Location.svc","LastKnownLocation", true)]
-public class LastKnownLocationRequest<TLoc> : DeviceRequest<LastKnownLocation<TLoc>>
+public class LastKnownLocationRequest<TLoc> : DeviceGetRequest<LastKnownLocation<TLoc>>
     where TLoc : ILocation
 {
     private string _imei = string.Empty;
