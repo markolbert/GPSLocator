@@ -112,9 +112,7 @@
 
         <TextBlock Grid.Row="9" Grid.Column="1"
                    Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}"
-                   Text="{x:Bind ViewModel.TextMessage}">
-            Message
-        </TextBlock>
+                   Text="{x:Bind ViewModel.TextMessage}"/>
 
         <TextBlock Grid.Row="10" Grid.Column="0"
                    Visibility="{x:Bind ViewModel.HasMessage, Converter={StaticResource BoolToVisibilityConverter}}">

@@ -21,19 +21,6 @@ namespace J4JSoftware.GPSLocator
             ClearMapCommand = new RelayCommand( ClearMapHandler );
         }
 
-        protected override void OnRequestStarted()
-        {
-            AppViewModel.SetStatusMessage( "Updating history" );
-            AppViewModel.IndeterminateVisibility = Visibility.Visible;
-            RefreshEnabled = false;
-        }
-
-        protected override void OnRequestEnded()
-        {
-            AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
-            RefreshEnabled = true;
-        }
-
         public bool MustHaveMessages
         {
             get => _mustHaveMessages;
@@ -58,6 +45,8 @@ namespace J4JSoftware.GPSLocator
                 UpdateMapCenter();
             }
         }
+
+        protected override bool LocationFilter( Location toCheck ) => toCheck.HasMessage || !_mustHaveMessages;
 
         public RelayCommand ClearMapCommand { get; }
 

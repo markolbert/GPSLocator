@@ -44,30 +44,31 @@ namespace J4JSoftware.GPSLocator
         {
             if( !AppViewModel.Configuration.IsValid )
             {
-                AppViewModel.SetStatusMessage("Invalid configuration", StatusMessageType.Urgent);
+                AppViewModel.SetStatusMessage( "Invalid configuration", StatusMessageType.Urgent );
                 return;
             }
 
-            var request = new HistoryRequest<Location>(AppViewModel.Configuration, Logger)
+            var request = new HistoryRequest<Location>( AppViewModel.Configuration, Logger )
             {
-                Start = StartDate.UtcDateTime,
-                End = EndDate.UtcDateTime
+                Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
             };
 
-            request.Started += RequestStarted;
-            request.Ended += RequestEnded;
+            var response = await ExecuteRequestAsync( request, OnHistoryRequestStarted, OnHistoryRequestEnded );
 
-            DeviceResponse<History<Location>>? response = null;
-            await Task.Run(async () =>
+            //request.Started += RequestStarted;
+            //request.Ended += RequestEnded;
+
+            //DeviceResponse<History<Location>>? response = null;
+            //await Task.Run(async () =>
+            //{
+            //    response = await request.ExecuteAsync();
+            //});
+
+            if( !response!.Succeeded )
             {
-                response = await request.ExecuteAsync();
-            });
+                AppViewModel.SetStatusMessage( "Couldn't retrieve history", StatusMessageType.Important );
 
-            if ( !response!.Succeeded )
-            {
-                AppViewModel.SetStatusMessage("Couldn't retrieve history", StatusMessageType.Important);
-
-                if ( response.Error != null )
+                if( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
 
@@ -80,29 +81,42 @@ namespace J4JSoftware.GPSLocator
                                   .Where( LocationFilter ) );
 
             RefreshEnabled = true;
-            AppViewModel.SetStatusMessage("Ready");
+            AppViewModel.SetStatusMessage( "Ready" );
+        }
+
+        private void OnHistoryRequestStarted()
+        {
+            AppViewModel.SetStatusMessage("Updating history");
+            AppViewModel.IndeterminateVisibility = Visibility.Visible;
+            RefreshEnabled = false;
+        }
+
+        private void OnHistoryRequestEnded()
+        {
+            AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
+            RefreshEnabled = true;
         }
 
         protected virtual bool LocationFilter( Location toCheck ) => true;
 
-        private void RequestStarted(object? sender, EventArgs e)
-        {
-            _dQueue.TryEnqueue( OnRequestStarted );
-        }
+        //private void RequestStarted(object? sender, EventArgs e)
+        //{
+        //    _dQueue.TryEnqueue( OnRequestStarted );
+        //}
 
-        protected virtual void OnRequestStarted()
-        {
-        }
+        //protected virtual void OnRequestStarted()
+        //{
+        //}
 
-        private void RequestEnded(object? sender, EventArgs e)
-        {
-            _dQueue.TryEnqueue( OnRequestEnded );
-        }
+        //private void RequestEnded(object? sender, EventArgs e)
+        //{
+        //    _dQueue.TryEnqueue( OnRequestEnded );
+        //}
 
-        protected virtual void OnRequestEnded()
-        {
+        //protected virtual void OnRequestEnded()
+        //{
 
-        }
+        //}
 
         public DateTimeOffset StartDate => _endDate.DateTime.AddDays(-DaysBack);
 
@@ -134,20 +148,20 @@ namespace J4JSoftware.GPSLocator
 
             set
             {
-                if( _selectedPoint?.DisplayOnMap == MapPointDisplay.Transitory )
+                if (_selectedPoint?.DisplayOnMap == MapPointDisplay.Transitory)
                     _selectedPoint.DisplayOnMap = MapPointDisplay.DoNotDisplay;
 
-                SetProperty( ref _selectedPoint, value );
+                SetProperty(ref _selectedPoint, value);
 
-                if( _selectedPoint == null )
+                if (_selectedPoint == null)
                     return;
 
-                if( _selectedPoint.DisplayOnMap == MapPointDisplay.DoNotDisplay
-                   && _selectedPoint.DeviceLocation.Coordinate.Latitude != 0
-                   && _selectedPoint.DeviceLocation.Coordinate.Longitude != 0 )
+                if (_selectedPoint.DisplayOnMap == MapPointDisplay.DoNotDisplay
+                 && _selectedPoint.DeviceLocation.Coordinate.Latitude != 0
+                 && _selectedPoint.DeviceLocation.Coordinate.Longitude != 0)
                     _selectedPoint.DisplayOnMap = MapPointDisplay.Transitory;
 
-                if( _selectedPoint.DisplayOnMap != MapPointDisplay.DoNotDisplay )
+                if (_selectedPoint.DisplayOnMap != MapPointDisplay.DoNotDisplay)
                     MapCenter = _selectedPoint.DisplayPoint;
             }
         }
