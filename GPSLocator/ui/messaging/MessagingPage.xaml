@@ -9,9 +9,21 @@
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid
-          ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
-          RowDefinitions="Auto, Auto, Auto, Auto, *">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
         <Grid.Resources>
 
@@ -45,36 +57,43 @@
 
         </Grid.Resources>
 
-        <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0"
+                   Padding="0,7,0,0"
+                   VerticalAlignment="Top">
+            Days Back
+        </TextBlock>
 
-        <NumberBox Grid.Row="0" Grid.Column="1"
-                   Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
-                   Minimum="1"
-                   Maximum="31"
-                   SmallChange="1"
-                   LargeChange="7" 
-                   SpinButtonPlacementMode="Compact"/>
+        <StackPanel Grid.Row="0" Grid.Column="1"
+                    Orientation="Vertical">
 
-        <Button Grid.Row="1" Grid.Column="1"
-                    IsEnabled="{x:Bind ViewModel.RefreshEnabled}"
+            <NumberBox Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
+                       Minimum="1"
+                       Maximum="31"
+                       SmallChange="1"
+                       LargeChange="7" 
+                       SpinButtonPlacementMode="Compact"/>
+
+            <Button IsEnabled="{x:Bind ViewModel.RefreshEnabled}"
                     Command="{x:Bind ViewModel.RefreshCommand}">
-            Refresh
-        </Button>
+                Refresh
+            </Button>
 
-        <TextBlock Grid.Row="2" Grid.Column="0">End Date</TextBlock>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
+        </StackPanel>
 
-        <TextBlock Grid.Row="3" Grid.Column="0">Start Date</TextBlock>
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
+        <TextBlock Grid.Row="1" Grid.Column="0">End Date</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0"
+        <TextBlock Grid.Row="2" Grid.Column="0">Start Date</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0"
                    VerticalAlignment="Top">
             <Run Text="Messages ("/>
             <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
             <Run Text=")"/>
         </TextBlock>
 
-        <Border Grid.Row="4" Grid.Column="1"
+        <Border Grid.Row="3" Grid.Column="1"
                 BorderThickness="2"
                 BorderBrush="DarkGray">
 
@@ -93,10 +112,27 @@
 
         </Border>
 
-        <TextBlock Grid.Row="0" Grid.Column="2">Message</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="2"
+                   Padding="0,7,0,0"
+                   VerticalAlignment="Top">
+            Message
+        </TextBlock>
 
-        <TextBox Grid.Row="0" Grid.Column="3"
-                 Text="{x:Bind ViewModel.MessageToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <StackPanel Grid.Row="0" Grid.Column="3"
+                    Orientation="Vertical">
+
+            <TextBox Text="{x:Bind ViewModel.MessageToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Visibility="{x:Bind ViewModel.MessageTooLong, Converter={StaticResource BoolToVisibilityConverter}}"
+                       Foreground="DarkOrange">
+                Message is too long and will be split into separate messages
+            </TextBlock>
+
+            <TextBlock FontStyle="Italic">
+                Messages can take some time to be delivered.
+            </TextBlock>
+
+        </StackPanel>
 
         <TextBlock Grid.Row="1" Grid.Column="2">Callback</TextBlock>
 
@@ -111,7 +147,7 @@
             Send
         </Button>
 
-        <Grid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2"
+        <Grid Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2"
               RowDefinitions="Auto, Auto"
               ColumnDefinitions="Auto, Auto">
 
