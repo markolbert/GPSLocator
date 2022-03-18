@@ -78,8 +78,7 @@
                 BorderThickness="2"
                 BorderBrush="DarkGray">
 
-            <ListView x:Name="MessagesGrid" 
-                      HorizontalAlignment="Left"
+            <ListView HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       ItemsSource="{x:Bind ViewModel.AllPoints}"
                       SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}">
@@ -99,10 +98,11 @@
         <TextBox Grid.Row="0" Grid.Column="3"
                  Text="{x:Bind ViewModel.MessageToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="2">Your Email</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="2">Callback</TextBlock>
 
         <TextBox Grid.Row="1" Grid.Column="3"
                  Text="{x:Bind ViewModel.ReplyToEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 ToolTipService.ToolTip="email, phone number"
                  IsSpellCheckEnabled="False"/>
 
         <Button Grid.Row="2" Grid.Column="3"
