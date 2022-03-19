@@ -100,7 +100,18 @@ namespace J4JSoftware.GPSLocator
 
             if( tag.Equals( AppViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase ) )
             {
-                OpenUrl( ViewModel.Configuration.HelpLink );
+                if( string.IsNullOrEmpty( ViewModel.Configuration.HelpLink ) )
+                    return;
+
+                try
+                {
+                    OpenUrl( ViewModel.Configuration.HelpLink );
+                }
+                catch( Exception ex )
+                {
+                    _logger.Error<string>( "Could not open help link, message was {0}", ex.Message );
+                }
+
                 return;
             }
 

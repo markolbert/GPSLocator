@@ -11,23 +11,20 @@ namespace J4JSoftware.GPSLocator
 {
     public class HistoryViewModelBase : LocationMapViewModel
     {
-        private readonly DispatcherQueue _dQueue;
-
         private DateTimeOffset _endDate;
         private double _daysBack = 7;
         private MapPoint? _selectedPoint;
 
-        public HistoryViewModelBase(
+        protected HistoryViewModelBase(
             IJ4JLogger logger
         )
         : base(logger)
         {
-            _dQueue = DispatcherQueue.GetForCurrentThread();
-
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds( 1 ) };
             timer.Tick += Timer_Tick;
             timer.Start();
 
+            DaysBack = AppViewModel.Configuration.DefaultDaysBack;
             EndDate = DateTimeOffset.Now;
         }
 
