@@ -37,7 +37,7 @@ namespace J4JSoftware.GPSLocator
                 return ( null, HandleError( ex, requestUri ) );
             }
 
-            return ( response.IsSuccessStatusCode ? response : null, null );
+            return (response, null);
         }
     }
 }
