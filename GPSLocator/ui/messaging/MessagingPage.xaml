@@ -121,7 +121,8 @@
         <StackPanel Grid.Row="0" Grid.Column="3"
                     Orientation="Vertical">
 
-            <TextBox Text="{x:Bind ViewModel.MessageToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Text="{x:Bind ViewModel.MessageToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     IsSpellCheckEnabled="False"/>
 
             <TextBlock Visibility="{x:Bind ViewModel.MessageTooLong, Converter={StaticResource TrueToVisibleConverter}}"
                        Foreground="DarkOrange">
