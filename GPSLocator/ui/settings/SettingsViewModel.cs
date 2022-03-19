@@ -32,6 +32,7 @@ namespace J4JSoftware.GPSLocator
         private bool _imperialUnits;
         private LogEventLevel _minEventLevel;
         private string? _defaultCallback;
+        private int _defaultDaysBack;
         private bool _validCallback;
         private SingleSelectableItem? _launchPage;
         private bool _validated;
@@ -93,6 +94,7 @@ namespace J4JSoftware.GPSLocator
                 UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
                 MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel,
                 DefaultCallback = _appViewModel.Configuration.DefaultCallback,
+                DefaultDaysBack = _appViewModel.Configuration.DefaultDaysBack,
                 LaunchPage = _appViewModel.Configuration.LaunchPage,
             };
 
@@ -117,6 +119,7 @@ namespace J4JSoftware.GPSLocator
             _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
             _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
             _appViewModel.Configuration.DefaultCallback = DefaultCallback;
+            _appViewModel.Configuration.DefaultDaysBack = DefaultDaysBack;
             _appViewModel.Configuration.LaunchPage = LaunchPage?.Value;
         }
 
@@ -193,6 +196,7 @@ namespace J4JSoftware.GPSLocator
             ImperialUnits = _appViewModel.Configuration.UseImperialUnits;
             MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
             DefaultCallback = _appViewModel.Configuration.DefaultCallback;
+            DefaultDaysBack = _appViewModel.Configuration.DefaultDaysBack;
             LaunchPage = AppViewModel.PageNames
                                      .FirstOrDefault( x => x.Value.Equals( _appViewModel.Configuration.LaunchPage,
                                                                            StringComparison.OrdinalIgnoreCase ) );
@@ -262,8 +266,8 @@ namespace J4JSoftware.GPSLocator
 
             set
             {
-                OtherConfigChanged = true;
                 SetProperty( ref _compassHeadings, value );
+                OtherConfigChanged = true;
             }
         }
 
@@ -273,8 +277,8 @@ namespace J4JSoftware.GPSLocator
 
             set
             {
-                OtherConfigChanged = true;
                 SetProperty( ref _imperialUnits, value );
+                OtherConfigChanged = true;
             }
         }
 
@@ -286,8 +290,8 @@ namespace J4JSoftware.GPSLocator
 
             set
             {
-                OtherConfigChanged = true;
                 SetProperty( ref _minEventLevel, value );
+                OtherConfigChanged = true;
             }
         }
 
@@ -297,8 +301,8 @@ namespace J4JSoftware.GPSLocator
 
             set
             {
-                OtherConfigChanged = true;
                 SetProperty( ref _defaultCallback, value );
+                OtherConfigChanged = true;
 
                 CallbackIsValid = ValidateCallback();
             }
@@ -327,6 +331,17 @@ namespace J4JSoftware.GPSLocator
                 return DefaultCallback.Length >= 10;
 
             return false;
+        }
+
+        public int DefaultDaysBack
+        {
+            get => _defaultDaysBack;
+
+            set
+            {
+                SetProperty( ref _defaultDaysBack, value );
+                OtherConfigChanged = true;
+            }
         }
 
         public SingleSelectableItem? LaunchPage
