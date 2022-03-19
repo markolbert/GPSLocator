@@ -7,10 +7,9 @@ namespace J4JSoftware.GPSLocator
         private bool _useImperial;
         private bool _useCompass;
         private LogEventLevel _minLevel = LogEventLevel.Verbose;
-        private string _helpLink = string.Empty;
         private string? _launchPage;
-        private int _maxSmsLength;
         private string? _defaultCallback;
+        private int _defaultDaysBack;
 
         public bool UseImperialUnits
         {
@@ -30,22 +29,10 @@ namespace J4JSoftware.GPSLocator
             set => SetProperty( ref _minLevel, value );
         }
 
-        public string HelpLink
-        {
-            get => _helpLink;
-            set => SetProperty( ref _helpLink, value );
-        }
-
         public string? LaunchPage
         {
             get => _launchPage;
             set => SetProperty( ref _launchPage, value );
-        }
-
-        public int MaxSmsLength
-        {
-            get => _maxSmsLength;
-            set => SetProperty(ref _maxSmsLength, value);
         }
 
         public string? DefaultCallback
@@ -53,5 +40,19 @@ namespace J4JSoftware.GPSLocator
             get => _defaultCallback;
             set => SetProperty( ref _defaultCallback, value );
         }
+
+        public int DefaultDaysBack
+        {
+            get => _defaultDaysBack;
+            set => SetProperty( ref _defaultDaysBack, value );
+        }
+
+        #region Application-wide settings
+
+        public string HelpLink { get; set; } = string.Empty;
+
+        public int MaxSmsLength { get; set; }
+
+        #endregion
     }
 }
