@@ -89,10 +89,11 @@ namespace J4JSoftware.GPSLocator
                 UserName = _appViewModel.Configuration.UserName,
                 EncryptedPassword = _appViewModel.Configuration.EncryptedPassword,
                 IMEI = _appViewModel.Configuration.IMEI,
-                //UseCompassHeadings = _appViewModel.Configuration.UseCompassHeadings,
-                //UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
-                //MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel,
-                //LaunchPage = _appViewModel.Configuration.LaunchPage,
+                UseCompassHeadings = _appViewModel.Configuration.UseCompassHeadings,
+                UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
+                MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel,
+                DefaultCallback = _appViewModel.Configuration.DefaultCallback,
+                LaunchPage = _appViewModel.Configuration.LaunchPage,
             };
 
             var text = JsonSerializer.Serialize( tempConfig, jsonOptions );
