@@ -8,8 +8,6 @@ namespace J4JSoftware.GPSLocator
 {
     public class LastKnownViewModel : LocationMapViewModel
     {
-        private readonly DispatcherQueue _dQueue;
-
         private MapPoint? _lastKnownPoint;
 
         public LastKnownViewModel(
@@ -17,7 +15,6 @@ namespace J4JSoftware.GPSLocator
         )
         : base(logger)
         {
-            _dQueue = DispatcherQueue.GetForCurrentThread();
         }
 
         public async Task OnPageActivated()
@@ -34,57 +31,58 @@ namespace J4JSoftware.GPSLocator
             }
 
             var request = new LastKnownLocationRequest<Location>( AppViewModel.Configuration, Logger );
-            request.Started += RequestStarted;
-            request.Ended += RequestEnded;
 
             DeviceResponse<LastKnownLocation<Location>>? response = null;
             await Task.Run( async () =>
             {
-                response = await request.ExecuteAsync();
+                response = await ExecuteRequestAsync( request, OnRequestStarted, OnRequestEnded );
             } );
 
             if ( !response!.Succeeded || response.Result!.Locations.Count == 0 )
             {
-                AppViewModel.SetStatusMessage("Couldn't retrieve last known location", StatusMessageType.Important );
+                await AppViewModel.SetStatusMessagesAsync( 2000,
+                                                           new StatusMessage(
+                                                               "Couldn't retrieve last known location",
+                                                               StatusMessageType.Important ),
+                                                           new StatusMessage( "Ready" ) );
 
                 if ( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
+            }
+            else
+            {
+                ClearMappedPoints();
 
-                return;
+                var lastLoc = response.Result.Locations[0];
+                lastLoc.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
+                lastLoc.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
+
+                var mapPoint = AddLocation(lastLoc);
+                mapPoint.DisplayOnMap = MapPointDisplay.Fixed;
+
+                LastKnownPoint = MappedPoints[0];
+
+                await AppViewModel.SetStatusMessagesAsync(1000,
+                                                          new StatusMessage(
+                                                              "Retrieved last known location",
+                                                              StatusMessageType.Important),
+                                                          new StatusMessage("Ready"));
             }
 
-            ClearMappedPoints();
-
-            var lastLoc = response.Result.Locations[0];
-            lastLoc.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
-            lastLoc.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
-
-            var mapPoint = AddLocation( lastLoc );
-            mapPoint.DisplayOnMap = MapPointDisplay.Fixed;
-
-            LastKnownPoint = MappedPoints[ 0 ];
-
-            AppViewModel.SetStatusMessage("Ready" );
         }
 
-        private void RequestStarted( object? sender, EventArgs e )
+        private void OnRequestStarted()
         {
-            _dQueue.TryEnqueue( () =>
-            {
-                AppViewModel.SetStatusMessage( "Updating last known location" );
-                AppViewModel.IndeterminateVisibility = Visibility.Visible;
-                RefreshEnabled = false;
-            });
+            AppViewModel.SetStatusMessage( "Updating last known location" );
+            AppViewModel.IndeterminateVisibility = Visibility.Visible;
+            RefreshEnabled = false;
         }
 
-        private void RequestEnded(object? sender, EventArgs e)
+        private void OnRequestEnded()
         {
-            _dQueue.TryEnqueue( () =>
-            {
                 AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
                 RefreshEnabled = true;
-            } );
         }
 
         public MapPoint? LastKnownPoint

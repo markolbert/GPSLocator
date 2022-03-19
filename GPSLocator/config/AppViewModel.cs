@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
@@ -135,11 +137,23 @@ namespace J4JSoftware.GPSLocator
             private set => SetProperty( ref _statusStyle, value );
         }
 
-        public void SetStatusMessage( string mesg, StatusMessageType type = StatusMessageType.Normal )
+        public void SetStatusMessage( string mesg, StatusMessageType type = StatusMessageType.Normal ) =>
+            SetStatusMessage( new StatusMessage( mesg, type ) );
+
+        public async Task SetStatusMessagesAsync( int msPause, params StatusMessage[] messages )
         {
-            StatusMessage = mesg;
-            
-            StatusMessageStyle = type switch
+            foreach( StatusMessage message in messages )
+            {
+                SetStatusMessage( message );
+                await Task.Delay( msPause );
+            }
+        }
+
+        public void SetStatusMessage( StatusMessage mesg )
+        {
+            StatusMessage = mesg.Text;
+
+            StatusMessageStyle = mesg.Type switch
             {
                 StatusMessageType.Important =>
                     App.Current.Resources[AppViewModel.ResourceNames.ImportantStyleKey] as Style,

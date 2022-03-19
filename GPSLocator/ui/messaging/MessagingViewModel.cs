@@ -60,14 +60,14 @@ namespace J4JSoftware.GPSLocator
                     }
                     else
                     {
-                        messages.Add(sb.ToString()  );
+                        messages.Add( sb.ToString() );
                         sb.Clear();
 
                         if( partLength <= 160 )
                             sb.Append( part );
                         else
                         {
-                            messages.Add(part[..160]  );
+                            messages.Add( part[ ..160 ] );
                             sb.Append( part[ 161.. ] );
                         }
                     }
@@ -77,36 +77,36 @@ namespace J4JSoftware.GPSLocator
                     messages.Add( sb.ToString() );
             }
 
-            var success = true;
             var request = new SendMessageRequest( AppViewModel.Configuration, Logger );
-            int msgNum = 1;
 
-            foreach( var message in messages )
+            foreach ( var message in messages )
             {
                 request.AddMessage( Callback!, message );
+            }
 
-                var response =
-                    await ExecuteRequestAsync( request, OnSendMessageRequestStarted, OnSendMessageRequestEnded );
+            DeviceResponse<SendMessageCount>? response = null;
+            await Task.Run(async () =>
+            {
+                response = await ExecuteRequestAsync( request, OnSendMessageRequestStarted, OnSendMessageRequestEnded );
+            });
 
-                if( response!.Succeeded )
-                {
-                    msgNum++;
-                    continue;
-                }
+            if( response!.Succeeded )
+                await AppViewModel.SetStatusMessagesAsync( 1000,
+                                                           new StatusMessage( "Message sent",
+                                                                              StatusMessageType.Important ),
+                                                           new StatusMessage( "Ready" ) );
+            else
+            {
+                await AppViewModel.SetStatusMessagesAsync( 2000,
+                                                           new StatusMessage( $"Couldn't send message",
+                                                                              StatusMessageType.Important ),
+                                                           new StatusMessage( "Ready" ) );
 
-                AppViewModel.SetStatusMessage( $"Couldn't send message #{msgNum}", StatusMessageType.Important );
 
                 if( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
-
-                success = false;
-
-                break;
             }
-
-            if( success )
-                AppViewModel.SetStatusMessage( "Ready" );
         }
 
         private void OnSendMessageRequestStarted()

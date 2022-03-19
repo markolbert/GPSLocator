@@ -55,33 +55,32 @@ namespace J4JSoftware.GPSLocator
 
             var response = await ExecuteRequestAsync( request, OnHistoryRequestStarted, OnHistoryRequestEnded );
 
-            //request.Started += RequestStarted;
-            //request.Ended += RequestEnded;
-
-            //DeviceResponse<History<Location>>? response = null;
-            //await Task.Run(async () =>
-            //{
-            //    response = await request.ExecuteAsync();
-            //});
-
-            if( !response!.Succeeded )
+            if( response!.Succeeded )
             {
-                AppViewModel.SetStatusMessage( "Couldn't retrieve history", StatusMessageType.Important );
+                AddLocations(response.Result!.HistoryItems
+                                     .Where(LocationFilter));
+
+                await AppViewModel.SetStatusMessagesAsync(1000,
+                                                          new StatusMessage(
+                                                              "Retrieved history",
+                                                              StatusMessageType.Important),
+                                                          new StatusMessage("Ready"));
+
+            }
+            else
+            {
+                await AppViewModel.SetStatusMessagesAsync(2000,
+                                                          new StatusMessage(
+                                                              "Couldn't retrieve history",
+                                                              StatusMessageType.Important),
+                                                          new StatusMessage("Ready"));
 
                 if( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
                 else Logger.Error( "Invalid configuration" );
-
-                RefreshEnabled = true;
-
-                return;
             }
 
-            AddLocations( response.Result!.HistoryItems
-                                  .Where( LocationFilter ) );
-
             RefreshEnabled = true;
-            AppViewModel.SetStatusMessage( "Ready" );
         }
 
         private void OnHistoryRequestStarted()
