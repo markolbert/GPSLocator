@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
@@ -69,11 +70,16 @@ namespace J4JSoftware.GPSLocator
             }
             else
             {
-                await AppViewModel.SetStatusMessagesAsync(2000,
-                                                          new StatusMessage(
-                                                              "Couldn't retrieve history",
-                                                              StatusMessageType.Important),
-                                                          new StatusMessage("Ready"));
+                var mesgs = new List<StatusMessage>
+                {
+                    new StatusMessage( "Couldn't retrieve history", StatusMessageType.Important ),
+                    new StatusMessage( "Ready" )
+                };
+
+                if( response.Error?.Description != null )
+                    mesgs.Insert( 1, new StatusMessage( response.Error.Description, StatusMessageType.Important ) );
+
+                await AppViewModel.SetStatusMessagesAsync( 2000, mesgs );
 
                 if( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );

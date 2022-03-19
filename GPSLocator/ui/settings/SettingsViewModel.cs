@@ -141,14 +141,29 @@ namespace J4JSoftware.GPSLocator
             {
                 UpdateAppConfig();
                 _appViewModel.Configuration.ValidationState = ValidationState.Validated;
-                _appViewModel.SetStatusMessage("Ready");
+
+                await _appViewModel.SetStatusMessagesAsync( 1000,
+                                                            new StatusMessage(
+                                                                "Validation succeeded",
+                                                                StatusMessageType.Important ),
+                                                            new StatusMessage( "Ready" ) );
             }
             else
-                _appViewModel.SetStatusMessage(( testConfig.ValidationState & ValidationState.CredentialsValid )
-                                            == ValidationState.CredentialsValid
-                                                   ? "Invalid IMEI"
-                                                   : "Invalid user name and/or password",
-                                               StatusMessageType.Urgent );
+            {
+                var failure = ( testConfig.ValidationState & ValidationState.CredentialsValid )
+                 == ValidationState.CredentialsValid
+                        ? "Invalid IMEI"
+                        : "Invalid user name and/or password";
+
+                var mesgs = new List<StatusMessage>
+                {
+                    new StatusMessage( "Validation failed", StatusMessageType.Urgent ),
+                    new StatusMessage( failure, StatusMessageType.Urgent ),
+                    new StatusMessage( "Ready" )
+                };
+
+                await _appViewModel.SetStatusMessagesAsync(2000, mesgs);
+            }
         }
 
         private void RequestStarted(object? sender, EventArgs e)

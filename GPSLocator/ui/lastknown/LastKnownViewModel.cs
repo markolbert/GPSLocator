@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.UI.Dispatching;
@@ -40,11 +41,16 @@ namespace J4JSoftware.GPSLocator
 
             if ( !response!.Succeeded || response.Result!.Locations.Count == 0 )
             {
-                await AppViewModel.SetStatusMessagesAsync( 2000,
-                                                           new StatusMessage(
-                                                               "Couldn't retrieve last known location",
-                                                               StatusMessageType.Important ),
-                                                           new StatusMessage( "Ready" ) );
+                var mesgs = new List<StatusMessage>
+                {
+                    new StatusMessage( "Couldn't retrieve last known location", StatusMessageType.Important ),
+                    new StatusMessage( "Ready" )
+                };
+
+                if (response.Error?.Description != null)
+                    mesgs.Insert(1, new StatusMessage(response.Error.Description, StatusMessageType.Important));
+
+                await AppViewModel.SetStatusMessagesAsync(2000, mesgs);
 
                 if ( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
