@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Text.Json;
 using System.Threading.Tasks;
 using J4JSoftware.DependencyInjection;
@@ -30,6 +31,8 @@ namespace J4JSoftware.GPSLocator
         private bool _compassHeadings;
         private bool _imperialUnits;
         private LogEventLevel _minEventLevel;
+        private string? _defaultCallback;
+        private bool _validCallback;
         private SingleSelectableItem? _launchPage;
         private bool _validated;
         private bool _deviceConfigChanged;
@@ -86,10 +89,10 @@ namespace J4JSoftware.GPSLocator
                 UserName = _appViewModel.Configuration.UserName,
                 EncryptedPassword = _appViewModel.Configuration.EncryptedPassword,
                 IMEI = _appViewModel.Configuration.IMEI,
-                UseCompassHeadings = _appViewModel.Configuration.UseCompassHeadings,
-                UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
-                MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel,
-                LaunchPage = _appViewModel.Configuration.LaunchPage,
+                //UseCompassHeadings = _appViewModel.Configuration.UseCompassHeadings,
+                //UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
+                //MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel,
+                //LaunchPage = _appViewModel.Configuration.LaunchPage,
             };
 
             var text = JsonSerializer.Serialize( tempConfig, jsonOptions );
@@ -112,6 +115,7 @@ namespace J4JSoftware.GPSLocator
             _appViewModel.Configuration.UseCompassHeadings = CompassHeadings;
             _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
             _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
+            _appViewModel.Configuration.DefaultCallback = DefaultCallback;
             _appViewModel.Configuration.LaunchPage = LaunchPage?.Value;
         }
 
@@ -172,6 +176,7 @@ namespace J4JSoftware.GPSLocator
             CompassHeadings = _appViewModel.Configuration.UseCompassHeadings;
             ImperialUnits = _appViewModel.Configuration.UseImperialUnits;
             MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
+            DefaultCallback = _appViewModel.Configuration.DefaultCallback;
             LaunchPage = AppViewModel.PageNames
                                      .FirstOrDefault( x => x.Value.Equals( _appViewModel.Configuration.LaunchPage,
                                                                            StringComparison.OrdinalIgnoreCase ) );
@@ -270,6 +275,44 @@ namespace J4JSoftware.GPSLocator
             }
         }
 
+        public string? DefaultCallback
+        {
+            get => _defaultCallback;
+
+            set
+            {
+                OtherConfigChanged = true;
+                SetProperty( ref _defaultCallback, value );
+
+                CallbackIsValid = ValidateCallback();
+            }
+        }
+
+        public bool CallbackIsValid
+        {
+            get => _validCallback;
+
+            set
+            {
+                SetProperty( ref _validCallback, value );
+                OnPropertyChanged( nameof( CanSave ) );
+            }
+        }
+
+        private bool ValidateCallback()
+        {
+            if( string.IsNullOrEmpty( DefaultCallback ) )
+                return true;
+
+            if( MailAddress.TryCreate( DefaultCallback, out _ ) )
+                return true;
+
+            if( DefaultCallback.All( char.IsDigit ) )
+                return DefaultCallback.Length >= 10;
+
+            return false;
+        }
+
         public SingleSelectableItem? LaunchPage
         {
             get => _launchPage;
@@ -318,6 +361,6 @@ namespace J4JSoftware.GPSLocator
             }
         }
 
-        public bool CanSave => Validated && (DeviceConfigChanged || OtherConfigChanged);
+        public bool CanSave => Validated && CallbackIsValid && (DeviceConfigChanged || OtherConfigChanged);
     }
 }

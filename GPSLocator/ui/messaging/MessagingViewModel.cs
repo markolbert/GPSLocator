@@ -27,6 +27,8 @@ namespace J4JSoftware.GPSLocator
             : base( logger )
         {
             SendMessageCommandAsync = new AsyncRelayCommand( SendMessageHandlerAsync );
+
+            Callback = AppViewModel.Configuration.DefaultCallback;
         }
 
         protected override bool LocationFilter( Location toCheck ) => toCheck.HasMessage;
@@ -124,10 +126,10 @@ namespace J4JSoftware.GPSLocator
             OnPropertyChanged(nameof(SendMessageEnabled));
         }
 
-        private bool ValidateCallback( bool acceptEmpty = false)
+        private bool ValidateCallback()
         {
             if( string.IsNullOrEmpty( Callback ) )
-                return acceptEmpty;
+                return false;
 
             if( MailAddress.TryCreate( Callback, out _ ) )
                 return true;

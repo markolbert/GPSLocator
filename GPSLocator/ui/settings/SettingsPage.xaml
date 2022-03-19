@@ -54,6 +54,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -105,21 +106,41 @@
             Use compass headings
         </CheckBox>
 
-        <Button Grid.Row="8" Grid.Column="1"
+        <TextBlock Grid.Row="8" Grid.Column="0"
+                   Padding="0,7,0,0"
+                   VerticalAlignment="Top">
+            Default Callback
+        </TextBlock>
+
+        <StackPanel Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3"
+                    Orientation="Vertical">
+
+            <TextBox Text="{x:Bind ViewModel.DefaultCallback, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTipService.ToolTip="email, phone number (digits only)"
+                     IsSpellCheckEnabled="False" />
+
+            <TextBlock FontStyle="Italic"
+                       Visibility="{x:Bind ViewModel.CallbackIsValid, Converter={StaticResource FalseToVisibleConverter}}">
+                Callback must be an email address or an all-digits phone number
+            </TextBlock>
+
+        </StackPanel>
+
+        <Button Grid.Row="9" Grid.Column="1"
                 IsEnabled="{x:Bind ViewModel.DeviceConfigChanged}"
                 HorizontalAlignment="Center"
                 Command="{x:Bind ViewModel.ValidateCommand}">
             Validate
         </Button>
 
-        <Button Grid.Row="8" Grid.Column="2"  
+        <Button Grid.Row="9" Grid.Column="2"  
                 HorizontalAlignment="Center"
                 Command="{x:Bind ViewModel.RevertCommand}"
                 IsEnabled="{x:Bind ViewModel.DeviceConfigChanged}">
             Revert
         </Button>
 
-        <Button Grid.Row="8" Grid.Column="3"
+        <Button Grid.Row="9" Grid.Column="3"
                 HorizontalAlignment="Center"
                 IsEnabled="{x:Bind ViewModel.CanSave}"
                 Command="{x:Bind ViewModel.SaveCommand}">

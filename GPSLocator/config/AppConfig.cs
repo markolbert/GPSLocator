@@ -10,6 +10,7 @@ namespace J4JSoftware.GPSLocator
         private string _helpLink = string.Empty;
         private string? _launchPage;
         private int _maxSmsLength;
+        private string? _defaultCallback;
 
         public bool UseImperialUnits
         {
@@ -44,7 +45,13 @@ namespace J4JSoftware.GPSLocator
         public int MaxSmsLength
         {
             get => _maxSmsLength;
-            set => SetProperty( ref _maxSmsLength, value );
+            set => SetProperty(ref _maxSmsLength, value);
+        }
+
+        public string? DefaultCallback
+        {
+            get => _defaultCallback;
+            set => SetProperty( ref _defaultCallback, value );
         }
     }
 }
