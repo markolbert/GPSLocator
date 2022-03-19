@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -139,6 +140,9 @@ namespace J4JSoftware.GPSLocator
 
         public void SetStatusMessage( string mesg, StatusMessageType type = StatusMessageType.Normal ) =>
             SetStatusMessage( new StatusMessage( mesg, type ) );
+
+        public async Task SetStatusMessagesAsync( int msPause, IEnumerable<StatusMessage> messages ) =>
+            await SetStatusMessagesAsync( msPause, messages.ToArray() );
 
         public async Task SetStatusMessagesAsync( int msPause, params StatusMessage[] messages )
         {
