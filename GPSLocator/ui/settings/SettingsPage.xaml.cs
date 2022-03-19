@@ -12,6 +12,8 @@ namespace J4JSoftware.GPSLocator
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        public const string PageName = "Settings";
+
         public SettingsPage()
         {
             this.InitializeComponent();

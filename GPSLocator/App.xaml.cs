@@ -64,8 +64,6 @@ namespace J4JSoftware.GPSLocator
         }
 
         public MainWindow? MainWindow { get; private set; }
-        public IntPtr MainWindowIntPtr { get; private set; }
-        public WindowId MainWindowId { get; private set; }
 
         public IJ4JHost Host { get; }
 
@@ -77,18 +75,6 @@ namespace J4JSoftware.GPSLocator
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             MainWindow = new MainWindow() { Title = "GPS Locator" };
-
-            MainWindowIntPtr = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
-            MainWindowId = Win32Interop.GetWindowIdFromWindow(MainWindowIntPtr);
-
-            var appWindow = AppWindow.GetFromWindowId(MainWindowId);
-
-            var winSize = appWindow.Size;
-            winSize.Height = winSize.Height > 720 ? 720 : winSize.Height;
-            winSize.Width = winSize.Width > 1500 ? 1500 : winSize.Width;
-
-            appWindow.Resize(winSize);
-
             MainWindow.Activate();
         }
 

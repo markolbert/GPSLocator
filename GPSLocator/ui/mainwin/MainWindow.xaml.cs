@@ -7,7 +7,9 @@ using J4JSoftware.Logging;
 using MapControl;
 using MapControl.Caching;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -88,17 +90,20 @@ namespace J4JSoftware.GPSLocator
 
         private void NavigationView_OnSelectionChanged( NavigationView sender, NavigationViewSelectionChangedEventArgs args )
         {
+            string? tag;
+
             if( args.IsSettingsSelected )
+                tag = "Settings";
+            else
             {
-                ContentFrame.Navigate( typeof( SettingsPage ) );
-                return;
+                var item = args.SelectedItemContainer as NavigationViewItem;
+                if (item?.Tag is not string temp)
+                    return;
+
+                tag = temp;
             }
-
-            var item = args.SelectedItemContainer as NavigationViewItem;
-            if( item?.Tag is not string tag )
-                return;
-
-            if( tag.Equals( AppViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase ) )
+            
+            if ( tag.Equals( AppViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase ) )
             {
                 if( string.IsNullOrEmpty( ViewModel.Configuration.HelpLink ) )
                     return;
@@ -122,6 +127,27 @@ namespace J4JSoftware.GPSLocator
                 return;
 
             ContentFrame.Navigate( newPage.Item, newPage.Value );
+            SetWindowSize( newPage );
+        }
+
+        private void SetWindowSize( SingleSelectableItem item )
+        {
+            ( int width, int height ) = item.Value switch
+            {
+                "LastKnown" => ( 910, 700 ),
+                "History" => ( 1520, 740 ),
+                "Messaging" => ( 1150, 700 ),
+                "LogViewer" => ( 750, 450 ),
+                "Settings" => ( 740, 930 ),
+                _ => ( 1250, 730 )
+            };
+
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle( this );
+            var windowId = Win32Interop.GetWindowIdFromWindow( hWnd );
+            var appWindow = AppWindow.GetFromWindowId( windowId );
+
+            var size = new Windows.Graphics.SizeInt32( width, height );
+            appWindow.Resize( size );
         }
 
         private void SetLaunchPage()
@@ -140,6 +166,7 @@ namespace J4JSoftware.GPSLocator
                 return;
 
             ContentFrame.Navigate( launchPage.Item, launchPage.Value );
+            SetWindowSize( launchPage );
         }
 
         private void OpenUrl(string url)
