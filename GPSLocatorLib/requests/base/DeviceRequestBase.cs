@@ -11,8 +11,7 @@ namespace J4JSoftware.GPSLocator
         where TResponse : class, new()
         where TError : ErrorBase, new()
     {
-        public event EventHandler? Started;
-        public event EventHandler? Ended;
+        public event EventHandler<DeviceRequestEventArgs>? Status;
 
         private readonly string _svcGroup;
         private readonly string _service;
@@ -48,7 +47,7 @@ namespace J4JSoftware.GPSLocator
 
         public async Task<DeviceResponse<TResponse>> ExecuteAsync()
         {
-            Started?.Invoke(this, EventArgs.Empty);
+            Status?.Invoke( this, new DeviceRequestEventArgs( RequestEvent.Started ) );
             
             var website = Configuration.Website.Replace( "http://", "", StringComparison.OrdinalIgnoreCase )
                                        .Replace( "https://", "", StringComparison.OrdinalIgnoreCase );
@@ -111,7 +110,7 @@ namespace J4JSoftware.GPSLocator
                 HandleContentParsingError(retVal, ex);
             }
 
-            Ended?.Invoke(this, EventArgs.Empty);
+            Status?.Invoke( this, new DeviceRequestEventArgs( RequestEvent.Succeeded ) );
 
             return retVal;
         }
@@ -147,11 +146,11 @@ namespace J4JSoftware.GPSLocator
 
         protected DeviceResponse<TResponse> HandleError( Exception? ex, string requestUri )
         {
-            Logger.Error<string?>(
-                $"{_direction}/V{_version}/{_svcGroup}/{_version} request failed, message was {0}",
-                ex?.Message);
+            Logger.Error<string?>( $"{_direction}/V{_version}/{_svcGroup}/{_version} request failed, message was {0}",
+                                   ex?.Message );
 
-            var retVal = new DeviceResponse<TResponse>( requestUri ) { 
+            var retVal = new DeviceResponse<TResponse>( requestUri )
+            {
                 Error = new TError()
                 {
                     Description = ex?.Message ?? string.Empty,
@@ -161,7 +160,7 @@ namespace J4JSoftware.GPSLocator
                 }
             };
 
-            Ended?.Invoke(this, EventArgs.Empty);
+            Status?.Invoke( this, new DeviceRequestEventArgs( RequestEvent.Aborted, retVal.Error.Description ) );
 
             return retVal;
         }
@@ -184,7 +183,9 @@ namespace J4JSoftware.GPSLocator
                 retVal = HandleError( jsonEx, requestUri );
             }
 
-            Ended?.Invoke( this, EventArgs.Empty );
+            Status?.Invoke( this,
+                            new DeviceRequestEventArgs( RequestEvent.Aborted,
+                                                        retVal.Error?.Description ?? "unspecified error" ) );
 
             return retVal;
         }

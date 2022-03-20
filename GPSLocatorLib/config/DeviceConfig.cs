@@ -114,7 +114,7 @@ public class DeviceConfig : INotifyPropertyChanged
     [JsonIgnore]
     public bool IsValid => ( ValidationState & ValidationState.Validated ) == ValidationState.Validated;
 
-    public async Task<bool> ValidateAsync( EventHandler startEvent, EventHandler endEvent )
+    public async Task<bool> ValidateAsync(EventHandler<DeviceRequestEventArgs>? statusHandler)
     {
         if( ( ValidationState & ValidationState.Validated ) == ValidationState.Validated )
             return true;
@@ -126,24 +126,25 @@ public class DeviceConfig : INotifyPropertyChanged
         }
 
         if( ( ValidationState & ValidationState.CredentialsValid ) == ValidationState.CredentialsValid )
-            return await ValidateImeiAsync( startEvent, endEvent );
+            return await ValidateImeiAsync( statusHandler );
 
-        if( !await ValidateCredentialsAsync( startEvent, endEvent ) )
+        if( !await ValidateCredentialsAsync( statusHandler ) )
             return false;
 
-        return await ValidateImeiAsync( startEvent, endEvent );
+        return await ValidateImeiAsync( statusHandler );
     }
 
-    private async Task<bool> ValidateCredentialsAsync( EventHandler startEvent, EventHandler endEvent )
+    private async Task<bool> ValidateCredentialsAsync( EventHandler<DeviceRequestEventArgs>? statusHandler )
     {
         var testReq = new DeviceConfigRequest(this, _logger!);
-        testReq.Started += startEvent;
-        testReq.Ended += endEvent;
+
+        if( statusHandler != null )
+            testReq.Status += statusHandler;
 
         var result = await testReq.ExecuteAsync();
 
-        testReq.Started -= startEvent;
-        testReq.Ended -= endEvent;
+        if (statusHandler != null)
+            testReq.Status -= statusHandler;
 
         if ( result.Succeeded )
             ValidationState |= ValidationState.CredentialsValid;
@@ -151,16 +152,17 @@ public class DeviceConfig : INotifyPropertyChanged
         return result.Succeeded;
     }
 
-    private async Task<bool> ValidateImeiAsync(EventHandler startEvent, EventHandler endEvent)
+    private async Task<bool> ValidateImeiAsync(EventHandler<DeviceRequestEventArgs>? statusHandler)
     {
         var testReq = new LastKnownLocationRequest<Location>( this, _logger! );
-        testReq.Started += startEvent;
-        testReq.Ended += endEvent;
+
+        if (statusHandler != null)
+            testReq.Status += statusHandler;
 
         var response = await testReq.ExecuteAsync();
 
-        testReq.Started -= startEvent;
-        testReq.Ended -= endEvent;
+        if (statusHandler != null)
+            testReq.Status -= statusHandler;
 
         if ( !response.Succeeded || response.Result!.Locations.Count <= 0 )
             return false;
