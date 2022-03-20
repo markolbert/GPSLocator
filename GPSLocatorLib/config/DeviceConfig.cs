@@ -9,6 +9,7 @@ namespace J4JSoftware.GPSLocator;
 
 public class DeviceConfig : INotifyPropertyChanged
 {
+    public event EventHandler<ValidationPhase>? Validation;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private string _website = string.Empty;
@@ -114,62 +115,62 @@ public class DeviceConfig : INotifyPropertyChanged
     [JsonIgnore]
     public bool IsValid => ( ValidationState & ValidationState.Validated ) == ValidationState.Validated;
 
-    public async Task<bool> ValidateAsync(EventHandler<DeviceRequestEventArgs>? statusHandler)
+    public async Task<bool> ValidateAsync()
     {
         if( ( ValidationState & ValidationState.Validated ) == ValidationState.Validated )
+        {
+            Validation?.Invoke( this, ValidationPhase.Succeeded );
             return true;
+        }
 
         if( _logger == null || EncryptedPassword.Protector == null )
         {
             _logger?.Error( "Configuration not initialized" );
+            Validation?.Invoke( this, ValidationPhase.NotValidatable );
             return false;
         }
 
+        Validation?.Invoke( this, ValidationPhase.Starting );
+
+        var isValid = await ValidateCredentialsAsync();
+        isValid &= await ValidateImeiAsync();
+
+        Validation?.Invoke( this, isValid ? ValidationPhase.Succeeded : ValidationPhase.Failed );
+
+        return isValid;
+    }
+
+    private async Task<bool> ValidateCredentialsAsync()
+    {
+        Validation?.Invoke(this, ValidationPhase.CheckingCredentials);
+
         if( ( ValidationState & ValidationState.CredentialsValid ) == ValidationState.CredentialsValid )
-            return await ValidateImeiAsync( statusHandler );
+            return true;
 
-        if( !await ValidateCredentialsAsync( statusHandler ) )
-            return false;
-
-        return await ValidateImeiAsync( statusHandler );
-    }
-
-    private async Task<bool> ValidateCredentialsAsync( EventHandler<DeviceRequestEventArgs>? statusHandler )
-    {
         var testReq = new DeviceConfigRequest(this, _logger!);
-
-        if( statusHandler != null )
-            testReq.Status += statusHandler;
-
-        var result = await testReq.ExecuteAsync();
-
-        if (statusHandler != null)
-            testReq.Status -= statusHandler;
-
-        if ( result.Succeeded )
-            ValidationState |= ValidationState.CredentialsValid;
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> ValidateImeiAsync(EventHandler<DeviceRequestEventArgs>? statusHandler)
-    {
-        var testReq = new LastKnownLocationRequest<Location>( this, _logger! );
-
-        if (statusHandler != null)
-            testReq.Status += statusHandler;
-
         var response = await testReq.ExecuteAsync();
 
-        if (statusHandler != null)
-            testReq.Status -= statusHandler;
+        if ( response.Succeeded )
+            ValidationState |= ValidationState.CredentialsValid;
 
-        if ( !response.Succeeded || response.Result!.Locations.Count <= 0 )
-            return false;
+        return response.Succeeded;
+    }
 
-        ValidationState |= ValidationState.ImeiValid;
+    private async Task<bool> ValidateImeiAsync()
+    {
+        Validation?.Invoke(this, ValidationPhase.CheckingImei);
 
-        return true;
+        if( ( ValidationState & ValidationState.Validated ) == ValidationState.Validated )
+            return true;
+
+        var testReq = new LastKnownLocationRequest<Location>( this, _logger! );
+        var response = await testReq.ExecuteAsync();
+
+        var retVal = response.Succeeded && response.Result!.Locations.Count > 0;
+        if( retVal )
+            ValidationState |= ValidationState.ImeiValid;
+
+        return retVal;
     }
 
     [ NotifyPropertyChangedInvocator ]
