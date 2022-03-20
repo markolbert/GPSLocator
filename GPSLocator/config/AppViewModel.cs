@@ -139,8 +139,8 @@ namespace J4JSoftware.GPSLocator
             private set => SetProperty( ref _statusStyle, value );
         }
 
-        public void SetStatusMessage( string mesg, StatusMessageType type = StatusMessageType.Normal ) =>
-            SetStatusMessage( new StatusMessage( mesg, type ) );
+        public void SetStatusMessage( string mesg, StatusMessageType type = StatusMessageType.Normal, int msPause = 0 ) =>
+            SetStatusMessage( new StatusMessage( mesg, type ), msPause );
 
         public async Task SetStatusMessagesAsync( int msPause, IEnumerable<StatusMessage> messages ) =>
             await SetStatusMessagesAsync( msPause, messages.ToArray() );
@@ -154,7 +154,7 @@ namespace J4JSoftware.GPSLocator
             }
         }
 
-        public void SetStatusMessage( StatusMessage mesg )
+        public void SetStatusMessage( StatusMessage mesg, int msPause = 0 )
         {
             StatusMessage = mesg.Text;
 
@@ -165,6 +165,8 @@ namespace J4JSoftware.GPSLocator
                 StatusMessageType.Urgent => App.Current.Resources[AppViewModel.ResourceNames.UrgentStyleKey] as Style,
                 _ => App.Current.Resources[AppViewModel.ResourceNames.NormalStyleKey] as Style
             };
+
+            Task.Delay( msPause );
         }
     }
 }
