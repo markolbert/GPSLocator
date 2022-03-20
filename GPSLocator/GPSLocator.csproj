@@ -31,7 +31,9 @@
 
   <ItemGroup>
     <None Remove="ui\common\LocationControl.xaml" />
+    <None Remove="ui\launch\LaunchPage.xaml" />
     <None Remove="ui\logviewer\LogViewerPage.xaml" />
+    <None Remove="ui\mainwin\MainPage.xaml" />
     <None Remove="ui\messaging\MessagingPage.xaml" />
   </ItemGroup>
 
@@ -81,6 +83,12 @@
     <None Update="appConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="ui\mainwin\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="ui\launch\LaunchPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="ui\messaging\MessagingPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
