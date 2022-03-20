@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ABI.Windows.System;
 using J4JSoftware.Logging;
@@ -87,7 +89,7 @@ namespace J4JSoftware.GPSLocator
             DeviceResponse<SendMessageCount>? response = null;
             await Task.Run(async () =>
             {
-                response = await ExecuteRequestAsync( request, OnSendMessageRequestStarted, OnSendMessageRequestEnded );
+                response = await ExecuteRequestAsync( request, OnSendingMessageStatusChanged );
             });
 
             if( response!.Succeeded )
@@ -114,21 +116,21 @@ namespace J4JSoftware.GPSLocator
             }
         }
 
-        private void OnSendMessageRequestStarted()
+        private void OnSendingMessageStatusChanged(DeviceRequestEventArgs args)
         {
-            AppViewModel.SetStatusMessage("Sending message");
-            AppViewModel.IndeterminateVisibility = Visibility.Visible;
+            var error = args.Message ?? "Unspecified error";
 
-            _sendAllowed = true;
-            OnPropertyChanged(nameof(SendMessageEnabled));
-        }
+            (string msg, Visibility visibility, bool enabled) = args.RequestEvent switch
+            {
+                RequestEvent.Started => ("Sending message", Visibility.Visible, false),
+                RequestEvent.Succeeded => ("Message sent", Visibility.Collapsed, true),
+                RequestEvent.Aborted => ($"Send failed: {error}", Visibility.Collapsed, true),
+                _ => throw new InvalidEnumArgumentException($"Unsupported RequestEvent '{args.RequestEvent}'")
+            };
 
-        private void OnSendMessageRequestEnded()
-        {
-            AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
-
-            _sendAllowed = true;
-            OnPropertyChanged(nameof(SendMessageEnabled));
+            AppViewModel.SetStatusMessage(msg);
+            AppViewModel.IndeterminateVisibility = visibility;
+            RefreshEnabled = enabled;
         }
 
         private bool ValidateCallback()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -138,7 +139,7 @@ namespace J4JSoftware.GPSLocator
             var protector = App.Current.Host.Services.GetRequiredService<IJ4JProtection>();
             testConfig.Initialize( protector, _logger );
 
-            Validated = await testConfig.ValidateAsync( RequestStarted, RequestEnded );
+            Validated = await testConfig.ValidateAsync( StatusChanged );
 
             if( Validated )
             {
@@ -169,18 +170,23 @@ namespace J4JSoftware.GPSLocator
             }
         }
 
-        private void RequestStarted(object? sender, EventArgs e)
+        private void StatusChanged(object? sender, DeviceRequestEventArgs args)
         {
-            _dQueue.TryEnqueue(() =>
-            {
-                _appViewModel.SetStatusMessage("Validating");
-                _appViewModel.IndeterminateVisibility = Visibility.Visible;
-            });
-        }
+            var error = args.Message ?? "Unspecified error";
 
-        private void RequestEnded(object? sender, EventArgs e)
-        {
-            _dQueue.TryEnqueue(() => { _appViewModel.IndeterminateVisibility = Visibility.Collapsed; });
+            _dQueue.TryEnqueue( () =>
+            {
+                ( string msg, Visibility visibility ) = args.RequestEvent switch
+                {
+                    RequestEvent.Started => ( "Validating", Visibility.Visible ),
+                    RequestEvent.Succeeded => ( "Validation succeeded", Visibility.Collapsed ),
+                    RequestEvent.Aborted => ( $"Validation failed: {error}", Visibility.Collapsed ),
+                    _ => throw new InvalidEnumArgumentException( $"Unsupported RequestEvent '{args.RequestEvent}'" )
+                };
+
+                _appViewModel.SetStatusMessage( msg );
+                _appViewModel.IndeterminateVisibility = visibility;
+            } );
         }
 
         public RelayCommand RevertCommand { get; }

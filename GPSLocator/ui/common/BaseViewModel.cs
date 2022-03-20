@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Mvvm.Messaging.Messages;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSLocator;
 
@@ -12,8 +15,7 @@ public class BaseViewModel : ObservableValidator
 {
     private readonly DispatcherQueue _dQueue;
 
-    private Action? _onRequestStarted;
-    private Action? _onRequestEnded;
+    private Action<DeviceRequestEventArgs>? _onStatusChanged;
     private bool _isActive;
 
     protected BaseViewModel(
@@ -89,17 +91,13 @@ public class BaseViewModel : ObservableValidator
 
     protected virtual async Task<DeviceResponse<TResponse>> ExecuteRequestAsync<TResponse, TError>(
         DeviceRequestBase<TResponse, TError> request,
-        Action? onRequestStarted,
-        Action? onRequestEnded
+        Action<DeviceRequestEventArgs>? onStatusChanged
     )
         where TResponse : class, new()
         where TError : ErrorBase, new()
     {
-        _onRequestStarted = onRequestStarted;
-        _onRequestEnded = onRequestEnded;
-
-        request.Started += RequestStarted;
-        request.Ended += RequestEnded;
+        _onStatusChanged = onStatusChanged;
+        request.Status += StatusChanged;
 
         DeviceResponse<TResponse>? response = null;
 
@@ -107,22 +105,19 @@ public class BaseViewModel : ObservableValidator
         {
             response = await request.ExecuteAsync();
 
-            request.Started -= RequestStarted;
-            request.Ended -= RequestEnded;
+            request.Status -= StatusChanged;
+            _onStatusChanged = null;
         });
 
         return response!;
     }
 
-    private void RequestStarted(object? sender, EventArgs e)
+    private void StatusChanged(object? sender, DeviceRequestEventArgs args )
     {
-        if( _onRequestStarted != null )
-            _dQueue.TryEnqueue( () => _onRequestStarted() );
-    }
-
-    private void RequestEnded( object? sender, EventArgs e )
-    {
-        if( _onRequestEnded != null )
-            _dQueue.TryEnqueue( () => _onRequestEnded() );
+        _dQueue.TryEnqueue( () =>
+        {
+            if (_onStatusChanged != null)
+                _onStatusChanged( args );
+        } );
     }
 }

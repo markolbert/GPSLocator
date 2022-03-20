@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -51,7 +53,7 @@ namespace J4JSoftware.GPSLocator
                 Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
             };
 
-            var response = await ExecuteRequestAsync( request, OnHistoryRequestStarted, OnHistoryRequestEnded );
+            var response = await ExecuteRequestAsync( request, OnHistoryRequestStatusChanged );
 
             if( response!.Succeeded )
             {
@@ -86,39 +88,24 @@ namespace J4JSoftware.GPSLocator
             RefreshEnabled = true;
         }
 
-        private void OnHistoryRequestStarted()
+        private void OnHistoryRequestStatusChanged( DeviceRequestEventArgs args )
         {
-            AppViewModel.SetStatusMessage("Updating history");
-            AppViewModel.IndeterminateVisibility = Visibility.Visible;
-            RefreshEnabled = false;
-        }
+            var error = args.Message ?? "Unspecified error";
 
-        private void OnHistoryRequestEnded()
-        {
-            AppViewModel.IndeterminateVisibility = Visibility.Collapsed;
-            RefreshEnabled = true;
+            ( string msg, Visibility visibility, bool enabled ) = args.RequestEvent switch
+            {
+                RequestEvent.Started => ( "Updating history", Visibility.Visible, false ),
+                RequestEvent.Succeeded => ( "History updated", Visibility.Collapsed, true ),
+                RequestEvent.Aborted => ( $"Update failed: {error}", Visibility.Collapsed, true ),
+                _ => throw new InvalidEnumArgumentException( $"Unsupported RequestEvent '{args.RequestEvent}'" )
+            };
+
+            AppViewModel.SetStatusMessage( msg );
+            AppViewModel.IndeterminateVisibility = visibility;
+            RefreshEnabled = enabled;
         }
 
         protected virtual bool LocationFilter( Location toCheck ) => true;
-
-        //private void RequestStarted(object? sender, EventArgs e)
-        //{
-        //    _dQueue.TryEnqueue( OnRequestStarted );
-        //}
-
-        //protected virtual void OnRequestStarted()
-        //{
-        //}
-
-        //private void RequestEnded(object? sender, EventArgs e)
-        //{
-        //    _dQueue.TryEnqueue( OnRequestEnded );
-        //}
-
-        //protected virtual void OnRequestEnded()
-        //{
-
-        //}
 
         public DateTimeOffset StartDate => _endDate.DateTime.AddDays(-DaysBack);
 
