@@ -90,22 +90,6 @@ namespace J4JSoftware.GPSLocator
                 return;
 
             ContentFrame.Navigate(newPage.Item, newPage.Value);
-            SetWindowSize(newPage);
-        }
-
-        private void SetWindowSize( SingleSelectableItem item )
-        {
-            ( int width, int height ) = item.Value switch
-            {
-                "LastKnown" => ( 910, 700 ),
-                "History" => ( 1520, 740 ),
-                "Messaging" => ( 1150, 700 ),
-                "LogViewer" => ( 750, 450 ),
-                "Settings" => ( 740, 930 ),
-                _ => ( 1250, 730 )
-            };
-
-            App.Current.SetWindowSize(width, height);
         }
 
         private void SetLaunchPage()
@@ -125,7 +109,6 @@ namespace J4JSoftware.GPSLocator
                 return;
 
             ContentFrame.Navigate( launchPage.Item, launchPage.Value );
-            SetWindowSize( launchPage );
         }
 
         private void OpenUrl( string url )
