@@ -31,6 +31,12 @@ namespace J4JSoftware.GPSLocator
             App.Current.SetWindowSize(800, 800);
 
             ViewModel = App.Current.Host.Services.GetRequiredService<LaunchViewModel>();
+            Loaded += LaunchPage_Loaded;
+        }
+
+        private void LaunchPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.OnPageActivated();
         }
 
         public LaunchViewModel ViewModel { get; }

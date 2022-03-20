@@ -136,10 +136,12 @@ namespace J4JSoftware.GPSLocator
                 IMEI = Imei, UserName = UserName, Website = Website, Password = Password
             };
 
+            testConfig.Validation += OnValidationProgress;
+
             var protector = App.Current.Host.Services.GetRequiredService<IJ4JProtection>();
             testConfig.Initialize( protector, _logger );
 
-            Validated = await testConfig.ValidateAsync( StatusChanged );
+            Validated = await testConfig.ValidateAsync();
 
             if( Validated )
             {
@@ -170,23 +172,24 @@ namespace J4JSoftware.GPSLocator
             }
         }
 
-        private void StatusChanged(object? sender, DeviceRequestEventArgs args)
+        private void OnValidationProgress( object? sender, ValidationPhase args )
         {
-            var error = args.Message ?? "Unspecified error";
-
-            _dQueue.TryEnqueue( () =>
+            _dQueue.TryEnqueue(() =>
             {
-                ( string msg, Visibility visibility ) = args.RequestEvent switch
+                (string msg, Visibility visibility) = args switch
                 {
-                    RequestEvent.Started => ( "Validating", Visibility.Visible ),
-                    RequestEvent.Succeeded => ( "Validation succeeded", Visibility.Collapsed ),
-                    RequestEvent.Aborted => ( $"Validation failed: {error}", Visibility.Collapsed ),
-                    _ => throw new InvalidEnumArgumentException( $"Unsupported RequestEvent '{args.RequestEvent}'" )
+                    ValidationPhase.Starting => ("Validation starting", Visibility.Visible),
+                    ValidationPhase.NotValidatable => ("Validation failed due to invalid initialization", Visibility.Collapsed),
+                    ValidationPhase.CheckingCredentials => ("Checking credentials", Visibility.Visible),
+                    ValidationPhase.CheckingImei=> ("Checking IMEI", Visibility.Visible),
+                    ValidationPhase.Failed=>("Validation failed", Visibility.Collapsed),
+                    ValidationPhase.Succeeded=>("Validation succeeded", Visibility.Collapsed),
+                    _ => throw new InvalidEnumArgumentException($"Unsupported {typeof(ValidationPhase)} '{args}'")
                 };
 
-                _appViewModel.SetStatusMessage( msg );
+                _appViewModel.SetStatusMessage(msg);
                 _appViewModel.IndeterminateVisibility = visibility;
-            } );
+            });
         }
 
         public RelayCommand RevertCommand { get; }

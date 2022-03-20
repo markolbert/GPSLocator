@@ -99,9 +99,14 @@ namespace J4JSoftware.GPSLocator
             MainWindow.Activate();
 
             var launchPage = new LaunchPage();
-            MainWindow.Content = launchPage;
+            launchPage.ViewModel.Initialized += LaunchPageCompleted;
 
-            Task.Run( () => launchPage.ViewModel.OnPageActivated() );
+            MainWindow!.Content = launchPage;
+        }
+
+        private void LaunchPageCompleted( object? sender, EventArgs e )
+        {
+            _dQueue.TryEnqueue( () => MainWindow!.Content = new MainPage() );
         }
     }
 }

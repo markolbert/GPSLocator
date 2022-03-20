@@ -17,6 +17,8 @@ namespace J4JSoftware.GPSLocator
 {
     public class LaunchViewModel : ObservableObject
     {
+        public event EventHandler? Initialized;
+
         private readonly IJ4JLogger _logger;
         private readonly AppViewModel _appViewModel;
         private readonly DispatcherQueue _dQueue;
@@ -34,26 +36,46 @@ namespace J4JSoftware.GPSLocator
             _appViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
         }
 
-        public async Task OnPageActivated()
+        public void OnPageActivated()
         {
-            var isValid = await _appViewModel.Configuration.ValidateAsync( StatusChanged );
+            _appViewModel.Configuration.Validation += OnValidationProgress;
 
-            WeakReferenceMessenger.Default.Send( new AppConfiguredMessage( isValid ), "primary" );
+            Task.Run( async () => await _appViewModel.Configuration.ValidateAsync() );
         }
 
-        private void StatusChanged( object? sender, DeviceRequestEventArgs args)
+        private void OnValidationProgress( object? sender, ValidationPhase args )
         {
-            var error = args.Message ?? "Unspecified error";
+            OnValidationUpdate( args );
 
-            _dQueue.TryEnqueue(() =>
+            if( args is not (ValidationPhase.Failed or ValidationPhase.Succeeded) )
+                return;
+
+            Thread.Sleep( 1000 ); // so last message will be visible
+            Initialized?.Invoke( this, EventArgs.Empty );
+        }
+
+        private void OnValidationUpdate( ValidationPhase args )
+        {
+            _dQueue.TryEnqueue( () =>
             {
-                Message = args.RequestEvent switch
+                var msg = args switch
                 {
-                    RequestEvent.Started => "Validating configuration",
-                    RequestEvent.Succeeded => "Configuration is valid",
-                    RequestEvent.Aborted => $"Configuration failed: {error}",
-                    _ => throw new InvalidOperationException( $"Unsupported RequestEvent '{args.RequestEvent}'" )
+                    ValidationPhase.Starting => "Validation starting",
+                    ValidationPhase.NotValidatable => "Validation failed due to invalid initialization",
+                    ValidationPhase.CheckingCredentials => "Checking credentials",
+                    ValidationPhase.CheckingImei => "Checking IMEI",
+                    ValidationPhase.Succeeded => "Validation succeeded",
+                    ValidationPhase.Failed => "Validation failed",
+                    _ => throw new InvalidEnumArgumentException( $"Unsupported {typeof( ValidationPhase )} '{args}'" )
                 };
+
+                Message = msg;
+                MessageColor = args == ValidationPhase.Failed ? Colors.Red : Colors.Gold;
+
+                if( args is not (ValidationPhase.Succeeded or ValidationPhase.Failed) )
+                    return;
+
+                _appViewModel.Configuration.Validation -= OnValidationProgress;
             });
         }
 
