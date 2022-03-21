@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Mvvm.Messaging.Messages;
@@ -37,17 +38,20 @@ public class BaseViewModel : ObservableValidator
         IsActive = true;
 
         AppViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
+        StatusMessages = App.Current.Host.Services.GetRequiredService<StatusMessages>();
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );
 
         if( !AppViewModel.Configuration.IsValid )
-            MessageQueue.Default.Message("Invalid configuration").Urgent().Enqueue();
+            StatusMessages.Message("Invalid configuration").Urgent().Enqueue();
 
-        MessageQueue.Default.Ready();
+        StatusMessages.DisplayReady();
     }
 
     protected IJ4JLogger Logger { get; }
+    protected StatusMessages StatusMessages { get; }
+
     public AppViewModel AppViewModel { get; }
 
     #region stuff to mimic ObservableRecipient

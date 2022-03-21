@@ -48,7 +48,8 @@ namespace J4JSoftware.GPSLocator
             var logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
             logger.LogEvent += Logger_LogEvent;
 
-            MessageQueue.Default.DisplayMessage += OnDisplayMessage;
+            var statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessages>();
+            statusMessages.DisplayMessage += OnDisplayMessage;
         }
 
         private void ConfigurationOnPropertyChanged( object? sender, PropertyChangedEventArgs e )
@@ -61,7 +62,7 @@ namespace J4JSoftware.GPSLocator
             LogEvents.AddLogEvent( e );
         }
 
-        public AppConfig Configuration { get; set; }
+        public AppConfig Configuration { get; }
 
         [JsonIgnore]
         public IndexedLogEvent.Collection LogEvents { get; } = new();
@@ -132,7 +133,7 @@ namespace J4JSoftware.GPSLocator
             private set => SetProperty( ref _statusStyle, value );
         }
 
-        private void OnDisplayMessage(object? sender, StatusMessage args )
+        private void OnDisplayMessage(object? sender, StatusMessages.StatusMessage args )
         {
             StatusMessage = args.Text;
 
@@ -146,7 +147,12 @@ namespace J4JSoftware.GPSLocator
             };
 
             if( !args.HasProgressBar )
+            {
+                IndeterminateVisibility = Visibility.Collapsed;
+                DeterminateVisibility = Visibility.Collapsed;
+
                 return;
+            }
 
             switch( args.ProgressBarType! )
             {

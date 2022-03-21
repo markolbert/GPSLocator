@@ -29,8 +29,8 @@ public class LastKnownViewModel : LocationMapViewModel
     {
         if( !AppViewModel.Configuration.IsValid )
         {
-            MessageQueue.Default.Message("Invalid configuration").Urgent().Enqueue();
-            MessageQueue.Default.Ready();
+            StatusMessages.Message("Invalid configuration").Urgent().Enqueue();
+            StatusMessages.DisplayReady();
 
             return;
         }
@@ -42,12 +42,12 @@ public class LastKnownViewModel : LocationMapViewModel
 
         if( !response!.Succeeded || response.Result!.Locations.Count == 0 )
         {
-            MessageQueue.Default.Message( "Couldn't retrieve last known location" ).Important().Enqueue();
+            StatusMessages.Message( "Couldn't retrieve last known location" ).Important().Enqueue();
 
             if( response.Error?.Description != null )
-                MessageQueue.Default.Message( response.Error.Description ).Important().Enqueue();
+                StatusMessages.Message( response.Error.Description ).Important().Enqueue();
 
-            MessageQueue.Default.Ready();
+            StatusMessages.DisplayReady();
 
             if( response.Error != null )
                 Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
@@ -66,8 +66,8 @@ public class LastKnownViewModel : LocationMapViewModel
 
             LastKnownPoint = MappedPoints[ 0 ];
 
-            MessageQueue.Default.Message( "Retrieved last known location" ).Important().Enqueue();
-            MessageQueue.Default.Ready();
+            StatusMessages.Message( "Retrieved last known location" ).Important().Enqueue();
+            StatusMessages.DisplayReady();
         }
 
     }
@@ -85,9 +85,9 @@ public class LastKnownViewModel : LocationMapViewModel
         };
 
         if( pBar )
-            MessageQueue.Default.Message( msg ).Indeterminate().Enqueue();
+            StatusMessages.Message( msg ).Indeterminate().Display();
         else
-            MessageQueue.Default.Message(msg).Enqueue();
+            StatusMessages.Message(msg).Display();
 
         RefreshEnabled = enabled;
     }

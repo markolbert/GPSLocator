@@ -13,184 +13,183 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using WinRT.Interop;
 
-namespace J4JSoftware.GPSLocator
+namespace J4JSoftware.GPSLocator;
+
+public class MessagingViewModel :HistoryViewModelBase
 {
-    public class MessagingViewModel :HistoryViewModelBase
+    private string? _messageToSend;
+    private string? _callback;
+    private bool _callbackIsValid;
+    private bool _sendAllowed = true;
+    private bool _msgTooLong;
+
+    public MessagingViewModel( 
+        IJ4JLogger logger 
+    )
+        : base( logger )
     {
-        private string? _messageToSend;
-        private string? _callback;
-        private bool _callbackIsValid;
-        private bool _sendAllowed = true;
-        private bool _msgTooLong;
+        SendMessageCommandAsync = new AsyncRelayCommand( SendMessageHandlerAsync );
 
-        public MessagingViewModel( 
-            IJ4JLogger logger 
-            )
-            : base( logger )
+        Callback = AppViewModel.Configuration.DefaultCallback;
+    }
+
+    protected override bool LocationFilter( Location toCheck ) => toCheck.HasMessage;
+
+    public AsyncRelayCommand SendMessageCommandAsync { get; }
+
+    private async Task SendMessageHandlerAsync()
+    {
+        if( !ValidateCallback() )
+            return;
+
+        var messages = new List<string>();
+
+        // break long messages up into separate ones
+        if( _messageToSend!.Length <= 160 )
+            messages.Add( _messageToSend );
+        else
         {
-            SendMessageCommandAsync = new AsyncRelayCommand( SendMessageHandlerAsync );
+            var sb = new StringBuilder();
 
-            Callback = AppViewModel.Configuration.DefaultCallback;
-        }
-
-        protected override bool LocationFilter( Location toCheck ) => toCheck.HasMessage;
-
-        public AsyncRelayCommand SendMessageCommandAsync { get; }
-
-        private async Task SendMessageHandlerAsync()
-        {
-            if( !ValidateCallback() )
-                return;
-
-            var messages = new List<string>();
-
-            // break long messages up into separate ones
-            if( _messageToSend!.Length <= 160 )
-                messages.Add( _messageToSend );
-            else
+            foreach( var part in _messageToSend.Split( " " ) )
             {
-                var sb = new StringBuilder();
+                var partLength = part.Length;
 
-                foreach( var part in _messageToSend.Split( " " ) )
+                if( partLength + sb.Length + 1 <= 160 )
                 {
-                    var partLength = part.Length;
+                    sb.Append( " " );
+                    sb.Append( part );
+                }
+                else
+                {
+                    messages.Add( sb.ToString() );
+                    sb.Clear();
 
-                    if( partLength + sb.Length + 1 <= 160 )
-                    {
-                        sb.Append( " " );
+                    if( partLength <= 160 )
                         sb.Append( part );
-                    }
                     else
                     {
-                        messages.Add( sb.ToString() );
-                        sb.Clear();
-
-                        if( partLength <= 160 )
-                            sb.Append( part );
-                        else
-                        {
-                            messages.Add( part[ ..160 ] );
-                            sb.Append( part[ 161.. ] );
-                        }
+                        messages.Add( part[ ..160 ] );
+                        sb.Append( part[ 161.. ] );
                     }
                 }
-
-                if( sb.Length > 0 )
-                    messages.Add( sb.ToString() );
             }
 
-            var request = new SendMessageRequest( AppViewModel.Configuration, Logger );
-
-            foreach ( var message in messages )
-            {
-                request.AddMessage( Callback!, message );
-            }
-
-            DeviceResponse<SendMessageCount>? response = null;
-            await Task.Run(async () =>
-            {
-                response = await ExecuteRequestAsync( request, OnSendingMessageStatusChanged );
-            });
-
-            if( response!.Succeeded )
-            {
-                MessageQueue.Default.Message( "Message sent" ).Important().Enqueue();
-                MessageQueue.Default.Ready();
-            }
-            else
-            {
-                MessageQueue.Default.Message( "Couldn't send message" ).Important().Enqueue();
-
-                if (response.Error?.Description != null)
-                    MessageQueue.Default.Message( response.Error.Description).Important().Enqueue();
-
-                MessageQueue.Default.Ready();
-
-                if( response.Error != null )
-                    Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
-                else Logger.Error( "Invalid configuration" );
-            }
+            if( sb.Length > 0 )
+                messages.Add( sb.ToString() );
         }
 
-        private void OnSendingMessageStatusChanged(DeviceRequestEventArgs args)
+        var request = new SendMessageRequest( AppViewModel.Configuration, Logger );
+
+        foreach ( var message in messages )
         {
-            var error = args.Message ?? "Unspecified error";
-
-            (string msg, bool pBar, bool enabled) = args.RequestEvent switch
-            {
-                RequestEvent.Started => ("Sending message", true, false),
-                RequestEvent.Succeeded => ("Message sent", false, true),
-                RequestEvent.Aborted => ($"Send failed: {error}", false, true),
-                _ => throw new InvalidEnumArgumentException($"Unsupported RequestEvent '{args.RequestEvent}'")
-            };
-
-            if( pBar )
-                MessageQueue.Default.Message(msg).Indeterminate().Enqueue();
-            else MessageQueue.Default.Message(msg).Enqueue();
-
-            RefreshEnabled = enabled;
+            request.AddMessage( Callback!, message );
         }
 
-        private bool ValidateCallback()
+        DeviceResponse<SendMessageCount>? response = null;
+        await Task.Run(async () =>
         {
-            if( string.IsNullOrEmpty( Callback ) )
-                return false;
+            response = await ExecuteRequestAsync( request, OnSendingMessageStatusChanged );
+        });
 
-            if( MailAddress.TryCreate( Callback, out _ ) )
-                return true;
+        if( response!.Succeeded )
+        {
+            StatusMessages.Message( "Message sent" ).Important().Enqueue();
+            StatusMessages.DisplayReady();
+        }
+        else
+        {
+            StatusMessages.Message( "Couldn't send message" ).Important().Enqueue();
 
-            if( Callback.All( char.IsDigit ) )
-                return Callback.Length >= 10;
+            if (response.Error?.Description != null)
+                StatusMessages.Message( response.Error.Description).Important().Enqueue();
 
+            StatusMessages.DisplayReady();
+
+            if( response.Error != null )
+                Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
+            else Logger.Error( "Invalid configuration" );
+        }
+    }
+
+    private void OnSendingMessageStatusChanged(DeviceRequestEventArgs args)
+    {
+        var error = args.Message ?? "Unspecified error";
+
+        (string msg, bool pBar, bool enabled) = args.RequestEvent switch
+        {
+            RequestEvent.Started => ("Sending message", true, false),
+            RequestEvent.Succeeded => ("Message sent", false, true),
+            RequestEvent.Aborted => ($"Send failed: {error}", false, true),
+            _ => throw new InvalidEnumArgumentException($"Unsupported RequestEvent '{args.RequestEvent}'")
+        };
+
+        if( pBar )
+            StatusMessages.Message(msg).Indeterminate().Display();
+        else StatusMessages.Message(msg).Display();
+
+        RefreshEnabled = enabled;
+    }
+
+    private bool ValidateCallback()
+    {
+        if( string.IsNullOrEmpty( Callback ) )
             return false;
-        }
 
-        public string? MessageToSend
+        if( MailAddress.TryCreate( Callback, out _ ) )
+            return true;
+
+        if( Callback.All( char.IsDigit ) )
+            return Callback.Length >= 10;
+
+        return false;
+    }
+
+    public string? MessageToSend
+    {
+        get => _messageToSend;
+
+        set
         {
-            get => _messageToSend;
+            SetProperty( ref _messageToSend, value );
 
-            set
-            {
-                SetProperty( ref _messageToSend, value );
-
-                MessageTooLong = ( _messageToSend?.Length ?? 0 ) > AppViewModel.Configuration.MaxSmsLength;
-                OnPropertyChanged(nameof(SendMessageEnabled));
-            }
+            MessageTooLong = ( _messageToSend?.Length ?? 0 ) > AppViewModel.Configuration.MaxSmsLength;
+            OnPropertyChanged(nameof(SendMessageEnabled));
         }
+    }
 
-        public bool MessageTooLong
+    public bool MessageTooLong
+    {
+        get => _msgTooLong;
+        set => SetProperty( ref _msgTooLong, value );
+    }
+
+    public string? Callback
+    {
+        get => _callback;
+
+        set
         {
-            get => _msgTooLong;
-            set => SetProperty( ref _msgTooLong, value );
-        }
+            SetProperty( ref _callback, value, true );
 
-        public string? Callback
+            CallbackIsValid = ValidateCallback();
+            OnPropertyChanged( nameof( SendMessageEnabled ) );
+        }
+    }
+
+    public bool CallbackIsValid
+    {
+        get => _callbackIsValid;
+
+        set
         {
-            get => _callback;
-
-            set
-            {
-                SetProperty( ref _callback, value, true );
-
-                CallbackIsValid = ValidateCallback();
-                OnPropertyChanged( nameof( SendMessageEnabled ) );
-            }
+            SetProperty( ref _callbackIsValid, value );
+            OnPropertyChanged(nameof(SendMessageEnabled));
         }
+    }
 
-        public bool CallbackIsValid
-        {
-            get => _callbackIsValid;
-
-            set
-            {
-                SetProperty( ref _callbackIsValid, value );
-                OnPropertyChanged(nameof(SendMessageEnabled));
-            }
-        }
-
-        public bool SendMessageEnabled
-        {
-            get => _sendAllowed && !string.IsNullOrEmpty(_messageToSend) && CallbackIsValid;
-        }
+    public bool SendMessageEnabled
+    {
+        get => _sendAllowed && !string.IsNullOrEmpty(_messageToSend) && CallbackIsValid;
     }
 }

@@ -8,6 +8,7 @@ using J4JSoftware.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.UI.Dispatching;
 using Serilog;
 
 namespace J4JSoftware.GPSLocator;
@@ -41,6 +42,14 @@ public partial class App
                     retVal.Initialize( c.Resolve<IJ4JProtection>(), c.Resolve<IJ4JLogger>() );
 
                     return retVal;
+                } )
+               .AsSelf()
+               .SingleInstance();
+
+        builder.Register( c =>
+                {
+                    var dQueue = DispatcherQueue.GetForCurrentThread();
+                    return new StatusMessages( dQueue );
                 } )
                .AsSelf()
                .SingleInstance();
