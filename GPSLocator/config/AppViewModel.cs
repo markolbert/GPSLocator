@@ -29,8 +29,14 @@ namespace J4JSoftware.GPSLocator
             new SingleSelectableItem(typeof(SettingsPage), ResourceNames.SettingsPageName, "Settings")
         };
 
-        private readonly List<NetEventArgs> _netEvents = new();
+        private static AutoResetEvent _queueMsgEvent = new AutoResetEvent( true );
+        private static AutoResetEvent _displayMsgEvent = new AutoResetEvent( false );
 
+        private readonly List<NetEventArgs> _netEvents = new();
+        private readonly List<StatusMessage> _statusMessages = new();
+
+        private CancellationTokenSource? _cancelTokenSrc;
+        private CancellationToken _cancelToken;
         private string? _statusMesg;
         private Style? _statusStyle;
         private Visibility _determinateVisibility = Visibility.Collapsed;
@@ -137,6 +143,64 @@ namespace J4JSoftware.GPSLocator
         {
             get => _statusStyle;
             private set => SetProperty( ref _statusStyle, value );
+        }
+
+        public void QueueStatusMessage( StatusMessage msg )
+        {
+            if( _cancelTokenSrc == null )
+            {
+                _cancelTokenSrc = new CancellationTokenSource();
+                _cancelToken = _cancelTokenSrc.Token;
+            }
+            else _cancelTokenSrc.Cancel();
+
+            _queueMsgEvent.WaitOne();
+
+            _statusMessages.Add( msg );
+
+            _displayMsgEvent.Set();
+            DisplayStatusMessages();
+        }
+
+        private void DisplayStatusMessages()
+        {
+            if( _cancelToken.IsCancellationRequested )
+                return;
+
+            _displayMsgEvent.WaitOne();
+
+            _queueMsgEvent.Reset();
+
+            var removedIndices = new List<int>();
+
+            for(var idx = 0; idx < _statusMessages.Count; idx++)
+            {
+                if( _cancelToken.IsCancellationRequested )
+                    break;
+
+                var msg = _statusMessages[idx];
+                removedIndices.Add( idx );
+
+                StatusMessage = msg.Text;
+
+                StatusMessageStyle = msg.Type switch
+                {
+                    StatusMessageType.Important =>
+                        App.Current.Resources[AppViewModel.ResourceNames.ImportantStyleKey] as Style,
+                    StatusMessageType.Urgent => App.Current.Resources[AppViewModel.ResourceNames.UrgentStyleKey] as Style,
+                    _ => App.Current.Resources[AppViewModel.ResourceNames.NormalStyleKey] as Style
+                };
+
+                Task.Delay( msg.MsPause, _cancelToken );
+            }
+
+            foreach( var idx in removedIndices )
+            {
+                _statusMessages.RemoveAt( idx );
+            }
+
+            _displayMsgEvent.Reset();
+            _cancelTokenSrc = null;
         }
 
         public void SetStatusMessage( string mesg, StatusMessageType type = StatusMessageType.Normal, int msPause = 0 ) =>
