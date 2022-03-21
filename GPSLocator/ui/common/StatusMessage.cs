@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace J4JSoftware.GPSLocator
 {
-    public record StatusMessage( string Text, StatusMessageType Type = StatusMessageType.Normal );
+    public record StatusMessage( string Text, StatusMessageType Type = StatusMessageType.Normal, int MsPause = 0 );
 }
