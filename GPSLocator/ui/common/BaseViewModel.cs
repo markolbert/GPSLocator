@@ -41,9 +41,10 @@ public class BaseViewModel : ObservableValidator
         Logger = logger;
         Logger.SetLoggedType( GetType() );
 
-        if( AppViewModel.Configuration.IsValid )
-            AppViewModel.SetStatusMessage("Ready" );
-        else AppViewModel.SetStatusMessage("Invalid configuration", StatusMessageType.Important );
+        if( !AppViewModel.Configuration.IsValid )
+            MessageQueue.Default.Message("Invalid configuration").Urgent().Enqueue();
+
+        MessageQueue.Default.Ready();
     }
 
     protected IJ4JLogger Logger { get; }

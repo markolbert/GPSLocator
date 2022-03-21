@@ -95,7 +95,7 @@
                   SelectedItem="{x:Bind ViewModel.LaunchPage, Mode=TwoWay}">
             <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="local:SingleSelectableItem">
-                    <TextBlock Text="{x:Bind Label}"/>
+                    <TextBlock Text="{x:Bind Label, Mode=OneTime}"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

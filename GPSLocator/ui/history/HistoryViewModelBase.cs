@@ -44,7 +44,8 @@ namespace J4JSoftware.GPSLocator
         {
             if( !AppViewModel.Configuration.IsValid )
             {
-                AppViewModel.SetStatusMessage( "Invalid configuration", StatusMessageType.Urgent );
+                MessageQueue.Default.Message( "Invalid configuration" ).Urgent().Enqueue();
+                MessageQueue.Default.Ready();
                 return;
             }
 
@@ -60,25 +61,17 @@ namespace J4JSoftware.GPSLocator
                 AddLocations(response.Result!.HistoryItems
                                      .Where(LocationFilter));
 
-                await AppViewModel.SetStatusMessagesAsync(1000,
-                                                          new StatusMessage(
-                                                              "Retrieved history",
-                                                              StatusMessageType.Important),
-                                                          new StatusMessage("Ready"));
-
+                MessageQueue.Default.Message( "Retrieved history" ).Important().Enqueue();
+                MessageQueue.Default.Ready();
             }
             else
             {
-                var mesgs = new List<StatusMessage>
-                {
-                    new StatusMessage( "Couldn't retrieve history", StatusMessageType.Important ),
-                    new StatusMessage( "Ready" )
-                };
+                MessageQueue.Default.Message( "Couldn't retrieve history" ).Important().Enqueue();
 
                 if( response.Error?.Description != null )
-                    mesgs.Insert( 1, new StatusMessage( response.Error.Description, StatusMessageType.Important ) );
-
-                await AppViewModel.SetStatusMessagesAsync( 2000, mesgs );
+                    MessageQueue.Default.Message( response.Error.Description ).Important().Enqueue();
+                
+                MessageQueue.Default.Ready();
 
                 if( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
@@ -92,16 +85,18 @@ namespace J4JSoftware.GPSLocator
         {
             var error = args.Message ?? "Unspecified error";
 
-            ( string msg, Visibility visibility, bool enabled ) = args.RequestEvent switch
+            ( string msg, bool pBar, bool enabled ) = args.RequestEvent switch
             {
-                RequestEvent.Started => ( "Updating history", Visibility.Visible, false ),
-                RequestEvent.Succeeded => ( "History updated", Visibility.Collapsed, true ),
-                RequestEvent.Aborted => ( $"Update failed: {error}", Visibility.Collapsed, true ),
+                RequestEvent.Started => ( "Updating history", true, false ),
+                RequestEvent.Succeeded => ( "History updated", false, true ),
+                RequestEvent.Aborted => ( $"Update failed: {error}", false, true ),
                 _ => throw new InvalidEnumArgumentException( $"Unsupported RequestEvent '{args.RequestEvent}'" )
             };
 
-            AppViewModel.SetStatusMessage( msg );
-            AppViewModel.IndeterminateVisibility = visibility;
+            if( pBar )
+                MessageQueue.Default.Message( msg ).Enqueue();
+            else MessageQueue.Default.Message( msg ).Indeterminate().Enqueue();
+
             RefreshEnabled = enabled;
         }
 

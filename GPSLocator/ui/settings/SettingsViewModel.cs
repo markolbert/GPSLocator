@@ -76,7 +76,7 @@ namespace J4JSoftware.GPSLocator
             if( !Validated )
                 return;
 
-            _appViewModel.SetStatusMessage("Saving configuration");
+            MessageQueue.Default.Message( "Saving configuration" ).Enqueue( 500 );
 
             UpdateAppConfig();
 
@@ -105,7 +105,9 @@ namespace J4JSoftware.GPSLocator
             Directory.CreateDirectory( dirPath! );
             await File.WriteAllTextAsync( _userConfigPath, text );
 
-            _appViewModel.SetStatusMessage("Configuration saved");
+            MessageQueue.Default.Message( "Configuration saved" ).Enqueue( 500 );
+            MessageQueue.Default.Ready();
+
             DeviceConfigChanged = false;
             OtherConfigChanged = false;
         }
@@ -128,7 +130,7 @@ namespace J4JSoftware.GPSLocator
 
         private async Task ValidateHandlerAsync()
         {
-            _appViewModel.SetStatusMessage("Validating configuration" );
+            MessageQueue.Default.Message( "Validating configuration" ).Enqueue( 500 );
 
             // test the proposed configuration
             var testConfig = new DeviceConfig()
@@ -148,11 +150,8 @@ namespace J4JSoftware.GPSLocator
                 UpdateAppConfig();
                 _appViewModel.Configuration.ValidationState = ValidationState.Validated;
 
-                await _appViewModel.SetStatusMessagesAsync( 1000,
-                                                            new StatusMessage(
-                                                                "Validation succeeded",
-                                                                StatusMessageType.Important ),
-                                                            new StatusMessage( "Ready" ) );
+                MessageQueue.Default.Message( "Validation succeeded").Important().Enqueue( 500 );
+                MessageQueue.Default.Ready();
             }
             else
             {
@@ -161,14 +160,9 @@ namespace J4JSoftware.GPSLocator
                         ? "Invalid IMEI"
                         : "Invalid user name and/or password";
 
-                var mesgs = new List<StatusMessage>
-                {
-                    new StatusMessage( "Validation failed", StatusMessageType.Urgent ),
-                    new StatusMessage( failure, StatusMessageType.Urgent ),
-                    new StatusMessage( "Ready" )
-                };
-
-                await _appViewModel.SetStatusMessagesAsync(2000, mesgs);
+                MessageQueue.Default.Message( "Validation failed" ).Urgent().Enqueue();
+                MessageQueue.Default.Message( failure ).Urgent().Enqueue();
+                MessageQueue.Default.Ready();
             }
         }
 
@@ -176,19 +170,20 @@ namespace J4JSoftware.GPSLocator
         {
             _dQueue.TryEnqueue(() =>
             {
-                (string msg, Visibility visibility) = args switch
+                (string msg, bool pBar) = args switch
                 {
-                    ValidationPhase.Starting => ("Validation starting", Visibility.Visible),
-                    ValidationPhase.NotValidatable => ("Validation failed due to invalid initialization", Visibility.Collapsed),
-                    ValidationPhase.CheckingCredentials => ("Checking credentials", Visibility.Visible),
-                    ValidationPhase.CheckingImei=> ("Checking IMEI", Visibility.Visible),
-                    ValidationPhase.Failed=>("Validation failed", Visibility.Collapsed),
-                    ValidationPhase.Succeeded=>("Validation succeeded", Visibility.Collapsed),
+                    ValidationPhase.Starting => ("Validation starting", true),
+                    ValidationPhase.NotValidatable => ("Validation failed due to invalid initialization", false),
+                    ValidationPhase.CheckingCredentials => ("Checking credentials", true),
+                    ValidationPhase.CheckingImei=> ("Checking IMEI", true),
+                    ValidationPhase.Failed=>("Validation failed", false),
+                    ValidationPhase.Succeeded=>("Validation succeeded", false),
                     _ => throw new InvalidEnumArgumentException($"Unsupported {typeof(ValidationPhase)} '{args}'")
                 };
 
-                _appViewModel.SetStatusMessage(msg);
-                _appViewModel.IndeterminateVisibility = visibility;
+                if( pBar )
+                    MessageQueue.Default.Message(msg).Indeterminate().Enqueue();
+                else MessageQueue.Default.Message(msg);
             });
         }
 

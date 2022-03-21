@@ -93,22 +93,18 @@ namespace J4JSoftware.GPSLocator
             });
 
             if( response!.Succeeded )
-                await AppViewModel.SetStatusMessagesAsync( 1000,
-                                                           new StatusMessage( "Message sent",
-                                                                              StatusMessageType.Important ),
-                                                           new StatusMessage( "Ready" ) );
+            {
+                MessageQueue.Default.Message( "Message sent" ).Important().Enqueue();
+                MessageQueue.Default.Ready();
+            }
             else
             {
-                var mesgs = new List<StatusMessage>
-                {
-                    new StatusMessage( "Couldn't send message", StatusMessageType.Important ),
-                    new StatusMessage( "Ready" )
-                };
+                MessageQueue.Default.Message( "Couldn't send message" ).Important().Enqueue();
 
                 if (response.Error?.Description != null)
-                    mesgs.Insert(1, new StatusMessage(response.Error.Description, StatusMessageType.Important));
+                    MessageQueue.Default.Message( response.Error.Description).Important().Enqueue();
 
-                await AppViewModel.SetStatusMessagesAsync(2000, mesgs);
+                MessageQueue.Default.Ready();
 
                 if( response.Error != null )
                     Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
@@ -120,16 +116,18 @@ namespace J4JSoftware.GPSLocator
         {
             var error = args.Message ?? "Unspecified error";
 
-            (string msg, Visibility visibility, bool enabled) = args.RequestEvent switch
+            (string msg, bool pBar, bool enabled) = args.RequestEvent switch
             {
-                RequestEvent.Started => ("Sending message", Visibility.Visible, false),
-                RequestEvent.Succeeded => ("Message sent", Visibility.Collapsed, true),
-                RequestEvent.Aborted => ($"Send failed: {error}", Visibility.Collapsed, true),
+                RequestEvent.Started => ("Sending message", true, false),
+                RequestEvent.Succeeded => ("Message sent", false, true),
+                RequestEvent.Aborted => ($"Send failed: {error}", false, true),
                 _ => throw new InvalidEnumArgumentException($"Unsupported RequestEvent '{args.RequestEvent}'")
             };
 
-            AppViewModel.SetStatusMessage(msg);
-            AppViewModel.IndeterminateVisibility = visibility;
+            if( pBar )
+                MessageQueue.Default.Message(msg).Indeterminate().Enqueue();
+            else MessageQueue.Default.Message(msg).Enqueue();
+
             RefreshEnabled = enabled;
         }
 
