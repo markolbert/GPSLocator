@@ -154,7 +154,7 @@
             </TextBlock>
 
             <Button IsEnabled="{x:Bind ViewModel.SendMessageEnabled }"
-                    Command="{x:Bind ViewModel.SendMessageCommandAsync}">
+                    Command="{x:Bind ViewModel.SendMessageCommand}">
                 Send
             </Button>
 

@@ -30,9 +30,9 @@ public class HistoryViewModelBase : LocationMapViewModel
         EndDate = DateTimeOffset.Now;
     }
 
-    public async Task OnPageActivated()
+    public void OnPageActivated()
     {
-        await RefreshHandlerAsync();
+        RefreshHandler();
     }
 
     private void Timer_Tick(object? sender, object e)
@@ -40,7 +40,7 @@ public class HistoryViewModelBase : LocationMapViewModel
         EndDate = DateTimeOffset.Now;
     }
 
-    protected override async Task RefreshHandlerAsync()
+    protected override void RefreshHandler()
     {
         if( !AppViewModel.Configuration.IsValid )
         {
@@ -54,50 +54,57 @@ public class HistoryViewModelBase : LocationMapViewModel
             Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
         };
 
-        var response = await ExecuteRequestAsync( request, OnHistoryRequestStatusChanged );
+        ExecuteRequest(request, OnHistoryRequestStatusChanged);
+    }
 
-        if( response!.Succeeded )
+    private void OnHistoryRequestStatusChanged(RequestEventArgs<History<Location>> args)
+    {
+        switch (args.RequestEvent)
         {
-            AddLocations(response.Result!.HistoryItems
-                                 .Where(LocationFilter));
+            case RequestEvent.Started:
+                StatusMessages.Message("Updating history").Indeterminate().Important().Display();
+                RefreshEnabled = false;
 
-            StatusMessages.Message( "Retrieved history" ).Important().Enqueue();
-            StatusMessages.DisplayReady();
+                break;
+
+            case RequestEvent.Succeeded:
+                OnSucceeded(args);
+                break;
+
+            case RequestEvent.Aborted:
+                OnAborted(args);
+                break;
+
+            default:
+                throw new InvalidEnumArgumentException($"Unsupported {typeof(RequestEvent)} '{args.RequestEvent}'");
         }
-        else
-        {
-            StatusMessages.Message( "Couldn't retrieve history" ).Important().Enqueue();
+    }
 
-            if( response.Error?.Description != null )
-                StatusMessages.Message( response.Error.Description ).Important().Enqueue();
-                
-            StatusMessages.DisplayReady();
+    private void OnSucceeded( RequestEventArgs<History<Location>> args )
+    {
+        StatusMessages.Message( "Retrieved history" ).Important().Enqueue();
+        StatusMessages.DisplayReady();
 
-            if( response.Error != null )
-                Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
-            else Logger.Error( "Invalid configuration" );
-        }
+        AddLocations( args.Response!.Result!.HistoryItems
+                          .Where( LocationFilter ) );
+
 
         RefreshEnabled = true;
     }
 
-    private void OnHistoryRequestStatusChanged( DeviceRequestEventArgs args )
+    private void OnAborted( RequestEventArgs<History<Location>> args )
     {
-        var error = args.Message ?? "Unspecified error";
+        StatusMessages.Message( $"Retrieval failed ({( args.ErrorMessage ?? "Unspecified error" )})" )
+                      .Important()
+                      .Enqueue();
 
-        ( string msg, bool pBar, bool enabled ) = args.RequestEvent switch
-        {
-            RequestEvent.Started => ( "Updating history", true, false ),
-            RequestEvent.Succeeded => ( "History updated", false, true ),
-            RequestEvent.Aborted => ( $"Update failed: {error}", false, true ),
-            _ => throw new InvalidEnumArgumentException( $"Unsupported RequestEvent '{args.RequestEvent}'" )
-        };
+        StatusMessages.DisplayReady();
 
-        if( pBar )
-            StatusMessages.Message( msg ).Indeterminate().Display(500);
-        else StatusMessages.Message( msg ).Display(500);
+        if( args.Response?.Error != null )
+            Logger.Error<string>( "Invalid configuration, message was '{0}'", args.Response.Error.Description );
+        else Logger.Error( "Invalid configuration" );
 
-        RefreshEnabled = enabled;
+        RefreshEnabled = true;
     }
 
     protected virtual bool LocationFilter( Location toCheck ) => true;

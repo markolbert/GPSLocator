@@ -41,7 +41,7 @@ namespace J4JSoftware.GPSLocator
         {
             App.Current.SetWindowSize(1150, 700);
 
-            await ViewModel.OnPageActivated();
+            ViewModel.OnPageActivated();
         }
     }
 }

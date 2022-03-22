@@ -22,16 +22,15 @@ namespace J4JSoftware.GPSLocator
         )
             : base( logger )
         {
-            RefreshCommand = new AsyncRelayCommand(RefreshHandlerAsync);
+            RefreshCommand = new RelayCommand(RefreshHandler);
             IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);
             DecreaseZoomCommand = new RelayCommand(DecreaseZoomHandler);
         }
 
-        public AsyncRelayCommand RefreshCommand { get; }
+        public RelayCommand RefreshCommand { get; }
 
-        protected virtual Task RefreshHandlerAsync()
+        protected virtual void RefreshHandler()
         {
-            return Task.CompletedTask;
         }
 
         public bool RefreshEnabled

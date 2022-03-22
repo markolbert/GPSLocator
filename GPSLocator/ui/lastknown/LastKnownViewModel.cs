@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
@@ -20,12 +21,12 @@ public class LastKnownViewModel : LocationMapViewModel
     {
     }
 
-    public async Task OnPageActivated()
+    public void OnPageActivated()
     {
-        await RefreshHandlerAsync();
+        RefreshHandler();
     }
 
-    protected override async Task RefreshHandlerAsync()
+    protected override void RefreshHandler()
     {
         if( !AppViewModel.Configuration.IsValid )
         {
@@ -37,59 +38,70 @@ public class LastKnownViewModel : LocationMapViewModel
 
         var request = new LastKnownLocationRequest<Location>( AppViewModel.Configuration, Logger );
 
-        DeviceResponse<LastKnownLocation<Location>>? response = null;
-        await Task.Run( async () => { response = await ExecuteRequestAsync( request, OnRequestStatusChanged ); } );
+        ExecuteRequest(request, OnRequestStatusChanged);
+    }
 
-        if( !response!.Succeeded || response.Result!.Locations.Count == 0 )
+    private void OnRequestStatusChanged(RequestEventArgs<LastKnownLocation<Location>> args )
+    {
+        switch( args.RequestEvent )
         {
-            StatusMessages.Message( "Couldn't retrieve last known location" ).Important().Enqueue();
+            case RequestEvent.Started:
+                StatusMessages.Message( "Updating last known location" ).Indeterminate().Important().Display();
+                RefreshEnabled = false;
 
-            if( response.Error?.Description != null )
-                StatusMessages.Message( response.Error.Description ).Important().Enqueue();
+                break;
 
+            case RequestEvent.Succeeded:
+                OnSucceeded( args );
+                break;
+
+            case RequestEvent.Aborted:
+                OnAborted( args );
+                break;
+
+            default:
+                throw new InvalidEnumArgumentException( $"Unsupported {typeof( RequestEvent )} '{args.RequestEvent}'" );
+        }
+    }
+
+    private void OnSucceeded( RequestEventArgs<LastKnownLocation<Location>> args )
+    {
+        if( args.Response?.Result?.Locations.Any() ?? false )
+        {
+            StatusMessages.Message("Last known location updated").Enqueue();
             StatusMessages.DisplayReady();
 
-            if( response.Error != null )
-                Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
-            else Logger.Error( "Invalid configuration" );
-        }
-        else
-        {
             ClearMappedPoints();
 
-            var lastLoc = response.Result.Locations[ 0 ];
+            var lastLoc = args.Response.Result.Locations[0];
             lastLoc.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
             lastLoc.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
 
-            var mapPoint = AddLocation( lastLoc );
+            var mapPoint = AddLocation(lastLoc);
             mapPoint.DisplayOnMap = MapPointDisplay.Fixed;
 
-            LastKnownPoint = MappedPoints[ 0 ];
-
-            StatusMessages.Message( "Retrieved last known location" ).Important().Enqueue();
-            StatusMessages.DisplayReady();
+            LastKnownPoint = MappedPoints[0];
         }
+        else StatusMessages.Message("No last known location").Important().Enqueue();
 
+        StatusMessages.DisplayReady();
+
+        RefreshEnabled = true;
     }
 
-    private void OnRequestStatusChanged( DeviceRequestEventArgs args )
+    private void OnAborted(RequestEventArgs<LastKnownLocation<Location>> args)
     {
-        var error = args.Message ?? "Unspecified error";
+        StatusMessages.Message($"Retrieval failed ({(args.ErrorMessage ?? "Unspecified error")})")
+                      .Important()
+                      .Enqueue();
 
-        ( string msg, bool pBar, bool enabled ) = args.RequestEvent switch
-        {
-            RequestEvent.Started => ( "Updating last known location", true, false ),
-            RequestEvent.Succeeded => ( "Last known location updated", false, true ),
-            RequestEvent.Aborted => ( $"Update failed: {error}", false, true ),
-            _ => throw new InvalidEnumArgumentException( $"Unsupported RequestEvent '{args.RequestEvent}'" )
-        };
+        StatusMessages.DisplayReady();
 
-        if( pBar )
-            StatusMessages.Message( msg ).Indeterminate().Display();
-        else
-            StatusMessages.Message(msg).Display();
+        if (args.Response?.Error != null)
+            Logger.Error<string>("Invalid configuration, message was '{0}'", args.Response.Error.Description);
+        else Logger.Error("Invalid configuration");
 
-        RefreshEnabled = enabled;
+        RefreshEnabled = true;
     }
 
     public MapPoint? LastKnownPoint

@@ -28,16 +28,16 @@ public class MessagingViewModel :HistoryViewModelBase
     )
         : base( logger )
     {
-        SendMessageCommandAsync = new AsyncRelayCommand( SendMessageHandlerAsync );
+        SendMessageCommand = new RelayCommand( SendMessageHandler );
 
         Callback = AppViewModel.Configuration.DefaultCallback;
     }
 
     protected override bool LocationFilter( Location toCheck ) => toCheck.HasMessage;
 
-    public AsyncRelayCommand SendMessageCommandAsync { get; }
+    public RelayCommand SendMessageCommand { get; }
 
-    private async Task SendMessageHandlerAsync()
+    private void SendMessageHandler()
     {
         if( !ValidateCallback() )
             return;
@@ -81,54 +81,58 @@ public class MessagingViewModel :HistoryViewModelBase
 
         var request = new SendMessageRequest( AppViewModel.Configuration, Logger );
 
-        foreach ( var message in messages )
+        foreach( var message in messages )
         {
             request.AddMessage( Callback!, message );
         }
 
-        DeviceResponse<SendMessageCount>? response = null;
-        await Task.Run(async () =>
+        ExecuteRequest(request, OnSendingMessageStatusChanged);
+    }
+
+    private void OnSendingMessageStatusChanged(RequestEventArgs<SendMessageCount> args)
+    {
+        switch (args.RequestEvent)
         {
-            response = await ExecuteRequestAsync( request, OnSendingMessageStatusChanged );
-        });
+            case RequestEvent.Started:
+                StatusMessages.Message("Sending message").Indeterminate().Important().Display();
+                RefreshEnabled = false;
 
-        if( response!.Succeeded )
-        {
-            StatusMessages.Message( "Message sent" ).Important().Enqueue();
-            StatusMessages.DisplayReady();
-        }
-        else
-        {
-            StatusMessages.Message( "Couldn't send message" ).Important().Enqueue();
+                break;
 
-            if (response.Error?.Description != null)
-                StatusMessages.Message( response.Error.Description).Important().Enqueue();
+            case RequestEvent.Succeeded:
+                OnSucceeded(args);
+                break;
 
-            StatusMessages.DisplayReady();
+            case RequestEvent.Aborted:
+                OnAborted(args);
+                break;
 
-            if( response.Error != null )
-                Logger.Error<string>( "Invalid configuration, message was '{0}'", response.Error.Description );
-            else Logger.Error( "Invalid configuration" );
+            default:
+                throw new InvalidEnumArgumentException($"Unsupported {typeof(RequestEvent)} '{args.RequestEvent}'");
         }
     }
 
-    private void OnSendingMessageStatusChanged(DeviceRequestEventArgs args)
+    private void OnSucceeded(RequestEventArgs<SendMessageCount> args)
     {
-        var error = args.Message ?? "Unspecified error";
+        StatusMessages.Message("Message sent").Important().Enqueue();
+        StatusMessages.DisplayReady();
 
-        (string msg, bool pBar, bool enabled) = args.RequestEvent switch
-        {
-            RequestEvent.Started => ("Sending message", true, false),
-            RequestEvent.Succeeded => ("Message sent", false, true),
-            RequestEvent.Aborted => ($"Send failed: {error}", false, true),
-            _ => throw new InvalidEnumArgumentException($"Unsupported RequestEvent '{args.RequestEvent}'")
-        };
+        RefreshEnabled = true;
+    }
 
-        if( pBar )
-            StatusMessages.Message(msg).Indeterminate().Display();
-        else StatusMessages.Message(msg).Display();
+    private void OnAborted(RequestEventArgs<SendMessageCount> args)
+    {
+        StatusMessages.Message($"Send failed ({(args.ErrorMessage ?? "Unspecified error")})")
+                      .Important()
+                      .Enqueue();
 
-        RefreshEnabled = enabled;
+        StatusMessages.DisplayReady();
+
+        if (args.Response?.Error != null)
+            Logger.Error<string>("Invalid configuration, message was '{0}'", args.Response.Error.Description);
+        else Logger.Error("Invalid configuration");
+
+        RefreshEnabled = true;
     }
 
     private bool ValidateCallback()

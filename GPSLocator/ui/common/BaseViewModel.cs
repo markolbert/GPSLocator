@@ -16,7 +16,7 @@ public class BaseViewModel : ObservableValidator
 {
     private readonly DispatcherQueue _dQueue;
 
-    private Action<DeviceRequestEventArgs>? _onStatusChanged;
+    private object? _onStatusChanged;
     private bool _isActive;
 
     protected BaseViewModel(
@@ -94,9 +94,9 @@ public class BaseViewModel : ObservableValidator
 
     #endregion
 
-    protected virtual async Task<DeviceResponse<TResponse>> ExecuteRequestAsync<TResponse, TError>(
+    protected virtual DeviceResponse<TResponse> ExecuteRequest<TResponse, TError>(
         DeviceRequestBase<TResponse, TError> request,
-        Action<DeviceRequestEventArgs>? onStatusChanged
+        Action<RequestEventArgs<TResponse>>? onStatusChanged
     )
         where TResponse : class, new()
         where TError : ErrorBase, new()
@@ -106,23 +106,25 @@ public class BaseViewModel : ObservableValidator
 
         DeviceResponse<TResponse>? response = null;
 
-        await Task.Run(async () =>
+        Task.Run(async () =>
         {
             response = await request.ExecuteAsync();
-
             request.Status -= StatusChanged;
-            _onStatusChanged = null;
         });
 
         return response!;
     }
 
-    private void StatusChanged(object? sender, DeviceRequestEventArgs args )
+    private void StatusChanged<TResponse>(object? sender, RequestEventArgs<TResponse> args )
+        where TResponse : class, new()
     {
         _dQueue.TryEnqueue( () =>
         {
-            if (_onStatusChanged != null)
-                _onStatusChanged( args );
+            if( _onStatusChanged is Action<RequestEventArgs<TResponse>> statusChangeHandler )
+                statusChangeHandler( args );
+            else Logger.Error( "Expected a {0} but given a {1}",
+                               typeof( Action<RequestEventArgs<TResponse>> ),
+                               _onStatusChanged!.GetType() );
         } );
     }
 }
