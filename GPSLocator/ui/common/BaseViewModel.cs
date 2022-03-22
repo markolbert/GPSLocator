@@ -38,7 +38,7 @@ public class BaseViewModel : ObservableValidator
         IsActive = true;
 
         AppViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
-        StatusMessages = App.Current.Host.Services.GetRequiredService<StatusMessages>();
+        StatusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );
@@ -50,7 +50,7 @@ public class BaseViewModel : ObservableValidator
     }
 
     protected IJ4JLogger Logger { get; }
-    protected StatusMessages StatusMessages { get; }
+    protected StatusMessage.StatusMessages StatusMessages { get; }
 
     public AppViewModel AppViewModel { get; }
 

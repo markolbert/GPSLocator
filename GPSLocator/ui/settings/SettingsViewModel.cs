@@ -24,7 +24,7 @@ public class SettingsViewModel : ObservableObject
     private readonly string _userConfigPath;
     private readonly IJ4JLogger _logger;
     private readonly DispatcherQueue _dQueue;
-    private readonly StatusMessages _statusMessages;
+    private readonly StatusMessage.StatusMessages _statusMessages;
 
     private string _website = string.Empty;
     private string _userName = string.Empty;
@@ -47,7 +47,7 @@ public class SettingsViewModel : ObservableObject
     )
     {
         _appViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
-        _statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessages>();
+        _statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
         _userConfigPath = host.UserConfigurationFiles.First();
 
         _logger = logger;

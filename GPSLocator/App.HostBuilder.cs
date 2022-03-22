@@ -49,7 +49,7 @@ public partial class App
         builder.Register( c =>
                 {
                     var dQueue = DispatcherQueue.GetForCurrentThread();
-                    return new StatusMessages( dQueue );
+                    return new StatusMessage.StatusMessages( dQueue );
                 } )
                .AsSelf()
                .SingleInstance();

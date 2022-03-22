@@ -48,7 +48,7 @@ namespace J4JSoftware.GPSLocator
             var logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
             logger.LogEvent += Logger_LogEvent;
 
-            var statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessages>();
+            var statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
             statusMessages.DisplayMessage += OnDisplayMessage;
         }
 
@@ -133,7 +133,7 @@ namespace J4JSoftware.GPSLocator
             private set => SetProperty( ref _statusStyle, value );
         }
 
-        private void OnDisplayMessage(object? sender, StatusMessages.StatusMessage args )
+        private void OnDisplayMessage(object? sender, StatusMessage args )
         {
             StatusMessage = args.Text;
 
