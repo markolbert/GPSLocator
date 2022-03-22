@@ -11,7 +11,7 @@ namespace J4JSoftware.GPSLocator
         where TResponse : class, new()
         where TError : ErrorBase, new()
     {
-        public event EventHandler<DeviceRequestEventArgs>? Status;
+        public event EventHandler<RequestEventArgs<TResponse>>? Status;
 
         private readonly string _svcGroup;
         private readonly string _service;
@@ -47,7 +47,7 @@ namespace J4JSoftware.GPSLocator
 
         public async Task<DeviceResponse<TResponse>> ExecuteAsync()
         {
-            Status?.Invoke( this, new DeviceRequestEventArgs( RequestEvent.Started ) );
+            Status?.Invoke( this, new RequestEventArgs<TResponse>( RequestEvent.Started, null ) );
             
             var website = Configuration.Website.Replace( "http://", "", StringComparison.OrdinalIgnoreCase )
                                        .Replace( "https://", "", StringComparison.OrdinalIgnoreCase );
@@ -110,7 +110,7 @@ namespace J4JSoftware.GPSLocator
                 HandleContentParsingError(retVal, ex);
             }
 
-            Status?.Invoke( this, new DeviceRequestEventArgs( RequestEvent.Succeeded ) );
+            Status?.Invoke( this, new RequestEventArgs<TResponse>( RequestEvent.Succeeded, retVal ) );
 
             return retVal;
         }
@@ -160,7 +160,7 @@ namespace J4JSoftware.GPSLocator
                 }
             };
 
-            Status?.Invoke( this, new DeviceRequestEventArgs( RequestEvent.Aborted, retVal.Error.Description ) );
+            Status?.Invoke( this, new RequestEventArgs<TResponse>( RequestEvent.Aborted, retVal ) );
 
             return retVal;
         }
@@ -184,8 +184,7 @@ namespace J4JSoftware.GPSLocator
             }
 
             Status?.Invoke( this,
-                            new DeviceRequestEventArgs( RequestEvent.Aborted,
-                                                        retVal.Error?.Description ?? "unspecified error" ) );
+                            new RequestEventArgs<TResponse>( RequestEvent.Aborted, retVal ) );
 
             return retVal;
         }
