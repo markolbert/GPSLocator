@@ -1,4 +1,6 @@
-﻿using Serilog.Events;
+﻿using System;
+using System.Reflection;
+using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator
 {
@@ -10,6 +12,13 @@ namespace J4JSoftware.GPSLocator
         private string? _launchPage;
         private string? _defaultCallback;
         private int _defaultDaysBack;
+
+        public AppConfig()
+        {
+            AppVersion = Assembly.GetExecutingAssembly().GetName().Version;
+        }
+
+        public Version? AppVersion { get; }
 
         public bool UseImperialUnits
         {

@@ -1,0 +1,66 @@
+﻿<Page
+    x:Class="J4JSoftware.GPSLocator.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:J4JSoftware.GPSLocator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0"
+                   FontWeight="Bold"
+                   FontSize="18">
+            GPS Locator
+        </TextBlock>
+
+        <TextBlock Grid.Row="1" Grid.Column="0">
+            <Run>©2022 Mark A. Olbert</Run>
+            <LineBreak/>
+            <Run>all rights reserved</Run>
+            <LineBreak/>
+            <Run>licensed under</Run>
+            <Hyperlink NavigateUri="https://www.gnu.org/licenses/gpl-3.0.en.html">the GNU General Public License v3</Hyperlink>
+            <Run>.</Run>
+        </TextBlock>
+
+        <TextBlock Grid.Row="2" Grid.Column="0">
+            <Run>Version</Run>
+            <Run Text="{Binding Path=Configuration.AppVersion, Source={StaticResource AppViewModel}}"/>
+        </TextBlock>
+
+        <TextBlock Grid.Row="3" Grid.Column="0"
+                   TextWrapping="WrapWholeWords">
+            A tool for interacting with satellite-based GPS
+            communication devices
+        </TextBlock>
+
+        <TextBlock Grid.Row="4" Grid.Column="0"
+                   TextWrapping="WrapWholeWords">
+            <Run>For more information please visit</Run>
+
+            <Hyperlink NavigateUri="https://jumpforjoysoftware.com/gps-locator">
+                the project website
+            </Hyperlink>
+
+            <Run>.</Run>
+        </TextBlock>
+
+    </Grid>
+</Page>

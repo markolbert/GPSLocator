@@ -30,6 +30,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="ui\AboutPage.xaml" />
 		<None Remove="ui\common\DefaultStyles.xaml" />
 		<None Remove="ui\common\LocationControl.xaml" />
 		<None Remove="ui\launch\LaunchPage.xaml" />
@@ -90,6 +91,9 @@
 		<None Update="appConfig.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<Page Update="ui\about\AboutPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</Page>
 		<Page Update="ui\common\DefaultStyles.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>

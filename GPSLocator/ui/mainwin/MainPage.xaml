@@ -48,16 +48,22 @@
                                         IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
                                         ToolTipService.ToolTip="shows messages within the last 31 days"/>
 
-                    <NavigationViewItem Content="Log Viewer"
-                                        Tag="{Binding ResourceNames.LogViewerPageName, Source={StaticResource AppViewModel}}"
-                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
-                                        ToolTipService.ToolTip="shows locations within the last 31 days"/>
-
                 </NavigationView.MenuItems>
 
                 <NavigationView.FooterMenuItems>
+                    
                     <NavigationViewItem Icon="Help"
                                         Tag="{Binding ResourceNames.HelpTag, Source={StaticResource AppViewModel}}"/>
+
+                    <NavigationViewItem Content="About"
+                                        Tag="{Binding ResourceNames.AboutPageName, Source={StaticResource AppViewModel}}"
+                                        ToolTipService.ToolTip="shows information about the application"/>
+
+                    <NavigationViewItem Content="Log Viewer"
+                                        Tag="{Binding ResourceNames.LogViewerPageName, Source={StaticResource AppViewModel}}"
+                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        ToolTipService.ToolTip="shows log messages"/>
+
                 </NavigationView.FooterMenuItems>
 
                 <Frame x:Name="ContentFrame"/>
