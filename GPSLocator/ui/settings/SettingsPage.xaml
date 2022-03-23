@@ -11,38 +11,6 @@
 
     <Grid Margin="7">
 
-        <Grid.Resources>
-
-            <Style TargetType="TextBlock">
-                <Setter Property="Margin" Value="14,7,14,7"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-            </Style>
-
-            <Style TargetType="TextBox">
-                <Setter Property="Margin" Value="14, 7, 14,7"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-            </Style>
-
-            <Style TargetType="CheckBox">
-                <Setter Property="Margin" Value="14, 2, 14,0"/>
-            </Style>
-
-            <Style TargetType="ComboBox">
-                <Setter Property="Margin" Value="14, 7, 14,7"/>
-            </Style>
-
-            <Style TargetType="PasswordBox">
-                <Setter Property="Margin" Value="14, 7, 14,7"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-            </Style>
-
-            <Style TargetType="NumberBox">
-                <Setter Property="Margin" Value="14,7,14,7"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-            </Style>
-
-        </Grid.Resources>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>

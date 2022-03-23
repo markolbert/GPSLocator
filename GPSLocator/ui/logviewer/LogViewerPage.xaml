@@ -11,20 +11,6 @@
 
     <Grid>
         
-        <Grid.Resources>
-
-            <Style TargetType="ComboBox">
-                <Setter Property="Margin" Value="7,7,14,7"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-            </Style>
-
-            <Style TargetType="Button">
-                <Setter Property="Margin" Value="14,7,14,7"/>
-                <Setter Property="VerticalAlignment" Value="Top"/>
-            </Style>
-
-        </Grid.Resources>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>

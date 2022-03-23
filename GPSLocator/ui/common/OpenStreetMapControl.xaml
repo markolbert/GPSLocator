@@ -11,25 +11,6 @@
 
     <Grid Visibility="{Binding MapCenter, Converter={StaticResource NullToHiddenConverter}}">
 
-        <Grid.Resources>
-
-            <Style x:Key="PushpinItemStyle" TargetType="map:MapItem">
-                <Setter Property="AutoCollapse" Value="True"/>
-                <Setter Property="LocationMemberPath" Value="DisplayPoint"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Bottom"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="map:MapItem">
-                            <map:Pushpin Content="{Binding Label, FallbackValue=?}"
-                                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-        </Grid.Resources>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
