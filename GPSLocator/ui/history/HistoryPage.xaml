@@ -11,9 +11,24 @@
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid x:Name="OuterElement"
-          ColumnDefinitions="Auto, Auto, Auto, *"
-          RowDefinitions="Auto, Auto, Auto, Auto, Auto, *, Auto">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
 
@@ -42,14 +57,25 @@
         <TextBlock Grid.Row="4" Grid.Column="0">Start Date</TextBlock>
         <TextBlock Grid.Row="4" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
 
-        <TextBlock Grid.Row="5" Grid.Column="0"
-                   VerticalAlignment="Top">
-            <Run Text="Tracked Points ("/>
-            <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
-            <Run Text=")"/>
-        </TextBlock>
+        <StackPanel Grid.Row="5" Grid.Column="0"
+                    Orientation="Vertical">
+
+            <TextBlock VerticalAlignment="Top">
+                <Run Text="Tracked Points ("/>
+                <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
+                <Run Text=")"/>
+            </TextBlock>
+
+            <Button IsEnabled="{x:Bind ViewModel.MapHasPoints}"
+                    Command="{x:Bind ViewModel.ClearMapCommand}">
+                Clear Points
+            </Button>
+
+        </StackPanel>
 
         <Border Grid.Row="5" Grid.Column="1"
+                MaxHeight="200"
+                VerticalAlignment="Top"
                 BorderThickness="2"
                 BorderBrush="DarkGray">
 
@@ -118,12 +144,6 @@
             </ListView>
 
         </Border>
-
-        <Button Grid.Row="6" Grid.Column="1"
-                IsEnabled="{x:Bind ViewModel.MapHasPoints}"
-                Command="{x:Bind ViewModel.ClearMapCommand}">
-            Clear Mapped Points
-        </Button>
 
         <TextBlock Grid.Row="0" Grid.Column="2"
                    HorizontalAlignment="Center"
