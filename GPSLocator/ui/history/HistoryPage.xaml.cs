@@ -1,4 +1,6 @@
 ﻿using System;
+using J4JSoftware.DependencyInjection;
+using J4JSoftware.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,11 +18,16 @@ namespace J4JSoftware.GPSLocator
     {
         public const string PageName = "History";
 
+        private readonly IJ4JLogger _logger;
+
         public HistoryPage()
         {
             InitializeComponent();
 
             ViewModel = App.Current.Host.Services.GetRequiredService<HistoryViewModel>();
+
+            _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
+            _logger.SetLoggedType(GetType());
 
             Loaded += OnLoaded;
         }
@@ -43,9 +50,10 @@ namespace J4JSoftware.GPSLocator
             {
                 FlyoutBase.ShowAttachedFlyout( (FrameworkElement) sender );
             }
-            catch
+            catch(Exception ex )
             {
                 // ignored
+                _logger.Error<string>( "Flyout failed to open, message was '{0}'", ex.Message );
             }
         }
     }
