@@ -36,43 +36,49 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <NavigationView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                        x:Name="NavigationView" 
-                        PaneDisplayMode="Top"
-                        SelectionChanged="NavigationView_OnSelectionChanged">
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                      HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Visible">
 
-            <NavigationView.MenuItems>
+            <NavigationView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                            x:Name="NavigationView" 
+                            PaneDisplayMode="Top"
+                            SelectionChanged="NavigationView_OnSelectionChanged">
 
-                <NavigationViewItem Content="Last Known"
-                                    Tag="{Binding ResourceNames.LastKnownPageName, Source={StaticResource AppViewModel}}"
-                                    IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
-                                    ToolTipService.ToolTip="shows last known location on a map"/>
+                <NavigationView.MenuItems>
 
-                <NavigationViewItem Content="History"
-                                    Tag="{Binding ResourceNames.HistoryPageName, Source={StaticResource AppViewModel}}"
-                                    IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
-                                    ToolTipService.ToolTip="shows locations within the last 31 days"/>
+                    <NavigationViewItem Content="Last Known"
+                                        Tag="{Binding ResourceNames.LastKnownPageName, Source={StaticResource AppViewModel}}"
+                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        ToolTipService.ToolTip="shows last known location on a map"/>
 
-                <NavigationViewItem Content="Messaging"
-                                    Tag="{Binding ResourceNames.MessagingPageName, Source={StaticResource AppViewModel}}"
-                                    IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
-                                    ToolTipService.ToolTip="shows messages within the last 31 days"/>
+                    <NavigationViewItem Content="History"
+                                        Tag="{Binding ResourceNames.HistoryPageName, Source={StaticResource AppViewModel}}"
+                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
-                <NavigationViewItem Content="Log Viewer"
-                                    Tag="{Binding ResourceNames.LogViewerPageName, Source={StaticResource AppViewModel}}"
-                                    IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
-                                    ToolTipService.ToolTip="shows locations within the last 31 days"/>
+                    <NavigationViewItem Content="Messaging"
+                                        Tag="{Binding ResourceNames.MessagingPageName, Source={StaticResource AppViewModel}}"
+                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        ToolTipService.ToolTip="shows messages within the last 31 days"/>
 
-            </NavigationView.MenuItems>
+                    <NavigationViewItem Content="Log Viewer"
+                                        Tag="{Binding ResourceNames.LogViewerPageName, Source={StaticResource AppViewModel}}"
+                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
-            <NavigationView.FooterMenuItems>
-                <NavigationViewItem Icon="Help"
-                                    Tag="{Binding ResourceNames.HelpTag, Source={StaticResource AppViewModel}}"/>
-            </NavigationView.FooterMenuItems>
+                </NavigationView.MenuItems>
 
-            <Frame x:Name="ContentFrame"/>
+                <NavigationView.FooterMenuItems>
+                    <NavigationViewItem Icon="Help"
+                                        Tag="{Binding ResourceNames.HelpTag, Source={StaticResource AppViewModel}}"/>
+                </NavigationView.FooterMenuItems>
 
-        </NavigationView>
+                <Frame x:Name="ContentFrame"/>
+
+            </NavigationView>
+
+        </ScrollViewer>
 
         <ProgressBar Grid.Row="1" Grid.Column="0"
                      x:Name="Determinant"

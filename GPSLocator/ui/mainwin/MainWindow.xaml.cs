@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
+using Windows.Graphics.Display;
 using J4JSoftware.Logging;
 using MapControl;
 using MapControl.Caching;

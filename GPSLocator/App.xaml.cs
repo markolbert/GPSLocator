@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.Graphics;
 using Autofac;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.Logging;
@@ -14,6 +15,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Shapes;
 using Serilog;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -30,7 +32,13 @@ namespace J4JSoftware.GPSLocator
 
         private readonly DispatcherQueue _dQueue;
         private readonly IJ4JLogger _buildLogger;
+        private readonly IJ4JLogger _logger;
 
+        private WindowId _windowId;
+        private AppWindow? _appWindow;
+        private int _appWidth;
+        private int _appHeight;
+        
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -60,8 +68,8 @@ namespace J4JSoftware.GPSLocator
             Host = hostConfig.Build()
              ?? throw new NullReferenceException($"Failed to build {nameof(IJ4JHost)}");
 
-            var logger = Host.Services.GetRequiredService<IJ4JLogger>();
-            logger.OutputCache(hostConfig.Logger);
+            _logger = Host.Services.GetRequiredService<IJ4JLogger>();
+            _logger.OutputCache(hostConfig.Logger);
 
             WeakReferenceMessenger.Default.Register<App, AppConfiguredMessage, string>(
                 this,
@@ -78,14 +86,14 @@ namespace J4JSoftware.GPSLocator
 
         public IJ4JHost Host { get; }
 
-        public void SetWindowSize( int width, int height )
+        private void SetWindowSize( int width, int height )
         {
-            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
-            var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
-            var appWindow = AppWindow.GetFromWindowId(windowId);
+            //var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
+            //var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            //var appWindow = AppWindow.GetFromWindowId(windowId);
 
             var size = new Windows.Graphics.SizeInt32(width, height);
-            appWindow.Resize(size);
+            _appWindow!.Resize(size);
         }
 
         /// <summary>
@@ -98,15 +106,44 @@ namespace J4JSoftware.GPSLocator
             MainWindow = new MainWindow { Title = "GPS Locator" };
             MainWindow.Activate();
 
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
+            _windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            _appWindow = AppWindow.GetFromWindowId(_windowId);
+
+            // set initial window sizes
+            var rawBounds = DisplayArea.GetFromWindowId( _windowId!, DisplayAreaFallback.Primary );
+            var screenBounds = new RectInt32( 0, 0, 500, 500 );
+
+            if( rawBounds == null )
+                _logger.Error( "Failed to retrieve screen bounds, using default 500x500" );
+            else screenBounds = rawBounds.WorkArea;
+
+            _appWidth = AllocateScreen( screenBounds.Width, 700, 1200 );
+            _appHeight = AllocateScreen(screenBounds.Height, 550,700);
+
             var launchPage = new LaunchPage();
             launchPage.ViewModel.Initialized += LaunchPageCompleted;
 
+            var launchWidth = AllocateScreen( screenBounds.Width, 500, 800 );
+            var launchHeight = AllocateScreen( screenBounds.Height, 500, 800 );
+
+            SetWindowSize( launchWidth, launchHeight );
             MainWindow!.Content = launchPage;
+        }
+
+        private int AllocateScreen( int screenPixels, int min, int max )
+        {
+            var retVal = screenPixels > 2 * min ? screenPixels / 2 : min;
+            return retVal > max ? max : retVal;
         }
 
         private void LaunchPageCompleted( object? sender, EventArgs e )
         {
-            _dQueue.TryEnqueue( () => MainWindow!.Content = new MainPage() );
+            _dQueue.TryEnqueue( () =>
+            {
+                SetWindowSize( _appWidth, _appHeight );
+                MainWindow!.Content = new MainPage();
+            } );
         }
     }
 }

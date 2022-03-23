@@ -27,8 +27,6 @@ namespace J4JSoftware.GPSLocator
 
         private void SettingsPage_Loaded( object sender, RoutedEventArgs e )
         {
-            App.Current.SetWindowSize(740, 930);
-
             ViewModel.OnLoaded();
         }
     }

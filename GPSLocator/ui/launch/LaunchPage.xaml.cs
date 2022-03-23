@@ -28,8 +28,6 @@ namespace J4JSoftware.GPSLocator
         {
             this.InitializeComponent();
 
-            App.Current.SetWindowSize(800, 800);
-
             ViewModel = App.Current.Host.Services.GetRequiredService<LaunchViewModel>();
             Loaded += LaunchPage_Loaded;
         }
