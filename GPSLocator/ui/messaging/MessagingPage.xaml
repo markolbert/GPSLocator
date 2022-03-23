@@ -15,60 +15,125 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0"
-                   Padding="0,7,0,0"
-                   VerticalAlignment="Top">
-            Days Back
-        </TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0">Days Back</TextBlock>
 
-        <StackPanel Grid.Row="0" Grid.Column="1"
-                    Orientation="Vertical">
+        <NumberBox Grid.Row="0" Grid.Column="1" 
+                   Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
+                   HorizontalAlignment="Left"
+                   Minimum="1"
+                   Maximum="31"
+                   SmallChange="1"
+                   LargeChange="7" 
+                   SpinButtonPlacementMode="Compact"/>
 
-            <NumberBox Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
-                       Minimum="1"
-                       Maximum="31"
-                       SmallChange="1"
-                       LargeChange="7" 
-                       SpinButtonPlacementMode="Compact"/>
+        <Button Grid.Row="1" Grid.Column="1"  
+                IsEnabled="{x:Bind ViewModel.RefreshEnabled}"
+                Command="{x:Bind ViewModel.RefreshCommand}">
+            Refresh
+        </Button>
 
-            <Button IsEnabled="{x:Bind ViewModel.RefreshEnabled}"
-                    Command="{x:Bind ViewModel.RefreshCommand}">
-                Refresh
-            </Button>
+        <TextBlock Grid.Row="2" Grid.Column="0">End Date</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
 
-        </StackPanel>
+        <TextBlock Grid.Row="3" Grid.Column="0">Start Date</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">End Date</TextBlock>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.EndDate}"/>
+        <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
+                Margin="14,7,14,7"
+                Background="LightGray">
 
-        <TextBlock Grid.Row="2" Grid.Column="0">Start Date</TextBlock>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
+            <Grid>
 
-        <TextBlock Grid.Row="3" Grid.Column="0"
-                   VerticalAlignment="Top">
-            <Run Text="Messages ("/>
-            <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
-            <Run Text=")"/>
-        </TextBlock>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="3" Grid.Column="1"
-                BorderThickness="2"
-                BorderBrush="DarkGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <ListView HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      ItemsSource="{x:Bind ViewModel.AllPoints}"
-                      SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}">
+                <TextBlock Grid.Row="0" Grid.Column="0">Message to Send</TextBlock>
+
+                <TextBox Grid.Row="0" Grid.Column="1" 
+                     Text="{x:Bind ViewModel.MessageToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     IsSpellCheckEnabled="False"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="1" 
+                       Visibility="{x:Bind ViewModel.MessageTooLong, Converter={StaticResource TrueToVisibleConverter}}"
+                       Foreground="DarkOrange">
+                    Message is long and will be split into separate messages
+                </TextBlock>
+
+                <TextBlock Grid.Row="2" Grid.Column="1" 
+                       FontStyle="Italic">
+                Messages can take some time to be delivered.
+                </TextBlock>
+
+                <TextBlock Grid.Row="3" Grid.Column="0">Callback</TextBlock>
+
+                <TextBox Grid.Row="3" Grid.Column="1"
+                     Text="{x:Bind ViewModel.Callback, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTipService.ToolTip="email, phone number (digits only)"
+                     IsSpellCheckEnabled="False"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="1" 
+                       FontStyle="Italic"
+                       Visibility="{x:Bind ViewModel.CallbackIsValid, Converter={StaticResource FalseToVisibleConverter}}">
+                    Callback must be an email address or an all-digits phone number
+                </TextBlock>
+
+                <Button Grid.Row="5" Grid.Column="1" 
+                    IsEnabled="{x:Bind ViewModel.SendMessageEnabled }"
+                    Command="{x:Bind ViewModel.SendMessageCommand}">
+                    Send
+                </Button>
+
+            </Grid>
+
+        </Border>
+
+        <Grid Grid.Row="0" Grid.Column="3" Grid.RowSpan="5">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                   HorizontalAlignment="Center">
+                <Run Text="On Server ("/>
+                <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
+                <Run Text=")"/>
+            </TextBlock>
+
+            <ListView Grid.Row="0" Grid.Column="1" 
+                      HorizontalAlignment="Left"
+                  ItemsSource="{x:Bind ViewModel.AllPoints}"
+                  SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:MapPoint">
@@ -78,86 +143,31 @@
 
             </ListView>
 
-        </Border>
-
-        <TextBlock Grid.Row="0" Grid.Column="2"
-                   Padding="0,7,0,0"
-                   VerticalAlignment="Top">
-            Message
-        </TextBlock>
-
-        <StackPanel Grid.Row="0" Grid.Column="3"
-                    Orientation="Vertical">
-
-            <TextBox Text="{x:Bind ViewModel.MessageToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     IsSpellCheckEnabled="False"/>
-
-            <TextBlock Visibility="{x:Bind ViewModel.MessageTooLong, Converter={StaticResource TrueToVisibleConverter}}"
-                       Foreground="DarkOrange">
-                Message is too long and will be split into separate messages
-            </TextBlock>
-
-            <TextBlock FontStyle="Italic">
-                Messages can take some time to be delivered.
-            </TextBlock>
-
-        </StackPanel>
-
-        <TextBlock Grid.Row="1" Grid.Column="2"
-                   Padding="0,7,0,0"
-                   VerticalAlignment="Top">
-            Callback
-        </TextBlock>
-
-        <StackPanel Grid.Row="1" Grid.Column="3"
-                    Orientation="Vertical">
-
-            <TextBox Text="{x:Bind ViewModel.Callback, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     ToolTipService.ToolTip="email, phone number (digits only)"
-                     IsSpellCheckEnabled="False"/>
-
-            <TextBlock FontStyle="Italic"
-                Visibility="{x:Bind ViewModel.CallbackIsValid, Converter={StaticResource FalseToVisibleConverter}}">
-                Callback must be an email address or an all-digits phone number
-            </TextBlock>
-
-            <Button IsEnabled="{x:Bind ViewModel.SendMessageEnabled }"
-                    Command="{x:Bind ViewModel.SendMessageCommand}">
-                Send
-            </Button>
-
-        </StackPanel>
-
-        <Grid Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2"
-              RowDefinitions="Auto, Auto"
-              ColumnDefinitions="Auto, Auto">
-
-            <TextBlock Grid.Row="0" Grid.Column="0"
+            <TextBlock Grid.Row="1" Grid.Column="0"
                        Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}">
-                Selected Recipients
+                Recipients
             </TextBlock>
 
-            <ListView Grid.Row="0" Grid.Column="1"
-                      Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}"
-                      ItemsSource="{x:Bind ViewModel.SelectedPoint.DeviceLocation.Recipients}">
+            <ListView Grid.Row="1" Grid.Column="1"
+                  Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}"
+                  HorizontalAlignment="Left"
+                  ItemsSource="{x:Bind ViewModel.SelectedPoint.DeviceLocation.Recipients}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock HorizontalAlignment="Left" 
-                                   Text="{Binding}"/>
+                               Text="{Binding}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <TextBlock Grid.Row="1" Grid.Column="0"
-                       VerticalAlignment="Top"
+            <TextBlock Grid.Row="2" Grid.Column="0"
                        Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}">
-                Selected Message
+                Text
             </TextBlock>
 
-            <TextBlock Grid.Row="1" Grid.Column="1"
-                       VerticalAlignment="Top"
-                       Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}"
-                       Text="{x:Bind ViewModel.SelectedPoint.DeviceLocation.TextMessage}">
+            <TextBlock Grid.Row="2" Grid.Column="1"
+                   Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}"
+                   Text="{x:Bind ViewModel.SelectedPoint.DeviceLocation.TextMessage}">
             </TextBlock>
 
         </Grid>
