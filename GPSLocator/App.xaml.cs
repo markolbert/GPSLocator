@@ -124,8 +124,8 @@ namespace J4JSoftware.GPSLocator
             var launchPage = new LaunchPage();
             launchPage.ViewModel.Initialized += LaunchPageCompleted;
 
-            var launchWidth = AllocateScreen( screenBounds.Width, 500, 800 );
-            var launchHeight = AllocateScreen( screenBounds.Height, 500, 800 );
+            var launchWidth = AllocateScreen( screenBounds.Width, 500, 700 );
+            var launchHeight = AllocateScreen( screenBounds.Height, 500, 700 );
 
             SetWindowSize( launchWidth, launchHeight );
             MainWindow!.Content = launchPage;
