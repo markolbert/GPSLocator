@@ -34,6 +34,7 @@
 
         <NumberBox Grid.Row="0" Grid.Column="1"
                    Value="{x:Bind ViewModel.DaysBack, Mode=TwoWay}"
+                   HorizontalAlignment="Left"
                    Minimum="1"
                    Maximum="31"
                    SmallChange="1"
