@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -39,22 +41,16 @@ namespace J4JSoftware.GPSLocator
             ViewModel.OnPageActivated();
         }
 
-        private void LocationsGrid_OnSelectionChanged( object sender, SelectionChangedEventArgs e )
+        private void LocationsGrid_OnTapped( object sender, TappedRoutedEventArgs e )
         {
-            if( !ViewModel.SelectedPoint?.DeviceLocation.HasMessage ?? false )
+            if( sender is not ListView uiElement )
                 return;
 
-            // have to wrap this in try/catch because when you return to the page
-            // from another page it will throw an exception
-            try
-            {
-                FlyoutBase.ShowAttachedFlyout( (FrameworkElement) sender );
-            }
-            catch(Exception ex )
-            {
-                // ignored
-                _logger.Error<string>( "Flyout failed to open, message was '{0}'", ex.Message );
-            }
+            if( LocationsGrid.SelectedItem is not MapPoint mapPoint
+            || !mapPoint.DeviceLocation.HasMessage )
+                return;
+
+            FlyoutBase.ShowAttachedFlyout( uiElement );
         }
     }
 }
