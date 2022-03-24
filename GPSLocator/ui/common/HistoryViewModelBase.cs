@@ -13,6 +13,7 @@ namespace J4JSoftware.GPSLocator;
 
 public class HistoryViewModelBase : LocationMapViewModel
 {
+    private bool _initialized;
     private DateTimeOffset _endDate;
     private double _daysBack = 7;
     private MapPoint? _selectedPoint;
@@ -32,7 +33,12 @@ public class HistoryViewModelBase : LocationMapViewModel
 
     public void OnPageActivated()
     {
+        if( _initialized )
+            return;
+
         RefreshHandler();
+
+        _initialized = true;
     }
 
     private void Timer_Tick(object? sender, object e)
@@ -48,6 +54,9 @@ public class HistoryViewModelBase : LocationMapViewModel
             StatusMessages.DisplayReady();
             return;
         }
+
+        SelectedPoint = null;
+        ClearMappedPoints();
 
         var request = new HistoryRequest<Location>( AppViewModel.Configuration, Logger )
         {
@@ -88,6 +97,7 @@ public class HistoryViewModelBase : LocationMapViewModel
         AddLocations( args.Response!.Result!.HistoryItems
                           .Where( LocationFilter ) );
 
+        SelectedPoint = null;
 
         RefreshEnabled = true;
     }
