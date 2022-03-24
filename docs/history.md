@@ -20,28 +20,18 @@ Checking the box will delete any previously-retrieved points that do **not** hav
 
 Once points have been retrieved you can see their details by clicking on them:
 
-![one point of history](assets/history-onept.jpg)
+![one point of history](assets/history-onept.png)
 
 When selected, a point's details will appear and a map showing the location of the tracking point will display. You may need to expand the window to see all the details and/or the map.
 
 There is one case where the map won't be displayed after clicking a point: some InReach points appear to come from latitude/longitude 0/0. These are ignored by the map display.
 
-The map is pannable (by clicking and dragging it) and zoomable (by using your mouse wheel).
+The map is pannable (by clicking and dragging it) and zoomable (by using your mouse wheel) You can also zoom it by using the + / - buttons.
 
 ## Points with messages
 
 If a selected point has a message information about the message will appear in the detail view:
 
-![a point with a message](assets/history-message.jpg)
+![a point with a message](assets/history-message.png)
 
-The cell phone number of the recipient(s) were hidden in the image for privacy reasons. They show up in the app.
-
-## Setting a point on the map
-
-If you double-click a tracking point you "set" its display on the map. Thereafter, until you unset it by double-clicking it again, it is always displayed on the map. In addition, the map will continually reset its center to the center of all the map points being displayed every time you add a new point to the map.
-
-![multiple points](assets/history-multiple.jpg)
-
-You may have to zoom and/or pan the map to get all the points to appear in the map.
-
-You can remove all the "set" points by clicking the Clear Map Points button.
+The recipient(s) were hidden in the image for privacy reasons. They show up in the app.

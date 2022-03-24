@@ -4,13 +4,9 @@
 
 When the app launches it will look like this:
 
-The first time you run the app it will display a message in the status area that the configurtion is invalid (the picture shows what it will look like after you successfully configure the app):
+The first time you run the app it will display a message in the status area that the configurtion is invalid and send you to the configuration page:
 
-![home page](assets/home-screen.png)
-
-To configure the app click the gear icon in the upper left corner of the window. This will bring up the configuration page:
-
-![settings page](assets/settings.png)
+![configuration page](assets/settings.png)
 
 Fill out  the fields with information for your InReach device. Note that the app works with one device at a time.
 
