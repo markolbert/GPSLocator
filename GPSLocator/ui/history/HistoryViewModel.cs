@@ -17,8 +17,6 @@ namespace J4JSoftware.GPSLocator
         )
         : base(logger)
         {
-            MapPointSetCommand = new RelayCommand<MapPoint>( MapPointSetHandler );
-            ClearMapCommand = new RelayCommand( ClearMapHandler );
         }
 
         public bool MustHaveMessages
@@ -45,34 +43,6 @@ namespace J4JSoftware.GPSLocator
                 UpdateMapCenter();
             }
         }
-
-        protected override bool LocationFilter( Location toCheck ) => toCheck.HasMessage || !_mustHaveMessages;
-
-        public RelayCommand ClearMapCommand { get; }
-
-        private void ClearMapHandler()
-        {
-            MappedPoints.Clear();
-            UpdateMapCenter();
-        }
-
-        public RelayCommand<MapPoint> MapPointSetCommand { get; }
-
-        private void MapPointSetHandler( MapPoint? selectedPoint )
-        {
-            if( selectedPoint == null
-            || ( selectedPoint.DeviceLocation.Coordinate.Latitude == 0
-                && selectedPoint.DeviceLocation.Coordinate.Longitude == 0 ) )
-                return;
-
-            selectedPoint.DisplayOnMap = selectedPoint.DisplayOnMap switch
-            {
-                MapPointDisplay.DoNotDisplay => MapPointDisplay.Fixed,
-                _ => MapPointDisplay.DoNotDisplay
-            };
-
-            if( selectedPoint.DisplayOnMap != MapPointDisplay.DoNotDisplay )
-                MapCenter = selectedPoint.DisplayPoint;
-        }
+        protected override bool LocationFilter(Location toCheck) => toCheck.HasMessage || !_mustHaveMessages;
     }
 }
