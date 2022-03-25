@@ -27,9 +27,66 @@
 		<AssemblyVersion>0.5.0.0</AssemblyVersion>
 		<PackageReleaseNotes>initial release</PackageReleaseNotes>
 		<PackageReadmeFile>nuget-locator.md</PackageReadmeFile>
+		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<AppxBundle>Never</AppxBundle>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Assets\Badge96.scale-100.png" />
+		<None Remove="Assets\Badge96.scale-125.png" />
+		<None Remove="Assets\Badge96.scale-150.png" />
+		<None Remove="Assets\Badge96.scale-200.png" />
+		<None Remove="Assets\Badge96.scale-400.png" />
+		<None Remove="Assets\LargeTile1240.scale-100.png" />
+		<None Remove="Assets\LargeTile1240.scale-125.png" />
+		<None Remove="Assets\LargeTile1240.scale-150.png" />
+		<None Remove="Assets\LargeTile1240.scale-200.png" />
+		<None Remove="Assets\LargeTile1240.scale-400.png" />
+		<None Remove="Assets\SmallTile284.scale-100.png" />
+		<None Remove="Assets\SmallTile284.scale-125.png" />
+		<None Remove="Assets\SmallTile284.scale-150.png" />
+		<None Remove="Assets\SmallTile284.scale-200.png" />
+		<None Remove="Assets\SmallTile284.scale-400.png" />
+		<None Remove="Assets\SplashScreen.scale-100.png" />
+		<None Remove="Assets\SplashScreen.scale-125.png" />
+		<None Remove="Assets\SplashScreen.scale-150.png" />
+		<None Remove="Assets\SplashScreen.scale-400.png" />
+		<None Remove="Assets\Square150x150Logo.scale-100.png" />
+		<None Remove="Assets\Square150x150Logo.scale-125.png" />
+		<None Remove="Assets\Square150x150Logo.scale-150.png" />
+		<None Remove="Assets\Square150x150Logo.scale-400.png" />
+		<None Remove="Assets\Square44x44Logo.scale-100.png" />
+		<None Remove="Assets\Square44x44Logo.scale-125.png" />
+		<None Remove="Assets\Square44x44Logo.scale-150.png" />
+		<None Remove="Assets\Square44x44Logo.scale-400.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-16.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-16_altform-lightunplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-16_altform-unplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-24.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-24_altform-lightunplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-256.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-256_altform-lightunplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-256_altform-unplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-32.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-32_altform-lightunplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-32_altform-unplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-48.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-48_altform-lightunplated.png" />
+		<None Remove="Assets\Square44x44Logo.targetsize-48_altform-unplated.png" />
+		<None Remove="Assets\StoreLogo.scale-100.png" />
+		<None Remove="Assets\StoreLogo.scale-125.png" />
+		<None Remove="Assets\StoreLogo.scale-150.png" />
+		<None Remove="Assets\StoreLogo.scale-200.png" />
+		<None Remove="Assets\StoreLogo.scale-400.png" />
+		<None Remove="Assets\Wide310x150Logo.scale-100.png" />
+		<None Remove="Assets\Wide310x150Logo.scale-125.png" />
+		<None Remove="Assets\Wide310x150Logo.scale-150.png" />
+		<None Remove="Assets\Wide310x150Logo.scale-400.png" />
 		<None Remove="ui\AboutPage.xaml" />
 		<None Remove="ui\common\DefaultStyles.xaml" />
 		<None Remove="ui\common\LocationControl.xaml" />
@@ -49,13 +106,62 @@
 
 	<ItemGroup>
 		<Content Remove="Assets\**\*.*" />
+		<Content Include="Assets\Badge96.scale-100.png" />
+		<Content Include="Assets\Badge96.scale-125.png" />
+		<Content Include="Assets\Badge96.scale-150.png" />
+		<Content Include="Assets\Badge96.scale-200.png" />
+		<Content Include="Assets\Badge96.scale-400.png" />
+		<Content Include="Assets\LargeTile1240.scale-100.png" />
+		<Content Include="Assets\LargeTile1240.scale-125.png" />
+		<Content Include="Assets\LargeTile1240.scale-150.png" />
+		<Content Include="Assets\LargeTile1240.scale-200.png" />
+		<Content Include="Assets\LargeTile1240.scale-400.png" />
+		<Content Include="Assets\SmallTile284.scale-100.png" />
+		<Content Include="Assets\SmallTile284.scale-125.png" />
+		<Content Include="Assets\SmallTile284.scale-150.png" />
+		<Content Include="Assets\SmallTile284.scale-200.png" />
+		<Content Include="Assets\SmallTile284.scale-400.png" />
+		<Content Include="Assets\SplashScreen.scale-100.png" />
+		<Content Include="Assets\SplashScreen.scale-125.png" />
+		<Content Include="Assets\SplashScreen.scale-150.png" />
 		<Content Include="Assets\SplashScreen.scale-200.png" />
 		<Content Include="Assets\LockScreenLogo.scale-200.png" />
+		<Content Include="Assets\SplashScreen.scale-400.png" />
+		<Content Include="Assets\Square150x150Logo.scale-100.png" />
+		<Content Include="Assets\Square150x150Logo.scale-125.png" />
+		<Content Include="Assets\Square150x150Logo.scale-150.png" />
 		<Content Include="Assets\Square150x150Logo.scale-200.png" />
+		<Content Include="Assets\Square150x150Logo.scale-400.png" />
+		<Content Include="Assets\Square44x44Logo.scale-100.png" />
+		<Content Include="Assets\Square44x44Logo.scale-125.png" />
+		<Content Include="Assets\Square44x44Logo.scale-150.png" />
 		<Content Include="Assets\Square44x44Logo.scale-200.png" />
+		<Content Include="Assets\Square44x44Logo.scale-400.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-16.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-16_altform-lightunplated.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-16_altform-unplated.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-24.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-lightunplated.png" />
 		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-		<Content Include="Assets\StoreLogo.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-256.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-256_altform-lightunplated.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-256_altform-unplated.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-32.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-32_altform-lightunplated.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-32_altform-unplated.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-48.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-48_altform-lightunplated.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-48_altform-unplated.png" />
+		<Content Include="Assets\StoreLogo.scale-100.png" />
+		<Content Include="Assets\StoreLogo.scale-125.png" />
+		<Content Include="Assets\StoreLogo.scale-150.png" />
+		<Content Include="Assets\StoreLogo.scale-200.png" />
+		<Content Include="Assets\StoreLogo.scale-400.png" />
+		<Content Include="Assets\Wide310x150Logo.scale-100.png" />
+		<Content Include="Assets\Wide310x150Logo.scale-125.png" />
+		<Content Include="Assets\Wide310x150Logo.scale-150.png" />
 		<Content Include="Assets\Wide310x150Logo.scale-200.png" />
+		<Content Include="Assets\Wide310x150Logo.scale-400.png" />
 		<Content Include="media\north-america-orig.png" />
 		<Content Include="media\north-america.png" />
 		<Content Include="media\western-hemisphere.png" />
