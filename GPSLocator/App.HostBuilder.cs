@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Autofac;
 using J4JSoftware.DependencyInjection;
@@ -17,8 +18,16 @@ public partial class App
 {
     private void InitializeLogger( IConfiguration config, J4JLoggerConfiguration loggerConfig )
     {
+        var appPath = Path.GetDirectoryName( Assembly.GetEntryAssembly()?.Location );
+
+        if( string.IsNullOrEmpty( appPath ) )
+        {
+            _buildLogger.Error("Could not determine application's executable path");
+            return;
+        }
+
         loggerConfig.SerilogConfiguration
-                    .WriteTo.File( System.IO.Path.Combine( Directory.GetCurrentDirectory(), "log.txt" ),
+                    .WriteTo.File( System.IO.Path.Combine( appPath, "log.txt" ),
                                    rollingInterval: RollingInterval.Day );
     }
 
