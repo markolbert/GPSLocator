@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:map="using:MapControl"
     d:DataContext="{d:DesignInstance local:LocationMapViewModel}"
+    x:DefaultBindMode="OneWay"
     mc:Ignorable="d">
 
-    <Grid Visibility="{Binding MapCenter, Converter={StaticResource NullToHiddenConverter}}">
+    <Grid Visibility="{x:Bind ViewModel.DisplayedPoints.Points, Converter={StaticResource CollectionToVisibilityConverter}}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -22,15 +23,17 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <map:Map Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
-                        ManipulationMode="All"
-                        Margin="14,14,5,14"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        MinZoomLevel="2" 
-                        MaxZoomLevel="21" 
-                        ZoomLevel="{Binding ZoomLevel, Mode=TwoWay}"
-                        Center="{Binding MapCenter, Mode=TwoWay}">
+        <map:Map x:Name="TheMap" 
+                 Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                 ManipulationMode="All"
+                 Margin="14,14,5,14"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 MinZoomLevel="2" 
+                 MaxZoomLevel="21" 
+                 ZoomLevel="{x:Bind ViewModel.ZoomLevel, Mode=TwoWay}"
+                 Center="{x:Bind ViewModel.MapCenter, Mode=TwoWay}"
+                 DoubleTapped="UIElement_OnDoubleTapped">
 
             <map:MapTileLayer SourceName="OpenStreetMap"
                               Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
@@ -41,7 +44,7 @@
 
             </map:MapTileLayer>
 
-            <map:MapItemsControl ItemsSource="{Binding MappedPoints}"
+            <map:MapItemsControl ItemsSource="{x:Bind ViewModel.DisplayedPoints.Points}"
                                  ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
 
             <!--<map:Pushpin AutoCollapse="True" Content="DingDong!">
@@ -57,14 +60,14 @@
             <Button Margin="0,14,14,0" 
                     Padding="5"
                     Width="25"
-                    Command="{Binding IncreaseZoomCommand}">
+                    Command="{x:Bind ViewModel.IncreaseZoomCommand}">
                 +
             </Button>
 
             <Button Margin="0,0,14,0"
                     Padding="5"
                     Width="25"
-                    Command="{Binding DecreaseZoomCommand}">
+                    Command="{x:Bind ViewModel.DecreaseZoomCommand}">
                 -
             </Button>
 

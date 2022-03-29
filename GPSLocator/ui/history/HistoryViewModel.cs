@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSLocator
 {
-    public class HistoryViewModel : HistoryViewModelBase
+    public class HistoryViewModel : SelectablePointViewModel
     {
         private bool _mustHaveMessages;
 
@@ -32,17 +32,14 @@ namespace J4JSoftware.GPSLocator
                 if( !changed || !_mustHaveMessages )
                     return;
 
-                if( SelectedPoint != null && !SelectedPoint.DeviceLocation.HasMessage )
-                    SelectedPoint = null;
-
                 var locations = AllPoints.Where( x => x.DeviceLocation.HasMessage )
                                           .Select( x => x.DeviceLocation )
                                           .ToList();
-                AddLocations( locations );
 
-                UpdateMapCenter();
+                AddLocations( locations );
             }
         }
+
         protected override bool LocationFilter(Location toCheck) => toCheck.HasMessage || !_mustHaveMessages;
     }
 }

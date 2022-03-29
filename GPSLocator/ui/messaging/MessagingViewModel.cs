@@ -15,8 +15,9 @@ using WinRT.Interop;
 
 namespace J4JSoftware.GPSLocator;
 
-public class MessagingViewModel :HistoryViewModelBase
+public class MessagingViewModel :SelectablePointViewModel
 {
+    private MapPoint? _selectedPoint;
     private string? _messageToSend;
     private string? _callback;
     private bool _callbackIsValid;

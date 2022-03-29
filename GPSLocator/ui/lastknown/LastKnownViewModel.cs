@@ -1,29 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using J4JSoftware.Logging;
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
+using MapControl;
 
 namespace J4JSoftware.GPSLocator;
 
 public class LastKnownViewModel : LocationMapViewModel
 {
-    private MapPoint? _lastKnownPoint;
-
     public LastKnownViewModel(
         IJ4JLogger logger
     )
         : base( logger )
     {
+        Messenger.Send( new MapViewModelMessage( this ), "primary" );
     }
 
     public void OnPageActivated()
     {
         RefreshHandler();
+    }
+
+    protected override void OnMapChanged( MapControl.Location? center, BoundingBox? boundingBox )
+    {
+        base.OnMapChanged( center, boundingBox );
+
+        MapCenter = center;
+        MapBoundingBox = boundingBox;
+
+        OnPropertyChanged( nameof( LastKnownPoint ) );
     }
 
     protected override void RefreshHandler()
@@ -71,16 +75,15 @@ public class LastKnownViewModel : LocationMapViewModel
             StatusMessages.Message("Last known location updated").Enqueue();
             StatusMessages.DisplayReady();
 
-            ClearMappedPoints();
+            ClearDisplayedPoints();
 
             var lastLoc = args.Response.Result.Locations[0];
             lastLoc.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
             lastLoc.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
 
             var mapPoint = AddLocation(lastLoc);
-            mapPoint.DisplayOnMap = MapPointDisplay.Fixed;
 
-            LastKnownPoint = MappedPoints[0];
+            DisplayedPoints.Add( mapPoint );
         }
         else StatusMessages.Message("No last known location").Important().Enqueue();
 
@@ -104,9 +107,5 @@ public class LastKnownViewModel : LocationMapViewModel
         RefreshEnabled = true;
     }
 
-    public MapPoint? LastKnownPoint
-    {
-        get => _lastKnownPoint;
-        set => SetProperty( ref _lastKnownPoint, value );
-    }
+    public MapPoint? LastKnownPoint => DisplayedPoints.Any() ? DisplayedPoints[ 0 ] : null;
 }
