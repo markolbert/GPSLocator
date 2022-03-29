@@ -16,8 +16,8 @@
 
             <local:NullToHiddenConverter x:Key="NullToHiddenConverter"/>
             <local:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
-            <local:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter"/>
-            <local:EmptyCollectionToBoolConverter x:Key="EmptyCollectionToBoolConverter"/>
+            <local:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"/>
+            <local:CollectionToBoolConverter x:Key="CollectionToBoolConverter"/>
             <local:TrueToVisibleConverter x:Key="TrueToVisibleConverter"/>
             <local:FalseToVisibleConverter x:Key="FalseToVisibleConverter"/>
 

@@ -75,7 +75,7 @@
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       ItemsSource="{x:Bind ViewModel.AllPoints}"
-                      SelectedItem="{x:Bind ViewModel.SelectedPoint, Mode=TwoWay}"
+                      SelectedItem="{x:Bind ViewModel.SelectedPoint}"
                       Tapped="LocationsGrid_OnTapped">
 
 
