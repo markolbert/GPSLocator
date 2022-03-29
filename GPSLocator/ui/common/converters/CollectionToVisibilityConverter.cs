@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace J4JSoftware.GPSLocator
 {
-    public class EmptyCollectionToVisibilityConverter : IValueConverter
+    public class CollectionToVisibilityConverter : IValueConverter
     {
         public object Convert( object? value, Type targetType, object parameter, string language )
         {
