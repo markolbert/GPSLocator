@@ -17,38 +17,40 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0"
+        <TextBlock Grid.Row="2" Grid.Column="0"
                    VerticalAlignment="Top">
             Logged Events
         </TextBlock>
 
-        <Border Grid.Row="0" Grid.Column="1"
-                BorderBrush="DarkGray"
-                BorderThickness="2">
+        <ListView Grid.Row="2" Grid.Column="1" 
+                  Margin="0,14,0,0"
+                  MaxHeight="500"
+                  VerticalAlignment="Top"
+                  ItemsSource="{x:Bind ViewModel.FilteredLogEvents}">
 
-            <ListView ItemsSource="{x:Bind ViewModel.FilteredLogEvents}">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:IndexedLogEvent">
-                        <TextBlock Text="{x:Bind Message, Mode=OneTime}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:IndexedLogEvent">
+                    <TextBlock Text="{x:Bind Message, Mode=OneTime}"
+                               MaxWidth="500"
+                               TextWrapping="Wrap"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
-        </Border>
+        </ListView>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">Minimum Level</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0">Minimum Level</TextBlock>
 
-        <ComboBox Grid.Row="1" Grid.Column="1"
+        <ComboBox Grid.Row="0" Grid.Column="1"
                   HorizontalAlignment="Left" 
                   ItemsSource="{x:Bind ViewModel.LogLevels}"
                   SelectedItem="{x:Bind ViewModel.MinimumLogEventLevel, Mode=TwoWay}"/>
 
-        <Button Grid.Row="2" Grid.Column="0"
+        <Button Grid.Row="1" Grid.Column="1"
                 Command="{x:Bind ViewModel.ClearLogCommand}">
             Clear Log
         </Button>
