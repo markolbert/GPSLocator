@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPSLocatorLib", "GPSLocator
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPSLocator", "GPSLocator\GPSLocator.csproj", "{2960BBD7-06A1-4CBD-AD51-C8CCE3E33C09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{48EDBD56-CDAE-4445-9AB9-A3CCC279D6C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp", "TestApp\TestApp.csproj", "{48EDBD56-CDAE-4445-9AB9-A3CCC279D6C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSCommon", "GPSCommon\GPSCommon.csproj", "{D0D962B3-AF89-4885-B246-DE177252F237}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +131,22 @@ Global
 		{48EDBD56-CDAE-4445-9AB9-A3CCC279D6C5}.Release|x86.ActiveCfg = Release|x86
 		{48EDBD56-CDAE-4445-9AB9-A3CCC279D6C5}.Release|x86.Build.0 = Release|x86
 		{48EDBD56-CDAE-4445-9AB9-A3CCC279D6C5}.Release|x86.Deploy.0 = Release|x86
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|arm64.Build.0 = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|x64.Build.0 = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Debug|x86.Build.0 = Debug|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|arm64.ActiveCfg = Release|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|arm64.Build.0 = Release|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|x64.ActiveCfg = Release|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|x64.Build.0 = Release|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0D962B3-AF89-4885-B246-DE177252F237}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

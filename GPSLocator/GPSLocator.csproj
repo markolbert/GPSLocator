@@ -106,7 +106,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Remove="ui\common\converters\**" />
 		<Content Remove="Assets\**\*.*" />
+		<EmbeddedResource Remove="ui\common\converters\**" />
+		<None Remove="ui\common\converters\**" />
+		<Page Remove="ui\common\converters\**" />
 		<Content Include="Assets\Badge96.scale-100.png" />
 		<Content Include="Assets\Badge96.scale-125.png" />
 		<Content Include="Assets\Badge96.scale-150.png" />
@@ -189,6 +193,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\J4JLogging\J4JLogging\J4JLogging.csproj" />
 		<ProjectReference Include="..\..\ProgrammingUtilities\DependencyInjection\DependencyInjection.csproj" />
+		<ProjectReference Include="..\GPSCommon\GPSCommon.csproj" />
 		<ProjectReference Include="..\GPSLocatorLib\GPSLocatorLib.csproj" />
 	</ItemGroup>
 
@@ -239,5 +244,9 @@
 	
 	<ItemGroup>
 		<PRIResource Remove="ui\home\**" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PRIResource Remove="ui\common\converters\**" />
 	</ItemGroup>
 </Project>
