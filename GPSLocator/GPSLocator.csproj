@@ -11,7 +11,7 @@
 		<UseWinUI>true</UseWinUI>
 		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
 		<Nullable>enable</Nullable>
-		<AssemblyName>J4JSoftware.WinUILocator</AssemblyName>
+		<AssemblyName>J4JSoftware.GPSLocator</AssemblyName>
 		<Authors>Mark A. Olbert</Authors>
 		<Company>Jump for Joy Software</Company>
 		<Product>J4JSoftware GPS Locator</Product>
