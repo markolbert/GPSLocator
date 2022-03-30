@@ -12,8 +12,6 @@ namespace J4JSoftware.GPSLocator;
 /// </summary>
 public sealed partial class LogViewerPage : Page
 {
-    public const string PageName = "LogViewer";
-
     public LogViewerPage()
     {
         this.InitializeComponent();

@@ -17,13 +17,15 @@ public class BaseViewModel : ObservableValidator
     private bool _isActive;
 
     protected BaseViewModel(
+        AppViewModel appViewModel,
         IJ4JLogger logger
     )
-        : this( WeakReferenceMessenger.Default, logger )
+        : this( appViewModel, WeakReferenceMessenger.Default, logger )
     {
     }
 
     protected BaseViewModel(
+        AppViewModel appViewModel,
         IMessenger messenger,
         IJ4JLogger logger
     )
@@ -34,7 +36,7 @@ public class BaseViewModel : ObservableValidator
 
         IsActive = true;
 
-        AppViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
+        AppViewModel = appViewModel;
         StatusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
 
         Logger = logger;

@@ -59,10 +59,10 @@
         <TextBlock Grid.Row="5" Grid.Column="0">Launch Page</TextBlock>
 
         <ComboBox Grid.Row="5" Grid.Column="1"
-                  ItemsSource="{Binding PageNames, Source={StaticResource AppViewModel}}"
+                  ItemsSource="{x:Bind local:AppViewModel.TargetPages}"
                   SelectedItem="{x:Bind ViewModel.LaunchPage, Mode=TwoWay}">
             <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="local:SingleSelectableItem">
+                <DataTemplate x:DataType="local:SelectablePage">
                     <TextBlock Text="{x:Bind Label, Mode=OneTime}"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>

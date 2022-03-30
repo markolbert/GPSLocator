@@ -9,9 +9,10 @@ public class SelectablePointViewModel : HistoryViewModelBase
     private MapPoint? _pointOnMap;
 
     public SelectablePointViewModel(
+        AppViewModel appViewModel,
         IJ4JLogger logger
     )
-        : base(logger)
+        : base(appViewModel, logger)
     {
         Messenger.Send(new MapViewModelMessage(this), "primary");
     }

@@ -15,8 +15,6 @@ namespace J4JSoftware.GPSLocator;
 /// </summary>
 public sealed partial class HistoryPage : Page
 {
-    public const string PageName = "History";
-
     private readonly IJ4JLogger _logger;
 
     public HistoryPage()

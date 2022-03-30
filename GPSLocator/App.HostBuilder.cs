@@ -67,7 +67,7 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
-        builder.RegisterType<MainViewModel>()
+        builder.RegisterType<AppViewModel>()
                .AsSelf()
                .SingleInstance();
 

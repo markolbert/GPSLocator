@@ -12,8 +12,6 @@ namespace J4JSoftware.GPSLocator;
 /// </summary>
 public sealed partial class LastKnownPage : Page
 {
-    public const string PageName = "LastKnown";
-
     public LastKnownPage()
     {
         this.InitializeComponent();

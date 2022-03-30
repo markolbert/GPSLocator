@@ -16,10 +16,11 @@ public class MessagingViewModel :SelectablePointViewModel
     private bool _sendAllowed = true;
     private bool _msgTooLong;
 
-    public MessagingViewModel( 
+    public MessagingViewModel(
+        AppViewModel appViewModel,
         IJ4JLogger logger 
     )
-        : base( logger )
+        : base( appViewModel, logger )
     {
         SendMessageCommand = new RelayCommand( SendMessageHandler );
 

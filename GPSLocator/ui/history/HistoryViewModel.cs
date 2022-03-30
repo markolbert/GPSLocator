@@ -8,9 +8,10 @@ public class HistoryViewModel : SelectablePointViewModel
     private bool _mustHaveMessages;
 
     public HistoryViewModel(
+        AppViewModel appViewModel,
         IJ4JLogger logger
     )
-        : base(logger)
+        : base(appViewModel, logger)
     {
     }
 

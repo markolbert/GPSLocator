@@ -8,9 +8,10 @@ namespace J4JSoftware.GPSLocator;
 public class LastKnownViewModel : LocationMapViewModel
 {
     public LastKnownViewModel(
+        AppViewModel appViewModel,
         IJ4JLogger logger
     )
-        : base( logger )
+        : base( appViewModel, logger )
     {
         Messenger.Send( new MapViewModelMessage( this ), "primary" );
     }

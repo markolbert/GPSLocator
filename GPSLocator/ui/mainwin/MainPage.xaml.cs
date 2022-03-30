@@ -26,12 +26,12 @@ public sealed partial class MainPage : Page
         _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
         _logger.SetLoggedType(GetType());
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<MainViewModel>();
+        ViewModel = App.Current.Host.Services.GetRequiredService<AppViewModel>();
 
         Loaded += OnLoaded;
     }
 
-    private MainViewModel ViewModel { get; }
+    private AppViewModel ViewModel { get; }
 
     private void OnLoaded( object sender, RoutedEventArgs e )
     {
@@ -53,14 +53,14 @@ public sealed partial class MainPage : Page
             tag = temp;
         }
 
-        if (tag.Equals(AppViewModel.ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase))
+        if (tag.Equals(ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase))
         {
-            if (string.IsNullOrEmpty(ViewModel.AppViewModel.Configuration.HelpLink))
+            if (string.IsNullOrEmpty(ViewModel.Configuration.HelpLink))
                 return;
 
             try
             {
-                OpenUrl(ViewModel.AppViewModel.Configuration.HelpLink);
+                OpenUrl(ViewModel.Configuration.HelpLink);
             }
             catch (Exception ex)
             {
@@ -71,31 +71,31 @@ public sealed partial class MainPage : Page
         }
 
         var newPage =
-            AppViewModel.PageNames.FirstOrDefault(x => x.Value.Equals(tag, StringComparison.OrdinalIgnoreCase));
+            AppViewModel.TargetPages.FirstOrDefault(x => x.PageTag.Equals(tag, StringComparison.OrdinalIgnoreCase));
 
         if (newPage == null)
             return;
 
-        ContentFrame.Navigate(newPage.Item, newPage.Value);
+        ContentFrame.Navigate(newPage.PageType, newPage.PageTag);
     }
 
     private void SetLaunchPage()
     {
-        if( !ViewModel.AppViewModel.Configuration.IsValid )
+        if( !ViewModel.Configuration.IsValid )
         {
             ContentFrame.Navigate( typeof( SettingsPage ) );
             return;
         }
 
-        var launchPage = AppViewModel.PageNames
-                                     .FirstOrDefault( x => x.Value.Equals(
-                                                          ViewModel.AppViewModel.Configuration.LaunchPage,
+        var launchPage = AppViewModel.TargetPages
+                                     .FirstOrDefault( x => x.PageTag.Equals(
+                                                          ViewModel.Configuration.LaunchPage,
                                                           StringComparison.OrdinalIgnoreCase ) );
 
         if( launchPage == null )
             return;
 
-        ContentFrame.Navigate( launchPage.Item, launchPage.Value );
+        ContentFrame.Navigate( launchPage.PageType, launchPage.PageTag );
     }
 
     private void OpenUrl( string url )

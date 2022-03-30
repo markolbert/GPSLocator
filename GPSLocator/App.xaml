@@ -12,8 +12,6 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
 
-            <local:AppViewModel x:Key="AppViewModel"/>
-
             <local:NullToHiddenConverter x:Key="NullToHiddenConverter"/>
             <local:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
             <local:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"/>

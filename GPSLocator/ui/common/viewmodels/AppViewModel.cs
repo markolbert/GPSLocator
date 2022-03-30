@@ -10,22 +10,18 @@ namespace J4JSoftware.GPSLocator;
 
 public class AppViewModel : ObservableObject
 {
-    public static ResourceNames ResourceNames { get; } = new();
-
-    public static List<SingleSelectableItem> PageNames { get; } = new()
+    public static List<SelectablePage> TargetPages { get; } = new()
     {
-        new SingleSelectableItem( null, ResourceNames.NullPageName ),
-        new SingleSelectableItem( typeof( LastKnownPage ),
+        new SelectablePage( null, ResourceNames.NullPageName ),
+        new SelectablePage( typeof( LastKnownPage ),
                                   ResourceNames.LastKnownPageName,
                                   "Last Known Location" ),
-        new SingleSelectableItem( typeof( HistoryPage ), ResourceNames.HistoryPageName, "History" ),
-        new SingleSelectableItem( typeof( MessagingPage ), ResourceNames.MessagingPageName, "Messaging" ),
-        new SingleSelectableItem(typeof(AboutPage), ResourceNames.AboutPageName, "About"),
-        new SingleSelectableItem( typeof( LogViewerPage ), ResourceNames.LogViewerPageName, "Log Viewer" ),
-        new SingleSelectableItem(typeof(SettingsPage), ResourceNames.SettingsPageName, "Settings")
+        new SelectablePage( typeof( HistoryPage ), ResourceNames.HistoryPageName, "History" ),
+        new SelectablePage( typeof( MessagingPage ), ResourceNames.MessagingPageName, "Messaging" ),
+        new SelectablePage(typeof(AboutPage), ResourceNames.AboutPageName, "About"),
+        new SelectablePage( typeof( LogViewerPage ), ResourceNames.LogViewerPageName, "Log Viewer" ),
+        new SelectablePage(typeof(SettingsPage), ResourceNames.SettingsPageName, "Settings")
     };
-
-    private readonly List<NetEventArgs> _netEvents = new();
 
     private string? _statusMesg;
     private Style? _statusStyle;
@@ -134,10 +130,10 @@ public class AppViewModel : ObservableObject
         StatusMessageStyle = args.Importance switch
         {
             MessageLevel.Important =>
-                App.Current.Resources[AppViewModel.ResourceNames.ImportantStyleKey] as Style,
+                App.Current.Resources[ResourceNames.ImportantStyleKey] as Style,
             MessageLevel.Urgent =>
-                App.Current.Resources[AppViewModel.ResourceNames.UrgentStyleKey] as Style,
-            _ => App.Current.Resources[AppViewModel.ResourceNames.NormalStyleKey] as Style
+                App.Current.Resources[ResourceNames.UrgentStyleKey] as Style,
+            _ => App.Current.Resources[ResourceNames.NormalStyleKey] as Style
         };
 
         if( !args.HasProgressBar )

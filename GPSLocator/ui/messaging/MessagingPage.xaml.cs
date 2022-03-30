@@ -12,8 +12,6 @@ namespace J4JSoftware.GPSLocator;
 /// </summary>
 public sealed partial class MessagingPage : Page
 {
-    public const string PageName = "Messaging";
-
     public MessagingPage()
     {
         this.InitializeComponent();

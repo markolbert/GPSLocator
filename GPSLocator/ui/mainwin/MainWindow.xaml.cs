@@ -32,7 +32,7 @@ public sealed partial class MainWindow : Window
     {
         this.InitializeComponent();
 
-        ViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
+        ViewModel = App.Current.Host.Services.GetRequiredService<AppViewModel>();
 
         Title = "GPS Locator";
 

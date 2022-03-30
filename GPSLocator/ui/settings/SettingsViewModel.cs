@@ -35,17 +35,18 @@ public class SettingsViewModel : ObservableObject
     private string? _defaultCallback;
     private int _defaultDaysBack;
     private bool _validCallback;
-    private SingleSelectableItem? _launchPage;
+    private SelectablePage? _launchPage;
     private bool _validated;
     private bool _deviceConfigChanged;
     private bool _otherConfigChanged;
 
     public SettingsViewModel(
+        AppViewModel appViewModel,
         IJ4JHost host,
         IJ4JLogger logger
     )
     {
-        _appViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
+        _appViewModel = appViewModel;
         _statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
         _userConfigPath = host.UserConfigurationFiles.First();
 
@@ -124,7 +125,7 @@ public class SettingsViewModel : ObservableObject
         _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
         _appViewModel.Configuration.DefaultCallback = DefaultCallback;
         _appViewModel.Configuration.DefaultDaysBack = DefaultDaysBack;
-        _appViewModel.Configuration.LaunchPage = LaunchPage?.Value;
+        _appViewModel.Configuration.LaunchPage = LaunchPage?.PageTag;
     }
 
     public AsyncRelayCommand ValidateCommand { get; }
@@ -202,8 +203,8 @@ public class SettingsViewModel : ObservableObject
         MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
         DefaultCallback = _appViewModel.Configuration.DefaultCallback;
         DefaultDaysBack = _appViewModel.Configuration.DefaultDaysBack;
-        LaunchPage = AppViewModel.PageNames
-                                 .FirstOrDefault( x => x.Value.Equals( _appViewModel.Configuration.LaunchPage,
+        LaunchPage = AppViewModel.TargetPages
+                                 .FirstOrDefault( x => x.PageTag.Equals( _appViewModel.Configuration.LaunchPage,
                                                                        StringComparison.OrdinalIgnoreCase ) );
 
         DeviceConfigChanged = true;
@@ -349,13 +350,13 @@ public class SettingsViewModel : ObservableObject
         }
     }
 
-    public SingleSelectableItem? LaunchPage
+    public SelectablePage? LaunchPage
     {
         get => _launchPage;
 
         set
         {
-            if ( value != null && value.Value.Equals( ResourceNames.NullPageName, StringComparison.OrdinalIgnoreCase ) )
+            if ( value != null && value.PageTag.Equals( ResourceNames.NullPageName, StringComparison.OrdinalIgnoreCase ) )
                 value = null;
 
             OtherConfigChanged = true;

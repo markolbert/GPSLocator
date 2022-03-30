@@ -13,9 +13,10 @@ public class LogViewerViewModel : BaseViewModel
     private LogEventLevel _minLevel = LogEventLevel.Verbose;
 
     public LogViewerViewModel(
+        AppViewModel appViewModel,
         IJ4JLogger logger
     )
-        : base( logger )
+        : base( appViewModel, logger )
     {
         FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( AppViewModel.LogEvents );
 

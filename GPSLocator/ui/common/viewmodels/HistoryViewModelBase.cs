@@ -13,9 +13,10 @@ public class HistoryViewModelBase : LocationMapViewModel
     private double _daysBack = 7;
 
     protected HistoryViewModelBase(
+        AppViewModel appViewModel,
         IJ4JLogger logger
     )
-        : base(logger)
+        : base( appViewModel, logger)
     {
         var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds( 1 ) };
         timer.Tick += Timer_Tick;

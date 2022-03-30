@@ -34,18 +34,18 @@
                 <NavigationView.MenuItems>
 
                     <NavigationViewItem Content="Last Known"
-                                        Tag="{Binding ResourceNames.LastKnownPageName, Source={StaticResource AppViewModel}}"
-                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        Tag="{x:Bind local:ResourceNames.LastKnownPageName}"
+                                        IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
                                         ToolTipService.ToolTip="shows last known location on a map"/>
 
                     <NavigationViewItem Content="History"
-                                        Tag="{Binding ResourceNames.HistoryPageName, Source={StaticResource AppViewModel}}"
-                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        Tag="{x:Bind local:ResourceNames.HistoryPageName}"
+                                        IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
                                         ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
                     <NavigationViewItem Content="Messaging"
-                                        Tag="{Binding ResourceNames.MessagingPageName, Source={StaticResource AppViewModel}}"
-                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        Tag="{x:Bind local:ResourceNames.MessagingPageName}"
+                                        IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
                                         ToolTipService.ToolTip="shows messages within the last 31 days"/>
 
                 </NavigationView.MenuItems>
@@ -53,15 +53,14 @@
                 <NavigationView.FooterMenuItems>
                     
                     <NavigationViewItem Icon="Help"
-                                        Tag="{Binding ResourceNames.HelpTag, Source={StaticResource AppViewModel}}"/>
+                                        Tag="{x:Bind local:ResourceNames.HelpTag}"/>
 
                     <NavigationViewItem Content="About"
-                                        Tag="{Binding ResourceNames.AboutPageName, Source={StaticResource AppViewModel}}"
+                                        Tag="{x:Bind local:ResourceNames.AboutPageName}"
                                         ToolTipService.ToolTip="shows information about the application"/>
 
                     <NavigationViewItem Content="Log Viewer"
-                                        Tag="{Binding ResourceNames.LogViewerPageName, Source={StaticResource AppViewModel}}"
-                                        IsEnabled="{Binding Configuration.IsValid, Source={StaticResource AppViewModel} }"
+                                        Tag="{x:Bind local:ResourceNames.LogViewerPageName}"
                                         ToolTipService.ToolTip="shows log messages"/>
 
                 </NavigationView.FooterMenuItems>
@@ -74,20 +73,20 @@
 
         <ProgressBar Grid.Row="1" Grid.Column="0"
                      x:Name="Determinant"
-                     Visibility="{x:Bind ViewModel.AppViewModel.DeterminateVisibility}"
+                     Visibility="{x:Bind ViewModel.DeterminateVisibility}"
                      IsIndeterminate="False"
-                     Maximum="{x:Bind ViewModel.AppViewModel.ProgressBarMaximum}"
-                     Value="{x:Bind ViewModel.AppViewModel.ProgressBarValue}"/>
+                     Maximum="{x:Bind ViewModel.ProgressBarMaximum}"
+                     Value="{x:Bind ViewModel.ProgressBarValue}"/>
 
         <ProgressBar Grid.Row="1" Grid.Column="0"
                      x:Name="Indeterminate"
-                     Visibility="{x:Bind ViewModel.AppViewModel.IndeterminateVisibility}"
+                     Visibility="{x:Bind ViewModel.IndeterminateVisibility}"
                      IsIndeterminate="true"/>
 
         <TextBlock Grid.Row="1" Grid.Column="1"
                    HorizontalAlignment="Right"
-                   Text="{x:Bind ViewModel.AppViewModel.StatusMessage}"
-                   Style="{x:Bind ViewModel.AppViewModel.StatusMessageStyle}"/>
+                   Text="{x:Bind ViewModel.StatusMessage}"
+                   Style="{x:Bind ViewModel.StatusMessageStyle}"/>
 
     </Grid>
 

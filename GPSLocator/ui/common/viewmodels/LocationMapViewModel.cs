@@ -12,9 +12,10 @@ public class LocationMapViewModel : BaseViewModel
     private MapControl.Location? _mapCenter;
 
     protected LocationMapViewModel(
+        AppViewModel appViewModel,
         IJ4JLogger logger
     )
-        : base( logger )
+        : base( appViewModel, logger )
     {
         RefreshCommand = new RelayCommand(RefreshHandler);
         IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);

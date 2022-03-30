@@ -21,14 +21,17 @@ public class LaunchViewModel : ObservableObject
     private string? _mesg;
     private Color _mesgColor = Colors.Gold;
 
-    public LaunchViewModel( IJ4JLogger logger )
+    public LaunchViewModel( 
+        AppViewModel appViewModel,
+        IJ4JLogger logger 
+        )
     {
         _dQueue = DispatcherQueue.GetForCurrentThread();
 
         _logger = logger;
         _logger.SetLoggedType( GetType() );
 
-        _appViewModel = (App.Current.Resources["AppViewModel"] as AppViewModel)!;
+        _appViewModel = appViewModel;
     }
 
     public void OnPageActivated()
