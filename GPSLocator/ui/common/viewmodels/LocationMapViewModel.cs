@@ -13,9 +13,10 @@ public class LocationMapViewModel : BaseViewModel
 
     protected LocationMapViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, logger )
+        : base( appViewModel, statusMessages, logger )
     {
         RefreshCommand = new RelayCommand(RefreshHandler);
         IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);

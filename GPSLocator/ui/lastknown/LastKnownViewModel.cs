@@ -9,9 +9,10 @@ public class LastKnownViewModel : LocationMapViewModel
 {
     public LastKnownViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, logger )
+        : base( appViewModel, statusMessages, logger )
     {
         Messenger.Send( new MapViewModelMessage( this ), "primary" );
     }

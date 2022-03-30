@@ -18,9 +18,10 @@ public class MessagingViewModel :SelectablePointViewModel
 
     public MessagingViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger 
     )
-        : base( appViewModel, logger )
+        : base( appViewModel, statusMessages, logger )
     {
         SendMessageCommand = new RelayCommand( SendMessageHandler );
 

@@ -16,15 +16,15 @@ public class AppViewModel : ObservableObject
     private double _progressBarValue;
     private Visibility _indeterminateVisibility = Visibility.Collapsed;
 
-    public AppViewModel()
+    public AppViewModel(
+        StatusMessage.StatusMessages statusMessages,
+        IJ4JLogger logger
+        )
     {
         Configuration = App.Current.Host.Services.GetRequiredService<AppConfig>();
         Configuration.PropertyChanged += ConfigurationOnPropertyChanged;
 
-        var logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
         logger.LogEvent += Logger_LogEvent;
-
-        var statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
         statusMessages.DisplayMessage += OnDisplayMessage;
     }
 

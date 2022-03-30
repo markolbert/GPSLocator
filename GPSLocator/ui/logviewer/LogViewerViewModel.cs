@@ -14,9 +14,10 @@ public class LogViewerViewModel : BaseViewModel
 
     public LogViewerViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, logger )
+        : base( appViewModel, statusMessages, logger )
     {
         FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( AppViewModel.LogEvents );
 

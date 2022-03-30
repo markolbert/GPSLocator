@@ -18,14 +18,16 @@ public class BaseViewModel : ObservableValidator
 
     protected BaseViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : this( appViewModel, WeakReferenceMessenger.Default, logger )
+        : this( appViewModel, statusMessages, WeakReferenceMessenger.Default, logger )
     {
     }
 
     protected BaseViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IMessenger messenger,
         IJ4JLogger logger
     )
@@ -37,7 +39,7 @@ public class BaseViewModel : ObservableValidator
         IsActive = true;
 
         AppViewModel = appViewModel;
-        StatusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
+        StatusMessages = statusMessages;
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );

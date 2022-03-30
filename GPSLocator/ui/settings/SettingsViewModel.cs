@@ -22,6 +22,7 @@ public class SettingsViewModel : ObservableObject
     private readonly AppViewModel _appViewModel;
     private readonly string _userConfigPath;
     private readonly IJ4JLogger _logger;
+    private readonly IJ4JProtection _protector;
     private readonly DispatcherQueue _dQueue;
     private readonly StatusMessage.StatusMessages _statusMessages;
 
@@ -42,13 +43,16 @@ public class SettingsViewModel : ObservableObject
 
     public SettingsViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
+        IJ4JProtection protector,
         IJ4JHost host,
         IJ4JLogger logger
     )
     {
         _appViewModel = appViewModel;
-        _statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
+        _statusMessages = statusMessages;
         _userConfigPath = host.UserConfigurationFiles.First();
+        _protector = protector;
 
         _logger = logger;
         _logger.SetLoggedType( GetType() );
@@ -142,8 +146,7 @@ public class SettingsViewModel : ObservableObject
 
         testConfig.Validation += OnValidationProgress;
 
-        var protector = App.Current.Host.Services.GetRequiredService<IJ4JProtection>();
-        testConfig.Initialize( protector, _logger );
+        testConfig.Initialize( _protector, _logger );
 
         Validated = await testConfig.ValidateAsync();
 

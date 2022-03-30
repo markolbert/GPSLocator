@@ -14,9 +14,10 @@ public class HistoryViewModelBase : LocationMapViewModel
 
     protected HistoryViewModelBase(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, logger)
+        : base( appViewModel, statusMessages, logger)
     {
         var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds( 1 ) };
         timer.Tick += Timer_Tick;

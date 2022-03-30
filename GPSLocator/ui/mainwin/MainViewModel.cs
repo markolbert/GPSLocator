@@ -6,9 +6,10 @@ public class MainViewModel : BaseViewModel
 {
     public MainViewModel(
         AppViewModel appViewModel,
+        StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger 
     )
-        : base( appViewModel, logger )
+        : base( appViewModel, statusMessages, logger )
     {
         IsActive = true;
     }
