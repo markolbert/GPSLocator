@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using J4JSoftware.GPSLocator.Annotations;
 using J4JSoftware.Logging;
 
 namespace J4JSoftware.GPSLocator;

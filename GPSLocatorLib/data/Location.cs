@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using J4JSoftware.GPSLocator.Annotations;
 
 namespace J4JSoftware.GPSLocator;
 
@@ -132,7 +131,6 @@ public class Location : ILocation
     public string TextMessage { get; set; } = string.Empty;
     public List<string> Recipients { get; set; } = new();
 
-    [NotifyPropertyChangedInvocator ]
     protected virtual void OnPropertyChanged( [ CallerMemberName ] string? propertyName = null )
     {
         PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );

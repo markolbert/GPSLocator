@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using J4JSoftware.DependencyInjection;
-using J4JSoftware.GPSLocator.Annotations;
 using J4JSoftware.Logging;
 
 namespace J4JSoftware.GPSLocator;
@@ -173,7 +172,6 @@ public class DeviceConfig : INotifyPropertyChanged
         return retVal;
     }
 
-    [ NotifyPropertyChangedInvocator ]
     protected virtual void OnPropertyChanged( [ CallerMemberName ] string? propertyName = null ) =>
         PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
 

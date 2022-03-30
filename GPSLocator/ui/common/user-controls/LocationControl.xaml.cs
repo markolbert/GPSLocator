@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using J4JSoftware.GPSLocator.Annotations;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,7 +30,6 @@ public sealed partial class LocationControl : UserControl, INotifyPropertyChange
         OnPropertyChanged( nameof( ViewModel ) );
     }
 
-    [ NotifyPropertyChangedInvocator ]
     private void OnPropertyChanged( [ CallerMemberName ] string? propertyName = null )
     {
         PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
