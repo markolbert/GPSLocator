@@ -75,9 +75,8 @@
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       ItemsSource="{x:Bind ViewModel.AllPoints}"
-                      SelectedItem="{x:Bind ViewModel.SelectedPoint}"
+                      SelectedItem="{x:Bind ViewModel.PointOnMap, Mode=TwoWay}"
                       Tapped="LocationsGrid_OnTapped">
-
 
                 <FlyoutBase.AttachedFlyout>
                     <Flyout>
@@ -96,12 +95,12 @@
                             <TextBlock Grid.Row="0" Grid.Column="0">Message</TextBlock>
 
                             <TextBlock Grid.Row="0" Grid.Column="1"
-                                       Text="{x:Bind ViewModel.SelectedPoint.DeviceLocation.TextMessage}"/>
+                                       Text="{x:Bind ViewModel.PointOnMap.DeviceLocation.TextMessage}"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0">Recipients</TextBlock>
 
                             <ListView Grid.Row="1" Grid.Column="1"
-                                      ItemsSource="{x:Bind ViewModel.SelectedPoint.DeviceLocation.Recipients}">
+                                      ItemsSource="{x:Bind ViewModel.PointOnMap.DeviceLocation.Recipients}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding}"/>
