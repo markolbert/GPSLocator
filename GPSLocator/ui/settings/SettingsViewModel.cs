@@ -203,7 +203,7 @@ public class SettingsViewModel : ObservableObject
         MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
         DefaultCallback = _appViewModel.Configuration.DefaultCallback;
         DefaultDaysBack = _appViewModel.Configuration.DefaultDaysBack;
-        LaunchPage = AppViewModel.TargetPages
+        LaunchPage = NavigationTargets.Pages
                                  .FirstOrDefault( x => x.PageTag.Equals( _appViewModel.Configuration.LaunchPage,
                                                                        StringComparison.OrdinalIgnoreCase ) );
 

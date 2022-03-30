@@ -71,7 +71,7 @@ public sealed partial class MainPage : Page
         }
 
         var newPage =
-            AppViewModel.TargetPages.FirstOrDefault(x => x.PageTag.Equals(tag, StringComparison.OrdinalIgnoreCase));
+            NavigationTargets.Pages.FirstOrDefault(x => x.PageTag.Equals(tag, StringComparison.OrdinalIgnoreCase));
 
         if (newPage == null)
             return;
@@ -87,7 +87,7 @@ public sealed partial class MainPage : Page
             return;
         }
 
-        var launchPage = AppViewModel.TargetPages
+        var launchPage = NavigationTargets.Pages
                                      .FirstOrDefault( x => x.PageTag.Equals(
                                                           ViewModel.Configuration.LaunchPage,
                                                           StringComparison.OrdinalIgnoreCase ) );
