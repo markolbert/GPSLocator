@@ -33,7 +33,7 @@ public sealed partial class HistoryPage : Page
 
     public HistoryViewModel ViewModel { get; }
 
-    private async void OnLoaded( object sender, RoutedEventArgs e )
+    private void OnLoaded( object sender, RoutedEventArgs e )
     {
         ViewModel.OnPageActivated();
     }

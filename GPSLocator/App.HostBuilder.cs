@@ -18,7 +18,7 @@ public partial class App
 {
     private void InitializeLogger( IConfiguration config, J4JLoggerConfiguration loggerConfig )
     {
-        var appPath = Path.GetDirectoryName( Assembly.GetEntryAssembly()?.Location );
+        var appPath = Path.GetDirectoryName( AppContext.BaseDirectory );
 
         if( string.IsNullOrEmpty( appPath ) )
         {

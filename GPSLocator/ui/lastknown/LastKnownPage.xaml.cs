@@ -25,7 +25,7 @@ public sealed partial class LastKnownPage : Page
 
     private LastKnownViewModel ViewModel { get; }
 
-    private async void OnLoaded( object sender, RoutedEventArgs e )
+    private void OnLoaded( object sender, RoutedEventArgs e )
     {
         ViewModel.OnPageActivated();
     }

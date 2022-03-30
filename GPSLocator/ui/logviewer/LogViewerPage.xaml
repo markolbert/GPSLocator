@@ -34,7 +34,7 @@
             <ListView ItemsSource="{x:Bind ViewModel.FilteredLogEvents}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:IndexedLogEvent">
-                        <TextBlock Text="{x:Bind Message}"/>
+                        <TextBlock Text="{x:Bind Message, Mode=OneTime}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
