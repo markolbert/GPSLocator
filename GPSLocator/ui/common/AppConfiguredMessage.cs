@@ -1,10 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace J4JSoftware.GPSLocator;
 
-namespace J4JSoftware.GPSLocator
-{
-    public record AppConfiguredMessage( bool ConfigurationIsValid );
-}
+public record AppConfiguredMessage( bool ConfigurationIsValid );

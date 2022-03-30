@@ -5,29 +5,28 @@ using Microsoft.Extensions.DependencyInjection;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace J4JSoftware.GPSLocator
+namespace J4JSoftware.GPSLocator;
+
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class SettingsPage : Page
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class SettingsPage : Page
+    public const string PageName = "Settings";
+
+    public SettingsPage()
     {
-        public const string PageName = "Settings";
+        this.InitializeComponent();
 
-        public SettingsPage()
-        {
-            this.InitializeComponent();
+        ViewModel = App.Current.Host.Services.GetRequiredService<SettingsViewModel>();
 
-            ViewModel = App.Current.Host.Services.GetRequiredService<SettingsViewModel>();
+        this.Loaded += SettingsPage_Loaded;
+    }
 
-            this.Loaded += SettingsPage_Loaded;
-        }
+    private SettingsViewModel ViewModel { get; }
 
-        private SettingsViewModel ViewModel { get; }
-
-        private void SettingsPage_Loaded( object sender, RoutedEventArgs e )
-        {
-            ViewModel.OnLoaded();
-        }
+    private void SettingsPage_Loaded( object sender, RoutedEventArgs e )
+    {
+        ViewModel.OnLoaded();
     }
 }

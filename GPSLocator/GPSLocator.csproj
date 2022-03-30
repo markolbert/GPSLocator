@@ -212,13 +212,13 @@
 		<Page Update="ui\messaging\MessagingPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
-		<Page Update="ui\common\OpenStreetMapControl.xaml">
+		<Page Update="ui\common\user-controls\OpenStreetMapControl.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Update="ui\logviewer\LogViewerPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
-		<Page Update="ui\common\LocationControl.xaml">
+		<Page Update="ui\common\user-controls\LocationControl.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Update="ui\history\HistoryPage.xaml">

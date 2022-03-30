@@ -1,9 +1,8 @@
-﻿namespace J4JSoftware.GPSLocator
+﻿namespace J4JSoftware.GPSLocator;
+
+public enum MessageLevel
 {
-    public enum MessageLevel
-    {
-        Normal,
-        Important,
-        Urgent
-    }
+    Normal,
+    Important,
+    Urgent
 }

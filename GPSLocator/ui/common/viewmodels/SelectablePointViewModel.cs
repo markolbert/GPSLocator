@@ -1,40 +1,45 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using J4JSoftware.Logging;
-using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
+using MapControl;
 
-namespace J4JSoftware.GPSLocator
+namespace J4JSoftware.GPSLocator;
+
+public class SelectablePointViewModel : HistoryViewModelBase
 {
-    public class SelectablePointViewModel : HistoryViewModelBase
-    {
-        private MapPoint? _selectedPoint;
+    private MapPoint? _pointOnMap;
 
-        public SelectablePointViewModel(
-            IJ4JLogger logger
-        )
+    public SelectablePointViewModel(
+        IJ4JLogger logger
+    )
         : base(logger)
+    {
+        Messenger.Send(new MapViewModelMessage(this), "primary");
+    }
+
+    public MapPoint? PointOnMap
+    {
+        get => _pointOnMap;
+
+        set
         {
-        }
+            if (_pointOnMap?.DeviceLocation.Coordinate.Latitude == 0
+             && _pointOnMap?.DeviceLocation.Coordinate.Longitude == 0)
+                value = null;
 
-        public MapPoint? SelectedPoint
-        {
-            get => _selectedPoint;
+            SetProperty(ref _pointOnMap, value);
+            DisplayedPoints.Clear();
 
-            set
-            {
-                if (_selectedPoint?.DeviceLocation.Coordinate.Latitude != 0
-                && _selectedPoint?.DeviceLocation.Coordinate.Longitude != 0)
-                    value = null;
-
-                SetProperty(ref _selectedPoint, value);
-                DisplayedPoints.Clear();
-
-                if( value != null )
-                    DisplayedPoints.Add( value );
-            }
+            if (value != null)
+                DisplayedPoints.Add(value);
         }
     }
+
+    protected override void OnMapChanged(MapControl.Location? center, BoundingBox? boundingBox)
+    {
+        base.OnMapChanged(center, boundingBox);
+
+        MapCenter = DisplayedPoints.Any() ? center : null;
+        MapBoundingBox = DisplayedPoints.Any() ? boundingBox : null;
+    }
+
 }

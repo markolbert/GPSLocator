@@ -5,29 +5,28 @@ using Microsoft.Extensions.DependencyInjection;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace J4JSoftware.GPSLocator
+namespace J4JSoftware.GPSLocator;
+
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class LastKnownPage : Page
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class LastKnownPage : Page
+    public const string PageName = "LastKnown";
+
+    public LastKnownPage()
     {
-        public const string PageName = "LastKnown";
+        this.InitializeComponent();
 
-        public LastKnownPage()
-        {
-            this.InitializeComponent();
+        ViewModel = App.Current.Host.Services.GetRequiredService<LastKnownViewModel>();
 
-            ViewModel = App.Current.Host.Services.GetRequiredService<LastKnownViewModel>();
+        Loaded += OnLoaded;
+    }
 
-            Loaded += OnLoaded;
-        }
+    private LastKnownViewModel ViewModel { get; }
 
-        private LastKnownViewModel ViewModel { get; }
-
-        private async void OnLoaded( object sender, RoutedEventArgs e )
-        {
-            ViewModel.OnPageActivated();
-        }
+    private async void OnLoaded( object sender, RoutedEventArgs e )
+    {
+        ViewModel.OnPageActivated();
     }
 }

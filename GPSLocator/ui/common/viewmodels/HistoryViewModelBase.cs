@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using J4JSoftware.Logging;
-using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSLocator;

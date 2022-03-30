@@ -13,7 +13,6 @@ using Microsoft.Toolkit.Mvvm.Input;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
 using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +6,6 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Mvvm.Messaging.Messages;
 using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSLocator;
 

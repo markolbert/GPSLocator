@@ -1,112 +1,107 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Threading.Tasks;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.Input;
 
-namespace J4JSoftware.GPSLocator
+namespace J4JSoftware.GPSLocator;
+
+public class LocationMapViewModel : BaseViewModel
 {
-    public class LocationMapViewModel : BaseViewModel
+    private int _zoomLevel = 17;
+    private bool _refreshEnabled;
+    private MapControl.Location? _mapCenter;
+
+    protected LocationMapViewModel(
+        IJ4JLogger logger
+    )
+        : base( logger )
     {
-        private int _zoomLevel = 17;
-        private bool _refreshEnabled;
-        private MapControl.Location? _mapCenter;
+        RefreshCommand = new RelayCommand(RefreshHandler);
+        IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);
+        DecreaseZoomCommand = new RelayCommand(DecreaseZoomHandler);
 
-        protected LocationMapViewModel(
-            IJ4JLogger logger
-        )
-            : base( logger )
+        DisplayedPoints.MapChanged += DisplayedPointsOnMapChanged;
+    }
+
+    private void DisplayedPointsOnMapChanged( object? sender, MapChangedEventArgs e )
+    {
+        OnMapChanged(e.Center, e.BoundingBox);
+    }
+
+    protected virtual void OnMapChanged( MapControl.Location? center, MapControl.BoundingBox? boundingBox )
+    {
+    }
+
+    public RelayCommand RefreshCommand { get; }
+
+    protected virtual void RefreshHandler()
+    {
+    }
+
+    public bool RefreshEnabled
+    {
+        get => _refreshEnabled;
+        set => SetProperty(ref _refreshEnabled, value);
+    }
+
+    public ObservableCollection<MapPoint> AllPoints { get; } = new();
+    public DisplayedPoints DisplayedPoints { get; } = new();
+
+    protected MapPoint AddLocation( ILocation location )
+    {
+        var mapPoint = new MapPoint( location );
+        AllPoints.Add( mapPoint );
+
+        return mapPoint;
+    }
+
+    protected void AddLocations( IEnumerable<ILocation> locations, bool clearList = true )
+    {
+        if( clearList )
         {
-            RefreshCommand = new RelayCommand(RefreshHandler);
-            IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);
-            DecreaseZoomCommand = new RelayCommand(DecreaseZoomHandler);
-
-            DisplayedPoints.MapChanged += DisplayedPointsOnMapChanged;
+            DisplayedPoints.Clear();
+            AllPoints.Clear();
         }
 
-        private void DisplayedPointsOnMapChanged( object? sender, MapChangedEventArgs e )
+        foreach( var location in locations )
         {
-            OnMapChanged(e.Center, e.BoundingBox);
+            AddLocation( location );
         }
+    }
 
-        protected virtual void OnMapChanged( MapControl.Location? center, MapControl.BoundingBox? boundingBox )
-        {
-        }
+    protected virtual void ClearDisplayedPoints() => DisplayedPoints.Clear();
 
-        public RelayCommand RefreshCommand { get; }
+    public int ZoomLevel
+    {
+        get => _zoomLevel;
+        set => SetProperty(ref _zoomLevel, value);
+    }
 
-        protected virtual void RefreshHandler()
-        {
-        }
+    public MapControl.Location? MapCenter
+    {
+        get => _mapCenter;
+        set => SetProperty( ref _mapCenter, value );
+    }
 
-        public bool RefreshEnabled
-        {
-            get => _refreshEnabled;
-            set => SetProperty(ref _refreshEnabled, value);
-        }
+    public MapControl.BoundingBox? MapBoundingBox { get; protected set; }
 
-        public ObservableCollection<MapPoint> AllPoints { get; } = new();
-        public DisplayedPoints DisplayedPoints { get; } = new();
+    public RelayCommand IncreaseZoomCommand { get; }
 
-        protected MapPoint AddLocation( ILocation location )
-        {
-            var mapPoint = new MapPoint( location );
-            AllPoints.Add( mapPoint );
+    private void IncreaseZoomHandler()
+    {
+        if (_zoomLevel >= 21)
+            return;
 
-            return mapPoint;
-        }
+        ZoomLevel++;
+    }
 
-        protected void AddLocations( IEnumerable<ILocation> locations, bool clearList = true )
-        {
-            if( clearList )
-            {
-                DisplayedPoints.Clear();
-                AllPoints.Clear();
-            }
+    public RelayCommand DecreaseZoomCommand { get; }
 
-            foreach( var location in locations )
-            {
-                AddLocation( location );
-            }
-        }
+    private void DecreaseZoomHandler()
+    {
+        if (_zoomLevel <= 2)
+            return;
 
-        protected virtual void ClearDisplayedPoints() => DisplayedPoints.Clear();
-
-        public int ZoomLevel
-        {
-            get => _zoomLevel;
-            set => SetProperty(ref _zoomLevel, value);
-        }
-
-        public MapControl.Location? MapCenter
-        {
-            get => _mapCenter;
-            set => SetProperty( ref _mapCenter, value );
-        }
-
-        public MapControl.BoundingBox? MapBoundingBox { get; protected set; }
-
-        public RelayCommand IncreaseZoomCommand { get; }
-
-        private void IncreaseZoomHandler()
-        {
-            if (_zoomLevel >= 21)
-                return;
-
-            ZoomLevel++;
-        }
-
-        public RelayCommand DecreaseZoomCommand { get; }
-
-        private void DecreaseZoomHandler()
-        {
-            if (_zoomLevel <= 2)
-                return;
-
-            ZoomLevel--;
-        }
+        ZoomLevel--;
     }
 }

@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ABI.Windows.System;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
-using WinRT.Interop;
 
 namespace J4JSoftware.GPSLocator;
 
 public class MessagingViewModel :SelectablePointViewModel
 {
-    private MapPoint? _selectedPoint;
     private string? _messageToSend;
     private string? _callback;
     private bool _callbackIsValid;
