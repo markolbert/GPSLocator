@@ -34,17 +34,17 @@
                 <NavigationView.MenuItems>
 
                     <NavigationViewItem Content="Last Known"
-                                        Tag="{x:Bind local:ResourceNames.LastKnownPageName}"
+                                        Tag="{x:Bind local:ResourceNames.LastKnownPageName, Mode=OneTime}"
                                         IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
                                         ToolTipService.ToolTip="shows last known location on a map"/>
 
                     <NavigationViewItem Content="History"
-                                        Tag="{x:Bind local:ResourceNames.HistoryPageName}"
+                                        Tag="{x:Bind local:ResourceNames.HistoryPageName, Mode=OneTime}"
                                         IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
                                         ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
                     <NavigationViewItem Content="Messaging"
-                                        Tag="{x:Bind local:ResourceNames.MessagingPageName}"
+                                        Tag="{x:Bind local:ResourceNames.MessagingPageName, Mode=OneTime}"
                                         IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
                                         ToolTipService.ToolTip="shows messages within the last 31 days"/>
 
@@ -53,14 +53,14 @@
                 <NavigationView.FooterMenuItems>
                     
                     <NavigationViewItem Icon="Help"
-                                        Tag="{x:Bind local:ResourceNames.HelpTag}"/>
+                                        Tag="{x:Bind local:ResourceNames.HelpTag, Mode=OneTime}"/>
 
                     <NavigationViewItem Content="About"
-                                        Tag="{x:Bind local:ResourceNames.AboutPageName}"
+                                        Tag="{x:Bind local:ResourceNames.AboutPageName, Mode=OneTime}"
                                         ToolTipService.ToolTip="shows information about the application"/>
 
                     <NavigationViewItem Content="Log Viewer"
-                                        Tag="{x:Bind local:ResourceNames.LogViewerPageName}"
+                                        Tag="{x:Bind local:ResourceNames.LogViewerPageName, Mode=OneTime}"
                                         ToolTipService.ToolTip="shows log messages"/>
 
                 </NavigationView.FooterMenuItems>
