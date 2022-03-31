@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using Microsoft.UI.Xaml;
 

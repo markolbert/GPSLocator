@@ -1,4 +1,5 @@
-﻿using J4JSoftware.Logging;
+﻿using J4JSoftware.GPSCommon;
+using J4JSoftware.Logging;
 
 namespace J4JSoftware.GPSLocator;
 

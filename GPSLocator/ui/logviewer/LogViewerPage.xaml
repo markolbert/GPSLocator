@@ -5,6 +5,7 @@
     xmlns:local="using:J4JSoftware.GPSLocator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:J4JSoftware.GPSCommon"
     mc:Ignorable="d"
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -34,7 +35,7 @@
                   ItemsSource="{x:Bind ViewModel.FilteredLogEvents}">
 
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:IndexedLogEvent">
+                <DataTemplate x:DataType="common:IndexedLogEvent">
                     <TextBlock Text="{x:Bind Message, Mode=OneTime}"
                                MaxWidth="500"
                                TextWrapping="Wrap"/>

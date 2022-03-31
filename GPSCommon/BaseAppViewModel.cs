@@ -7,7 +7,8 @@ using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSCommon;
 
-public class AppViewModel : ObservableObject
+public abstract class BaseAppViewModel<TAppConfig> : ObservableObject
+    where TAppConfig : BaseAppConfig
 {
     private string? _statusMesg;
     private Style? _statusStyle;
@@ -16,15 +17,16 @@ public class AppViewModel : ObservableObject
     private double _progressBarValue;
     private Visibility _indeterminateVisibility = Visibility.Collapsed;
 
-    public AppViewModel()
+    protected BaseAppViewModel(
+        TAppConfig appConfig,
+        StatusMessage.StatusMessages statusMessages,
+        IJ4JLogger logger
+        )
     {
-        Configuration = App.Current.Host.Services.GetRequiredService<AppConfig>();
+        Configuration = appConfig;
         Configuration.PropertyChanged += ConfigurationOnPropertyChanged;
 
-        var logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
         logger.LogEvent += Logger_LogEvent;
-
-        var statusMessages = App.Current.Host.Services.GetRequiredService<StatusMessage.StatusMessages>();
         statusMessages.DisplayMessage += OnDisplayMessage;
     }
 
@@ -38,7 +40,7 @@ public class AppViewModel : ObservableObject
         LogEvents.AddLogEvent( e );
     }
 
-    public AppConfig Configuration { get; }
+    public TAppConfig Configuration { get; }
 
     [JsonIgnore]
     public IndexedLogEvent.Collection LogEvents { get; } = new();
@@ -112,15 +114,7 @@ public class AppViewModel : ObservableObject
     private void OnDisplayMessage(object? sender, StatusMessage args )
     {
         StatusMessage = args.Text;
-
-        StatusMessageStyle = args.Importance switch
-        {
-            MessageLevel.Important =>
-                App.Current.Resources[ResourceNames.ImportantStyleKey] as Style,
-            MessageLevel.Urgent =>
-                App.Current.Resources[ResourceNames.UrgentStyleKey] as Style,
-            _ => App.Current.Resources[ResourceNames.NormalStyleKey] as Style
-        };
+        StatusMessageStyle = GetStatusMessageStyle( args );
 
         if( !args.HasProgressBar )
         {
@@ -149,4 +143,6 @@ public class AppViewModel : ObservableObject
                     $"Unsupported {typeof( ProgressBarType )} value '{args.ProgressBarType}'" );
         }
     }
+
+    protected abstract Style? GetStatusMessageStyle( StatusMessage msg );
 }

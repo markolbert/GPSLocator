@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.Input;
 

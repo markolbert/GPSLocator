@@ -5,6 +5,7 @@
     xmlns:local="using:J4JSoftware.GPSLocator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:J4JSoftware.GPSCommon"
     mc:Ignorable="d"
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -136,7 +137,7 @@
                   SelectedItem="{x:Bind ViewModel.PointOnMap, Mode=TwoWay}">
 
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:MapPoint">
+                    <DataTemplate x:DataType="common:MapPoint">
                         <TextBlock Text="{x:Bind DeviceLocation.Timestamp}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>

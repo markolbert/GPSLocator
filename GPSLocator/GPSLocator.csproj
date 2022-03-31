@@ -107,10 +107,14 @@
 
 	<ItemGroup>
 		<Compile Remove="ui\common\converters\**" />
+		<Compile Remove="ui\common\status-messages\**" />
 		<Content Remove="Assets\**\*.*" />
 		<EmbeddedResource Remove="ui\common\converters\**" />
+		<EmbeddedResource Remove="ui\common\status-messages\**" />
 		<None Remove="ui\common\converters\**" />
+		<None Remove="ui\common\status-messages\**" />
 		<Page Remove="ui\common\converters\**" />
+		<Page Remove="ui\common\status-messages\**" />
 		<Content Include="Assets\Badge96.scale-100.png" />
 		<Content Include="Assets\Badge96.scale-125.png" />
 		<Content Include="Assets\Badge96.scale-150.png" />
@@ -248,5 +252,16 @@
 	
 	<ItemGroup>
 	  <PRIResource Remove="ui\common\converters\**" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="config\IndexedLogEvent.cs" />
+	  <Compile Remove="ui\common\DisplayedPoints.cs" />
+	  <Compile Remove="ui\common\MapChangedEventArgs.cs" />
+	  <Compile Remove="ui\common\MapPoint.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PRIResource Remove="ui\common\status-messages\**" />
 	</ItemGroup>
 </Project>

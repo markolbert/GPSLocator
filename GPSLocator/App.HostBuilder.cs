@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Autofac;
 using J4JSoftware.DependencyInjection;
+using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

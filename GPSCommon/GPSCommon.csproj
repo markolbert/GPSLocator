@@ -23,14 +23,12 @@
 	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
 	  <PackageReadmeFile>nuget-common.md</PackageReadmeFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="AppViewModel.cs" />
-  </ItemGroup>
 
   <ItemGroup>
       <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.1" />
       <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
       <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+      <PackageReference Include="XAML.MapControl" Version="7.2.0" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -43,6 +41,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\J4JLogging\J4JLogging\J4JLogging.csproj" />
+	  <ProjectReference Include="..\GPSLocatorLib\GPSLocatorLib.csproj" />
 	</ItemGroup>
 
 </Project>

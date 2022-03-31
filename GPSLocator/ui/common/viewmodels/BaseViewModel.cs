@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
