@@ -1,0 +1,76 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>J4JSoftware.GPSRouter</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x86;x64;arm64</Platforms>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+
+	  <Nullable>enable</Nullable>
+	  <AssemblyName>J4JSoftware.GPSRouter</AssemblyName>
+	  <Authors>Mark A. Olbert</Authors>
+	  <Company>Jump for Joy Software</Company>
+	  <Product>J4JSoftware GPS Router</Product>
+	  <Description>Windows desktop app for creating routes from GPS devices</Description>
+	  <Copyright>© Mark A. Olbert all rights reserved</Copyright>
+	  <PackageDescription>Windows desktop app for creating routes from GPS devices</PackageDescription>
+	  <RepositoryUrl>https://github.com/markolbert/GPSLocator</RepositoryUrl>
+	  <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <PackageIcon>Diego nuspec.png</PackageIcon>
+	  <RepositoryType>git</RepositoryType>
+	  <Version>0.5.0.0</Version>
+	  <AssemblyVersion>0.5.0.0</AssemblyVersion>
+	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
+	  <PackageReadmeFile>nuget-router.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="XAML.MapControl" Version="7.2.0" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <!-- Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+       Tools extension to be activated for this project even if the Windows App SDK Nuget
+       package has not yet been restored -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <None Include="..\..\Media\JumpForJoy\Diego nuspec.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+	  </None>
+	  <None Include="../docs/nuget-router.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\GeoProcessor\GeoProcessor\GeoProcessor.csproj" />
+    <ProjectReference Include="..\GPSCommon\GPSCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ui\common\" />
+  </ItemGroup>
+
+</Project>

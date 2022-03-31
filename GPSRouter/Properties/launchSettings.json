@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GPSRouter (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "GPSRouter (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
