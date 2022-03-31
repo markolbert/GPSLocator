@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSLocator;
 
-public class HistoryViewModelBase : LocationMapViewModel
+public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
 {
     private bool _initialized;
     private DateTimeOffset _endDate;

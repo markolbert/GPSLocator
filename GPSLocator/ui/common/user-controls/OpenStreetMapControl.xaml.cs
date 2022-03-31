@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.Messaging;
+﻿using J4JSoftware.GPSCommon;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 #pragma warning disable CS8618
@@ -22,7 +23,7 @@ public sealed partial class OpenStreetMapControl : UserControl
         ViewModel = message.ViewModel;
     }
 
-    public LocationMapViewModel ViewModel { get; private set; }
+    public LocationMapViewModel<AppConfig> ViewModel { get; private set; }
 
     private void UIElement_OnDoubleTapped( object sender, DoubleTappedRoutedEventArgs e )
     {

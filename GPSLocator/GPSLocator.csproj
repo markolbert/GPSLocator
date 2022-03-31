@@ -261,6 +261,7 @@
 	  <Compile Remove="ui\common\MapChangedEventArgs.cs" />
 	  <Compile Remove="ui\common\MapPoint.cs" />
 	  <Compile Remove="ui\common\viewmodels\BaseViewModel.cs" />
+	  <Compile Remove="ui\common\viewmodels\LocationMapViewModel.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>

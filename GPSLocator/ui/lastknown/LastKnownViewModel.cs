@@ -6,7 +6,7 @@ using MapControl;
 
 namespace J4JSoftware.GPSLocator;
 
-public class LastKnownViewModel : LocationMapViewModel
+public class LastKnownViewModel : LocationMapViewModel<AppConfig>
 {
     public LastKnownViewModel(
         AppViewModel appViewModel,

@@ -1,3 +1,5 @@
-﻿namespace J4JSoftware.GPSLocator;
+﻿using J4JSoftware.GPSCommon;
 
-public record MapViewModelMessage( LocationMapViewModel ViewModel );
+namespace J4JSoftware.GPSLocator;
+
+public record MapViewModelMessage(LocationMapViewModel<AppConfig> ViewModel );
