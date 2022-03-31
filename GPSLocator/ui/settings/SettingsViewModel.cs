@@ -11,6 +11,7 @@ using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.Text.Json.Serialization;
+using J4JSoftware.GPSCommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Serilog.Events;
@@ -93,16 +94,16 @@ public class SettingsViewModel : ObservableObject
         // appConfig stuff in the userConfig file
         var tempConfig = new
         {
-            Website = _appViewModel.Configuration.Website,
-            UserName = _appViewModel.Configuration.UserName,
-            EncryptedPassword = _appViewModel.Configuration.EncryptedPassword,
-            IMEI = _appViewModel.Configuration.IMEI,
-            UseCompassHeadings = _appViewModel.Configuration.UseCompassHeadings,
-            UseImperialUnits = _appViewModel.Configuration.UseImperialUnits,
-            MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel,
-            DefaultCallback = _appViewModel.Configuration.DefaultCallback,
-            DefaultDaysBack = _appViewModel.Configuration.DefaultDaysBack,
-            LaunchPage = _appViewModel.Configuration.LaunchPage,
+            _appViewModel.Configuration.Website,
+            _appViewModel.Configuration.UserName,
+            _appViewModel.Configuration.EncryptedPassword,
+            _appViewModel.Configuration.IMEI,
+            _appViewModel.Configuration.UseCompassHeadings,
+            _appViewModel.Configuration.UseImperialUnits,
+            _appViewModel.Configuration.MinimumLogLevel,
+            _appViewModel.Configuration.DefaultCallback,
+            _appViewModel.Configuration.DefaultDaysBack,
+            _appViewModel.Configuration.LaunchPage,
         };
 
         var text = JsonSerializer.Serialize( tempConfig, jsonOptions );

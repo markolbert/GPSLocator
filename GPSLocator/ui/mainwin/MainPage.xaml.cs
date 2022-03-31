@@ -98,7 +98,7 @@ public sealed partial class MainPage : Page
         ContentFrame.Navigate( launchPage.PageType, launchPage.PageTag );
     }
 
-    private void OpenUrl( string url )
+    private static void OpenUrl( string url )
     {
         try
         {

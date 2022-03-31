@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.Input;
 
@@ -13,7 +14,6 @@ public class MessagingViewModel :SelectablePointViewModel
     private string? _messageToSend;
     private string? _callback;
     private bool _callbackIsValid;
-    private bool _sendAllowed = true;
     private bool _msgTooLong;
 
     public MessagingViewModel(
@@ -52,7 +52,7 @@ public class MessagingViewModel :SelectablePointViewModel
 
                 if( partLength + sb.Length + 1 <= 160 )
                 {
-                    sb.Append( " " );
+                    sb.Append( ' ' );
                     sb.Append( part );
                 }
                 else
@@ -187,8 +187,5 @@ public class MessagingViewModel :SelectablePointViewModel
         }
     }
 
-    public bool SendMessageEnabled
-    {
-        get => _sendAllowed && !string.IsNullOrEmpty(_messageToSend) && CallbackIsValid;
-    }
+    public bool SendMessageEnabled => !string.IsNullOrEmpty(_messageToSend) && CallbackIsValid;
 }
