@@ -9,7 +9,7 @@ using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator;
 
-public class LogViewerViewModel : BaseViewModel
+public class LogViewerViewModel : BaseViewModel<AppConfig>
 {
     private LogEventLevel _minLevel = LogEventLevel.Verbose;
 

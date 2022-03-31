@@ -28,6 +28,7 @@
 		<AssemblyVersion>0.5.0.0</AssemblyVersion>
 		<PackageReleaseNotes>initial release</PackageReleaseNotes>
 		<PackageReadmeFile>nuget-locator.md</PackageReadmeFile>
+
 		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
@@ -259,6 +260,7 @@
 	  <Compile Remove="ui\common\DisplayedPoints.cs" />
 	  <Compile Remove="ui\common\MapChangedEventArgs.cs" />
 	  <Compile Remove="ui\common\MapPoint.cs" />
+	  <Compile Remove="ui\common\viewmodels\BaseViewModel.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>

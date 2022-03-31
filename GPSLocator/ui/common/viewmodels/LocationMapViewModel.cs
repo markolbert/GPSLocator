@@ -6,7 +6,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace J4JSoftware.GPSLocator;
 
-public class LocationMapViewModel : BaseViewModel
+public class LocationMapViewModel : BaseViewModel<AppConfig>
 {
     private int _zoomLevel = 17;
     private bool _refreshEnabled;
