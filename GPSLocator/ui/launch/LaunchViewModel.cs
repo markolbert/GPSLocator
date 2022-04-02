@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI;
@@ -56,25 +57,28 @@ public class LaunchViewModel : ObservableObject
     {
         _dQueue.TryEnqueue( () =>
         {
-            var msg = args switch
+            ( string msg, Color msgColor, bool isError, bool terminate ) = args switch
             {
-                ValidationPhase.Starting => "Validation starting",
-                ValidationPhase.NotValidatable => "Validation failed due to invalid initialization",
-                ValidationPhase.CheckingCredentials => "Checking credentials",
-                ValidationPhase.CheckingImei => "Checking IMEI",
-                ValidationPhase.Succeeded => "Validation succeeded",
-                ValidationPhase.Failed => "Validation failed",
+                ValidationPhase.Starting => ( "Validation starting", Colors.Gold, false, false ),
+                ValidationPhase.NotValidatable => ( "Invalid initialization", Colors.Red, true, true ),
+                ValidationPhase.CheckingCredentials => ( "Checking credentials", Colors.Gold, false, false ),
+                ValidationPhase.CheckingImei => ( "Checking IMEI", Colors.Gold, false, false ),
+                ValidationPhase.Succeeded => ( "Validation succeeded", Colors.Gold, false, true ),
+                ValidationPhase.Failed => ( "Validation failed", Colors.Red, true, true ),
                 _ => throw new InvalidEnumArgumentException( $"Unsupported {typeof( ValidationPhase )} '{args}'" )
             };
 
             Message = msg;
-            MessageColor = args == ValidationPhase.Failed ? Colors.Red : Colors.Gold;
+            MessageColor = msgColor;
 
-            if( args is not (ValidationPhase.Succeeded or ValidationPhase.Failed) )
-                return;
+            if( isError )
+                _logger.Error<string>( "Validating credentials: {0}", msg );
+            else
+                _logger.Information<string>( "Validating credentials: {0}", msg );
 
-            _appViewModel.Configuration.Validation -= OnValidationProgress;
-        });
+            if( terminate )
+                _appViewModel.Configuration.Validation -= OnValidationProgress;
+        } );
     }
 
     public string? Message

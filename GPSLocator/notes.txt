@@ -3,30 +3,6 @@
 
 https://us0-origin.explore.garmin.com/IPCInbound/docs/#!/Location.svc/LastKnownLocationGET
 
-https://{IPCInboundBaseUrl}/IPCInbound/V1/Location.svc
-
-{
-    "Code":7,
-    "Description":"The sender's address, markolbert, is not recognized as an email or SMS.",
-    "IMEI":[300434030634300],
-    "Message":"The message sender is invalid",
-    "URL":"https:\/\/prod-us0-inreach-web\/IPCInbound\/V1\/Messaging.svc"
-}
-
-Worked:
-
-{
-  "Messages": [
-    {
-      "Sender": "ralph@arcabama.com",
-      "Recipients": [
-        "300434030634300"
-      ],
-
-      "Timestamp": "\/Date(1647338836000)\/",
-      "Message": "IPC Inbound Test"
-    }
-  ]
-}
-
-C:\Programming\GPSLocator\GPSLocator\bin\x64\Release\net6.0-windows10.0.19041.0\win10-x64\AppPackages\
+Exception thrown at 0x00007FFE7AA4466C (KernelBase.dll) in J4JSoftware.GPSLocator.exe: 
+0x40080202: 
+WinRT transform error (parameters: 0x000000008000000B, 0x0000000080070490, 0x0000000000000014, 0x000000FDEE3777C0).

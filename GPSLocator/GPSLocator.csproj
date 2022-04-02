@@ -31,7 +31,7 @@
 
 		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<AppxBundle>Never</AppxBundle>
@@ -89,6 +89,7 @@
 		<None Remove="Assets\Wide310x150Logo.scale-125.png" />
 		<None Remove="Assets\Wide310x150Logo.scale-150.png" />
 		<None Remove="Assets\Wide310x150Logo.scale-400.png" />
+		<None Remove="Package - Copy.appxmanifest" />
 		<None Remove="ui\AboutPage.xaml" />
 		<None Remove="ui\common\DefaultStyles.xaml" />
 		<None Remove="ui\common\LocationControl.xaml" />

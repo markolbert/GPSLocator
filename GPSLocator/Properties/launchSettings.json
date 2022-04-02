@@ -1,7 +1,8 @@
 {
   "profiles": {
     "GPSLocator (Package)": {
-      "commandName": "MsixPackage"
+      "commandName": "MsixPackage",
+      "nativeDebugging": false
     },
     "GPSLocator (Unpackaged)": {
       "commandName": "Project"

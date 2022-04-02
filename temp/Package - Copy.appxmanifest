@@ -9,8 +9,8 @@
 
   <Identity
     Name="24075JumpForJoySoftware.49446A8871E87"
-    Publisher="CN=Mark Olbert, O=Mark Olbert, L=San Carlos, S=California, C=US"
-    Version="1.0.0.0" />
+    Publisher="CN=95D9753A-6B89-4FAB-9973-E5E8D54EB226"
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>GPS Locator</DisplayName>

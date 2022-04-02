@@ -53,9 +53,10 @@ public partial class StatusMessage
 
         public void Display()
         {
-            if ((_displayThread?.ThreadState ?? ThreadState.Stopped) != ThreadState.Running)
-                _displayThread = new Thread(DisplayMessages);
+            if( ( _displayThread?.ThreadState ?? ThreadState.Stopped ) == ThreadState.Running )
+                return;
 
+            _displayThread = new Thread(DisplayMessages);
             _displayThread!.Start();
         }
 
