@@ -65,7 +65,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\GeoProcessor\GeoProcessor\GeoProcessor.csproj" />
     <ProjectReference Include="..\GPSCommon\GPSCommon.csproj" />
   </ItemGroup>
 
