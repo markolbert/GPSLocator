@@ -53,7 +53,8 @@
 
         <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                 Margin="14,7,14,7"
-                Background="LightGray">
+                BorderThickness="2"
+                BorderBrush="LightGray">
 
             <Grid>
 
