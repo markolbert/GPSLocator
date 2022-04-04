@@ -248,21 +248,5 @@
 	<ItemGroup>
 		<PRIResource Remove="ui\home\**" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <PRIResource Remove="ui\common\converters\**" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Compile Remove="config\IndexedLogEvent.cs" />
-	  <Compile Remove="ui\common\DisplayedPoints.cs" />
-	  <Compile Remove="ui\common\MapChangedEventArgs.cs" />
-	  <Compile Remove="ui\common\MapPoint.cs" />
-	  <Compile Remove="ui\common\viewmodels\BaseViewModel.cs" />
-	  <Compile Remove="ui\common\viewmodels\LocationMapViewModel.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <PRIResource Remove="ui\common\status-messages\**" />
-	</ItemGroup>
+
 </Project>

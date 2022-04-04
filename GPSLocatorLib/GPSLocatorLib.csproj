@@ -23,11 +23,6 @@
 	  <PackageReadmeFile>nuget-lib.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="requests\LocatorLastKnownLocationRequest.cs" />
-    <Compile Remove="requests\VersionRequest.cs" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<None Include="..\..\Media\JumpForJoy\Diego nuspec.png">
 			<Pack>True</Pack>
