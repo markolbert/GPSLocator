@@ -47,8 +47,7 @@ public partial class App : Application
                         .AddNetEventSinkToLogger()
                         .AddDependencyInjectionInitializers( SetupDependencyInjection )
                         .AddServicesInitializers( InitializeServices )
-                        .AddUserConfigurationFile( "userConfig.json", optional: true, reloadOnChange: true )
-                        .AddApplicationConfigurationFile( "appConfig.json", optional: false )
+                        .AddUserConfigurationFile( "userConfig.json", optional: true )
                         .FilePathTrimmer( FilePathTrimmer );
 
         _buildLogger = hostConfig.Logger;

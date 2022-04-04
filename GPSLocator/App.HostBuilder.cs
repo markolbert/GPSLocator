@@ -40,16 +40,20 @@ public partial class App
 
                     try
                     {
-                        retVal = hbc.Configuration.Get<AppConfig>() ?? new AppConfig();
+                        retVal = hbc.Configuration.Get<AppConfig>();
                     }
                     catch( Exception )
                     {
                         _buildLogger.Error( "Error processing user configuration file, new configuration created" );
                     }
 
-                    retVal ??= new AppConfig();
+                    if( retVal != null ) 
+                        return retVal;
 
-                    retVal.Initialize( c.Resolve<IJ4JProtection>(), c.Resolve<IJ4JLogger>() );
+                    var logger = c.ResolveOptional<IJ4JLogger>();
+                        
+                    retVal = new AppConfig();
+                    retVal.Initialize( "https://www.jumpforjoysoftware.com/gpslocator-user-docs/", 160, logger );
 
                     return retVal;
                 } )

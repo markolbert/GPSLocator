@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using J4JSoftware.GPSLocator;
+using J4JSoftware.Logging;
+using Serilog;
 using Serilog.Events;
 
 namespace J4JSoftware.GPSCommon;
@@ -14,6 +16,8 @@ public class BaseAppConfig : DeviceConfig
     {
         AppVersion = Assembly.GetExecutingAssembly().GetName().Version;
     }
+
+    public virtual void Initialize( string helpLink ) => HelpLink = helpLink;
 
     public Version? AppVersion { get; }
 
@@ -29,5 +33,5 @@ public class BaseAppConfig : DeviceConfig
         set => SetProperty( ref _launchPage, value );
     }
 
-    public string HelpLink { get; set; } = string.Empty;
+    public string HelpLink { get; protected set; } = string.Empty;
 }

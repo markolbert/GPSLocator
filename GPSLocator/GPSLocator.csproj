@@ -204,9 +204,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="appConfig.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 		<Page Update="ui\about\AboutPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>
