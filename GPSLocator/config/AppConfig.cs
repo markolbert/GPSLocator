@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using J4JSoftware.GPSCommon;
-using J4JSoftware.Logging;
+using Serilog;
 using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator;
@@ -18,22 +18,14 @@ public class AppConfig : BaseAppConfig
         HelpLink = "https://www.jumpforjoysoftware.com/gpslocator-user-docs/";
     }
 
-    public override void Initialize( string helpLink ) => Initialize(helpLink, 160, null);
-
-    public void Initialize( string helpLink, int maxSmsLength, IJ4JLogger? logger )
+    public override void Initialize( IDeviceContext context )
     {
-        if( logger != null )
-            logger.SetLoggedType( GetType() );
+        base.Initialize( context );
 
-        if (maxSmsLength <= 0)
-        {
-            logger?.Error("Invalid max SMS length ({0}), defaulting to 160 characters", maxSmsLength);
-            maxSmsLength = 160;
-        }
+        if( context is not GpsLocatorContext locatorContext )
+            return;
 
-        base.Initialize(helpLink);
-
-        MaxSmsLength = maxSmsLength;
+        MaxSmsLength = locatorContext.MaxSmsLength;
     }
 
     public bool UseImperialUnits

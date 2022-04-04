@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using J4JSoftware.GPSLocator;
-using J4JSoftware.Logging;
 using Serilog;
 using Serilog.Events;
 
@@ -17,7 +16,15 @@ public class BaseAppConfig : DeviceConfig
         AppVersion = Assembly.GetExecutingAssembly().GetName().Version;
     }
 
-    public virtual void Initialize( string helpLink ) => HelpLink = helpLink;
+    public override void Initialize( IDeviceContext context )
+    {
+        base.Initialize( context );
+
+        if( context is not ICommonAppContext appContext )
+            return;
+
+        HelpLink = appContext.HelpLink;
+    }
 
     public Version? AppVersion { get; }
 

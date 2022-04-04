@@ -47,13 +47,16 @@ public partial class App
                         _buildLogger.Error( "Error processing user configuration file, new configuration created" );
                     }
 
-                    if( retVal != null ) 
-                        return retVal;
+                    var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(), c.ResolveOptional<IJ4JLogger>() );
 
-                    var logger = c.ResolveOptional<IJ4JLogger>();
-                        
+                    if( retVal != null )
+                    {
+                        retVal.Initialize( context );
+                        return retVal;
+                    }
+
                     retVal = new AppConfig();
-                    retVal.Initialize( "https://www.jumpforjoysoftware.com/gpslocator-user-docs/", 160, logger );
+                    retVal.Initialize( context );
 
                     return retVal;
                 } )

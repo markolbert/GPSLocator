@@ -28,12 +28,12 @@ public class DeviceConfig : INotifyPropertyChanged
         OnPropertyChanged( nameof( EncryptedPassword ) );
     }
 
-    public void Initialize( IJ4JProtection protector, IJ4JLogger logger )
+    public virtual void Initialize( IDeviceContext context )
     {
-        EncryptedPassword.Protector = protector;
-        EncryptedPassword.Logger = logger;
+        EncryptedPassword.Protector = context.Protector;
+        EncryptedPassword.Logger = context.Logger;
 
-        _logger = logger;
+        _logger = context.Logger;
     }
 
     public string Website
