@@ -9,7 +9,19 @@ namespace J4JSoftware.GPSLocator
 {
     public interface IBullshitLogger
     {
-        void Log(string text, [CallerMemberName] string calledBy = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int lineNum = 0);
+        void Log(
+            string text,
+            [ CallerMemberName ] string calledBy = "",
+            [ CallerFilePath ] string callerFilePath = "",
+            [ CallerLineNumber ] int lineNum = 0
+        );
+
+        void Log(
+            Exception exception,
+            [ CallerMemberName ] string calledBy = "",
+            [ CallerFilePath ] string callerFilePath = "",
+            [ CallerLineNumber ] int lineNum = 0
+        );
     }
 
 }
