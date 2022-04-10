@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
+using System.Runtime.ExceptionServices;
 using Windows.Graphics;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.Logging;
@@ -8,6 +9,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
+using UnhandledExceptionEventArgs = System.UnhandledExceptionEventArgs;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -20,6 +22,9 @@ namespace J4JSoftware.GPSLocator;
 public partial class App : Application
 {
     public new static App Current => (App)Application.Current;
+
+    private const string Publisher = "J4JSoftware";
+    private const string ApplicationName = "GpsLocator";
 
     private readonly DispatcherQueue _dQueue;
     private readonly IJ4JLogger _buildLogger;
@@ -41,8 +46,8 @@ public partial class App : Application
         _dQueue = DispatcherQueue.GetForCurrentThread();
 
         var hostConfig = new J4JHostConfiguration()
-                        .Publisher( "J4JSoftware" )
-                        .ApplicationName( "GPSLocator" )
+                        .Publisher( Publisher )
+                        .ApplicationName( ApplicationName )
                         .LoggerInitializer( InitializeLogger )
                         .AddNetEventSinkToLogger()
                         .AddDependencyInjectionInitializers( SetupDependencyInjection )

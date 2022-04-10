@@ -16,9 +16,10 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
     protected LocationMapViewModel(
         BaseAppViewModel<TAppConfig> appViewModel,
         StatusMessage.StatusMessages statusMessages,
-        IJ4JLogger logger
+        IJ4JLogger logger,
+        IBullshitLogger bsLogger
     )
-        : base( appViewModel, statusMessages, logger )
+        : base( appViewModel, statusMessages, logger, bsLogger )
     {
         RefreshCommand = new RelayCommand(RefreshHandler);
         IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);

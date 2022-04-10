@@ -16,6 +16,7 @@ public class DeviceConfig : INotifyPropertyChanged
     private string _userName = string.Empty;
     private ValidationState _validationState = ValidationState.Unvalidated;
     private IJ4JLogger? _logger;
+    private IBullshitLogger? _bsLogger;
 
     public DeviceConfig()
     {
@@ -34,6 +35,7 @@ public class DeviceConfig : INotifyPropertyChanged
         EncryptedPassword.Logger = context.Logger;
 
         _logger = context.Logger;
+        _bsLogger = context.BSLogger;
     }
 
     public string Website
@@ -125,9 +127,13 @@ public class DeviceConfig : INotifyPropertyChanged
         if( _logger == null || EncryptedPassword.Protector == null )
         {
             _logger?.Error( "Configuration not initialized" );
+            _bsLogger?.Log( "Configuration not initialized" );
+
             Validation?.Invoke( this, ValidationPhase.NotValidatable );
             return false;
         }
+
+        _bsLogger?.Log( "Configuration initialized" );
 
         Validation?.Invoke( this, ValidationPhase.Starting );
 
@@ -142,15 +148,25 @@ public class DeviceConfig : INotifyPropertyChanged
     private async Task<bool> ValidateCredentialsAsync()
     {
         Validation?.Invoke(this, ValidationPhase.CheckingCredentials);
+        _bsLogger?.Log("Beginning credential validation");
 
         if( ( ValidationState & ValidationState.CredentialsValid ) == ValidationState.CredentialsValid )
+        {
+            _bsLogger?.Log("Credentials already valid");
             return true;
+        }
 
-        var testReq = new DeviceConfigRequest(this, _logger!);
+        var testReq = new DeviceConfigRequest(this, _logger!, _bsLogger!);
         var response = await testReq.ExecuteAsync();
 
-        if ( response.Succeeded )
+        _bsLogger?.Log( "Returned from ExecuteAsync()" );
+
+        if( response.Succeeded )
+        {
+            _bsLogger?.Log( "Credentials are valid" );
             ValidationState |= ValidationState.CredentialsValid;
+        }
+        else _bsLogger?.Log( "Credentials are invalid" );
 
         return response.Succeeded;
     }
@@ -158,16 +174,24 @@ public class DeviceConfig : INotifyPropertyChanged
     private async Task<bool> ValidateImeiAsync()
     {
         Validation?.Invoke(this, ValidationPhase.CheckingImei);
+        _bsLogger?.Log("Beginning IMEI validation");
 
         if( ( ValidationState & ValidationState.Validated ) == ValidationState.Validated )
+        {
+            _bsLogger?.Log("IMEI already validated");
             return true;
+        }
 
-        var testReq = new LastKnownLocationRequest<Location>( this, _logger! );
+        var testReq = new LastKnownLocationRequest<Location>( this, _logger!, _bsLogger! );
         var response = await testReq.ExecuteAsync();
 
         var retVal = response.Succeeded && response.Result!.Locations.Count > 0;
         if( retVal )
+        {
+            _bsLogger?.Log( "IMEI is valid" );
             ValidationState |= ValidationState.ImeiValid;
+        }
+        else _bsLogger?.Log( "IMEI is invalid" );
 
         return retVal;
     }

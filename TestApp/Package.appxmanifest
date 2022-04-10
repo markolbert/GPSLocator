@@ -8,12 +8,12 @@
 
   <Identity
     Name="23dd2e40-f484-4ef6-861e-0733bced1f54"
-    Publisher="CN=mark"
+    Publisher="CN=Mark Olbert, O=Mark Olbert, L=San Carlos, S=California, C=US"
     Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>TestApp</DisplayName>
-    <PublisherDisplayName>mark</PublisherDisplayName>
+	  <PublisherDisplayName>JumpForJoy Software</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

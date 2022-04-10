@@ -19,7 +19,7 @@ public partial class App
 {
     private void InitializeLogger( IConfiguration config, J4JLoggerConfiguration loggerConfig )
     {
-        var appPath = Path.GetDirectoryName( AppContext.BaseDirectory );
+        var appPath = Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData );
 
         if( string.IsNullOrEmpty( appPath ) )
         {
@@ -27,9 +27,14 @@ public partial class App
             return;
         }
 
+        var userFolder = System.IO.Path.Combine( appPath, Publisher, ApplicationName );
+        Directory.CreateDirectory( userFolder );
+
         loggerConfig.SerilogConfiguration
-                    .WriteTo.File( System.IO.Path.Combine( appPath, "log.txt" ),
+                    .WriteTo.File( System.IO.Path.Combine( userFolder, "log.txt" ),
                                    rollingInterval: RollingInterval.Day );
+
+        _buildLogger.Information("Configured logger");
     }
 
     private void SetupDependencyInjection( HostBuilderContext hbc, ContainerBuilder builder )
@@ -47,7 +52,9 @@ public partial class App
                         _buildLogger.Error( "Error processing user configuration file, new configuration created" );
                     }
 
-                    var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(), c.ResolveOptional<IJ4JLogger>() );
+                    var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(),
+                                                         c.ResolveOptional<IJ4JLogger>(),
+                                                         c.ResolveOptional<IBullshitLogger>() );
 
                     if( retVal != null )
                     {
@@ -61,6 +68,10 @@ public partial class App
                     return retVal;
                 } )
                .AsSelf()
+               .SingleInstance();
+
+        builder.RegisterType<BullshitLogger>()
+               .As<IBullshitLogger>()
                .SingleInstance();
 
         builder.Register( c =>

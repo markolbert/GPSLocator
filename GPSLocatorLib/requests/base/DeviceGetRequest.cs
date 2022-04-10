@@ -13,9 +13,10 @@ namespace J4JSoftware.GPSLocator
     {
         protected DeviceGetRequest(
             DeviceConfig config,
-            IJ4JLogger logger
+            IJ4JLogger logger,
+            IBullshitLogger bsLogger
         )
-            : base( config, logger )
+            : base( config, logger, bsLogger )
         {
         }
 
@@ -25,14 +26,16 @@ namespace J4JSoftware.GPSLocator
         )
         {
             Logger.Information<string>( "Querying {0}", requestUri );
+            BSLogger.Log($"Querying '{requestUri}'"  );
 
             HttpResponseMessage? response;
 
             try
             {
                 response = await httpClient.GetAsync( requestUri );
+                BSLogger.Log($"Got response");
             }
-            catch( Exception ex )
+            catch ( Exception ex )
             {
                 return ( null, HandleError( ex, requestUri ) );
             }

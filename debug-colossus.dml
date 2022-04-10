@@ -1,0 +1,239 @@
+<DmlText>
+Microsoft (R) Windows Debugger Version 10.0.22549.1000 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+*** wait with pending attach
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+Deferred                                       srv*
+Symbol search path is: srv*
+Executable search path is: 
+ModLoad: 00007ff7`65d40000 00007ff7`65d6b000   apphost.exe
+ModLoad: 00007ffa`d9d30000 00007ffa`d9f25000   ntdll.dll
+ModLoad: 00007ffa`d7d90000 00007ffa`d7e4e000   C:\WINDOWS\System32\KERNEL32.DLL
+ModLoad: 00007ffa`d7880000 00007ffa`d7b48000   C:\WINDOWS\System32\KERNELBASE.dll
+ModLoad: 00007ffa`d8690000 00007ffa`d8830000   C:\WINDOWS\System32\USER32.dll
+ModLoad: 00007ffa`d7850000 00007ffa`d7872000   C:\WINDOWS\System32\win32u.dll
+ModLoad: 00007ffa`d8060000 00007ffa`d808a000   C:\WINDOWS\System32\GDI32.dll
+ModLoad: 00007ffa`d7660000 00007ffa`d776b000   C:\WINDOWS\System32\gdi32full.dll
+ModLoad: 00007ffa`d7450000 00007ffa`d74ed000   C:\WINDOWS\System32\msvcp_win.dll
+ModLoad: 00007ffa`d74f0000 00007ffa`d75f0000   C:\WINDOWS\System32\ucrtbase.dll
+ModLoad: 00007ffa`d8830000 00007ffa`d8f74000   C:\WINDOWS\System32\SHELL32.dll
+ModLoad: 00007ffa`d8240000 00007ffa`d82ee000   C:\WINDOWS\System32\ADVAPI32.dll
+ModLoad: 00007ffa`d8380000 00007ffa`d841e000   C:\WINDOWS\System32\msvcrt.dll
+ModLoad: 00007ffa`d9130000 00007ffa`d91cc000   C:\WINDOWS\System32\sechost.dll
+ModLoad: 00007ffa`d80a0000 00007ffa`d81c5000   C:\WINDOWS\System32\RPCRT4.dll
+(1b68.14f8): Break instruction exception - code 80000003 (first chance)
+ntdll!LdrpDoDebuggerBreak+0x30:
+00007ffa`d9e006b0 cc              int     3
+0:000&gt; g
+ModLoad: 00007ffa`d9050000 00007ffa`d9080000   C:\WINDOWS\System32\IMM32.DLL
+ModLoad: 00007ffa`b8d60000 00007ffa`b8dbf000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\hostfxr.dll
+ModLoad: 00007ffa`b1b70000 00007ffa`b1bd3000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\hostpolicy.dll
+ModLoad: 00007ffa`7f920000 00007ffa`7fe1c000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\coreclr.dll
+ModLoad: 00007ffa`d99a0000 00007ffa`d9aca000   C:\WINDOWS\System32\ole32.dll
+ModLoad: 00007ffa`d91d0000 00007ffa`d9524000   C:\WINDOWS\System32\combase.dll
+ModLoad: 00007ffa`d9c20000 00007ffa`d9ced000   C:\WINDOWS\System32\OLEAUT32.dll
+ModLoad: 00007ffa`d7cb0000 00007ffa`d7d32000   C:\WINDOWS\System32\bcryptPrimitives.dll
+(1b68.14f8): Unknown exception - code 04242420 (first chance)
+Profiler was prevented from loading notification profiler due to app settings.
+  Process ID (decimal): 7016.  Message ID: [0x2509].
+ModLoad: 00007ffa`7ecb0000 00007ffa`7f6d3000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Private.CoreLib.dll
+ModLoad: 00007ffa`7eb40000 00007ffa`7eca2000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\clrjit.dll
+ModLoad: 00007ffa`d52b0000 00007ffa`d52c2000   C:\WINDOWS\SYSTEM32\kernel.appcore.dll
+ModLoad: 000001fd`8bfc0000 000001fd`8bffc000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\J4JSoftware.GPSLocator.dll
+ModLoad: 000001fd`8bfc0000 000001fd`8bffc000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\J4JSoftware.GPSLocator.dll
+ModLoad: 000001fd`ac6b0000 000001fd`ac6be000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Runtime.dll
+ModLoad: 00007ffa`d4eb0000 00007ffa`d4f4e000   C:\WINDOWS\system32\uxtheme.dll
+ModLoad: 000001fd`ac6d0000 000001fd`ac728000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\WinRT.Runtime.dll
+ModLoad: 00007ffa`c4190000 00007ffa`c419d000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Runtime.InteropServices.dll
+ModLoad: 00007ffa`ba600000 00007ffa`ba640000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Collections.dll
+ModLoad: 00007ffa`b95c0000 00007ffa`b95fc000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Collections.Concurrent.dll
+ModLoad: 00007ffa`c2a30000 00007ffa`c2a43000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Threading.dll
+ModLoad: 00007ffa`d7820000 00007ffa`d7847000   C:\WINDOWS\System32\BCrypt.dll
+ModLoad: 000001fd`ae000000 000001fd`ae8a2000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.WinUI.dll
+ModLoad: 00007ffa`7c0e0000 00007ffa`7d43e000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.ui.xaml.dll
+ModLoad: 00007ffa`d8f80000 00007ffa`d8fd5000   C:\WINDOWS\System32\SHLWAPI.dll
+ModLoad: 00007ffa`c4130000 00007ffa`c413c000   C:\WINDOWS\SYSTEM32\VCRUNTIME140_1.dll
+ModLoad: 00007ffa`a3c60000 00007ffa`a3cee000   C:\WINDOWS\SYSTEM32\MSVCP140.dll
+ModLoad: 00007ffa`9c970000 00007ffa`9ca12000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.Internal.FrameworkUdk.dll
+ModLoad: 00007ffa`d9080000 00007ffa`d912d000   C:\WINDOWS\System32\shcore.dll
+ModLoad: 00007ffa`c2910000 00007ffa`c292b000   C:\WINDOWS\SYSTEM32\VCRUNTIME140.dll
+ModLoad: 00007ffa`c4fc0000 00007ffa`c523f000   C:\WINDOWS\SYSTEM32\DWrite.dll
+ModLoad: 00007ffa`d5280000 00007ffa`d52af000   C:\WINDOWS\SYSTEM32\dwmapi.dll
+ModLoad: 00007ffa`d3070000 00007ffa`d3630000   C:\WINDOWS\SYSTEM32\d2d1.dll
+ModLoad: 00007ffa`d7390000 00007ffa`d73af000   C:\WINDOWS\SYSTEM32\profapi.dll
+ModLoad: 00007ffa`c89b0000 00007ffa`c8a0b000   C:\WINDOWS\SYSTEM32\Bcp47Langs.dll
+ModLoad: 00007ffa`d3f10000 00007ffa`d40f5000   C:\WINDOWS\SYSTEM32\dcomp.dll
+ModLoad: 00007ffa`d3c00000 00007ffa`d3cf2000   C:\WINDOWS\SYSTEM32\CoreMessaging.dll
+ModLoad: 00007ffa`d8fe0000 00007ffa`d904b000   C:\WINDOWS\System32\WS2_32.dll
+ModLoad: 00007ffa`7ea20000 00007ffa`7eb3d000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.UI.Xaml.Internal.dll
+ModLoad: 00007ffa`c4050000 00007ffa`c4056000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Runtime.CompilerServices.Unsafe.dll
+ModLoad: 00007ffa`d8480000 00007ffa`d8529000   C:\WINDOWS\System32\clbcatq.dll
+ModLoad: 00007ffa`ca7b0000 00007ffa`ca7c1000   C:\WINDOWS\SYSTEM32\windows.staterepositorycore.dll
+ModLoad: 00007ffa`b9400000 00007ffa`b943e000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Private.Uri.dll
+ModLoad: 00007ffa`c0cc0000 00007ffa`c0cd6000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.ObjectModel.dll
+ModLoad: 00007ffa`c3fb0000 00007ffa`c3fb5000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.ComponentModel.dll
+ModLoad: 000001fd`ac740000 000001fd`ac748000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Numerics.Vectors.dll
+ModLoad: 00007ffa`b9640000 00007ffa`b986e000   C:\WINDOWS\SYSTEM32\icu.dll
+ModLoad: 00007ffa`83670000 00007ffa`83734000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Security.Cryptography.Algorithms.dll
+ModLoad: 00007ffa`b5e60000 00007ffa`b5e81000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Security.Cryptography.Primitives.dll
+ModLoad: 00007ffa`b3ab0000 00007ffa`b3ade000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Security.Cryptography.Csp.dll
+ModLoad: 00007ffa`85820000 00007ffa`858a2000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Linq.dll
+ModLoad: 000001fd`b02c0000 000001fd`b1a66000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Windows.SDK.NET.dll
+ModLoad: 00007ffa`b3a20000 00007ffa`b3a4a000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Memory.dll
+ModLoad: 00007ffa`ce070000 00007ffa`ce25c000   C:\WINDOWS\SYSTEM32\urlmon.dll
+ModLoad: 00007ffa`cbba0000 00007ffa`cbe51000   C:\WINDOWS\SYSTEM32\iertutil.dll
+ModLoad: 00007ffa`d6950000 00007ffa`d695c000   C:\WINDOWS\SYSTEM32\netutils.dll
+ModLoad: 00007ffa`cbe60000 00007ffa`cbe88000   C:\WINDOWS\SYSTEM32\srvcli.dll
+ModLoad: 00007ffa`7e910000 00007ffa`7ea15000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\CoreMessagingXP.dll
+ModLoad: 00007ffa`d2ab0000 00007ffa`d2c04000   C:\WINDOWS\SYSTEM32\wintypes.dll
+ModLoad: 00007ffa`d5d70000 00007ffa`d5e63000   C:\WINDOWS\SYSTEM32\dxgi.dll
+ModLoad: 00007ffa`c8760000 00007ffa`c88a1000   C:\Windows\System32\Windows.UI.dll
+ModLoad: 00007ffa`c8a10000 00007ffa`c8ab1000   C:\Windows\System32\WindowManagementAPI.dll
+ModLoad: 00007ffa`c8500000 00007ffa`c8652000   C:\Windows\System32\InputHost.dll
+ModLoad: 00007ffa`c8660000 00007ffa`c8759000   C:\Windows\System32\TextInputFramework.dll
+ModLoad: 00007ffa`d2ab0000 00007ffa`d2c04000   C:\WINDOWS\SYSTEM32\wintypes.dll
+ModLoad: 00007ffa`d38a0000 00007ffa`d3bfe000   C:\Windows\System32\CoreUIComponents.dll
+ModLoad: 00007ffa`d3d00000 00007ffa`d3f01000   C:\WINDOWS\SYSTEM32\twinapi.appcore.dll
+ModLoad: 00007ffa`d1400000 00007ffa`d14f6000   C:\Windows\System32\PROPSYS.dll
+ModLoad: 00007ffa`d6160000 00007ffa`d6193000   C:\WINDOWS\SYSTEM32\ntmarta.dll
+ModLoad: 00007ffa`d4f50000 00007ffa`d4f64000   C:\WINDOWS\SYSTEM32\resourcepolicyclient.dll
+ModLoad: 00007ffa`c3d30000 00007ffa`c3e16000   C:\Windows\System32\Windows.ApplicationModel.dll
+ModLoad: 00007ffa`c6e10000 00007ffa`c6f4a000   C:\Windows\System32\Windows.UI.Immersive.dll
+ModLoad: 00007ffa`d3630000 00007ffa`d3894000   C:\WINDOWS\SYSTEM32\d3d11.dll
+ModLoad: 00007ffa`c5470000 00007ffa`c662a000   C:\WINDOWS\SYSTEM32\nvwgf2umx.dll
+ModLoad: 00007ffa`d9ad0000 00007ffa`d9ad8000   C:\WINDOWS\System32\PSAPI.DLL
+ModLoad: 00007ffa`d03f0000 00007ffa`d03fa000   C:\WINDOWS\SYSTEM32\VERSION.dll
+ModLoad: 00007ffa`d21c0000 00007ffa`d21fb000   C:\WINDOWS\SYSTEM32\dxcore.dll
+ModLoad: 00007ffa`d7d40000 00007ffa`d7d8e000   C:\WINDOWS\System32\cfgmgr32.dll
+ModLoad: 00007ffa`7e560000 00007ffa`7e90e000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Linq.Expressions.dll
+ModLoad: 000001fd`acf60000 000001fd`acf68000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Reflection.Emit.ILGeneration.dll
+ModLoad: 000001fd`acf70000 000001fd`acf78000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Reflection.Emit.Lightweight.dll
+ModLoad: 000001fd`acf80000 000001fd`acf88000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Reflection.Primitives.dll
+ModLoad: 00007ffa`c4530000 00007ffa`c45dc000   C:\WINDOWS\SYSTEM32\TextShaping.dll
+ModLoad: 000001fd`b5380000 000001fd`b54e4000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.InteractiveExperiences.Projection.dll
+ModLoad: 000001fd`b54f0000 000001fd`b5500000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\J4JSoftware.DependencyInjection.dll
+ModLoad: 000001fd`b5500000 000001fd`b550a000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Configuration.Abstractions.dll
+ModLoad: 000001fd`b5510000 000001fd`b551e000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\J4JSoftware.Logging.dll
+ModLoad: 000001fd`b5520000 000001fd`b5546000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Serilog.dll
+ModLoad: 000001fd`b5550000 000001fd`b556c000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\netstandard.dll
+ModLoad: 000001fd`b5570000 000001fd`b557a000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Hosting.Abstractions.dll
+ModLoad: 000001fd`b5580000 000001fd`b55d8000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Autofac.dll
+ModLoad: 000001fd`b55e0000 000001fd`b55ee000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+ModLoad: 000001fd`b55f0000 000001fd`b5606000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Toolkit.Mvvm.dll
+ModLoad: 000001fd`b5610000 000001fd`b5626000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\J4JSoftware.Configuration.CommandLine.dll
+ModLoad: 000001fd`b5630000 000001fd`b5642000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Hosting.dll
+ModLoad: 000001fd`b5650000 000001fd`b565a000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Autofac.Extensions.DependencyInjection.dll
+ModLoad: 000001fd`b5660000 000001fd`b5678000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.DependencyInjection.dll
+ModLoad: 00007ffa`b1520000 00007ffa`b157c000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Diagnostics.DiagnosticSource.dll
+ModLoad: 000001fd`b5680000 000001fd`b5688000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Diagnostics.Tracing.dll
+ModLoad: 000001fd`b5690000 000001fd`b569c000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Configuration.dll
+ModLoad: 000001fd`b56a0000 000001fd`b56aa000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Configuration.Json.dll
+ModLoad: 00007ffa`d5590000 00007ffa`d5d24000   C:\WINDOWS\SYSTEM32\windows.storage.dll
+ModLoad: 00007ffa`d6e50000 00007ffa`d6e7c000   C:\WINDOWS\SYSTEM32\Wldp.dll
+ModLoad: 000001fd`b56c0000 000001fd`b56ca000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.FileProviders.Abstractions.dll
+ModLoad: 000001fd`b56d0000 000001fd`b56da000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Configuration.FileExtensions.dll
+ModLoad: 000001fd`b56e0000 000001fd`b56ee000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.FileProviders.Physical.dll
+ModLoad: 000001fd`b56f0000 000001fd`b56fe000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Primitives.dll
+ModLoad: 000001fd`b5700000 000001fd`b5712000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Options.dll
+ModLoad: 000001fd`b5720000 000001fd`b572e000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Logging.dll
+ModLoad: 000001fd`b5730000 000001fd`b5744000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Logging.Abstractions.dll
+ModLoad: 000001fd`b5750000 000001fd`b5780000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.AspNetCore.DataProtection.dll
+ModLoad: 000001fd`b5780000 000001fd`b578e000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.AspNetCore.Cryptography.Internal.dll
+ModLoad: 000001fd`b5790000 000001fd`b579a000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.AspNetCore.DataProtection.Abstractions.dll
+ModLoad: 000001fd`b57a0000 000001fd`b57ae000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\J4JSoftware.GPSCommon.dll
+ModLoad: 000001fd`b57b0000 000001fd`b57c4000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\J4JSoftware.GPSLocatorLib.dll
+ModLoad: 000001fd`b57d0000 000001fd`b5800000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\MapControl.WinUI.dll
+ModLoad: 00007ffa`b0d70000 00007ffa`b0da4000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Net.Primitives.dll
+ModLoad: 00007ffa`bfc90000 00007ffa`bfca2000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.ComponentModel.Primitives.dll
+ModLoad: 000001fd`b5a00000 000001fd`b5a0e000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Serilog.Sinks.File.dll
+ModLoad: 00007ffa`7e4d0000 00007ffa`7e551000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Text.RegularExpressions.dll
+ModLoad: 000001fd`b5a10000 000001fd`b5a1a000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.IO.FileSystem.dll
+ModLoad: 00007ffa`bcca0000 00007ffa`bccbf000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.Windows.ApplicationModel.Resources.dll
+ModLoad: 00007ffa`b0bc0000 00007ffa`b0c1a000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\MRM.dll
+ModLoad: 00007ffa`c84a0000 00007ffa`c84cd000   C:\WINDOWS\SYSTEM32\bcp47mrm.dll
+ModLoad: 00007ffa`c4dc0000 00007ffa`c4f66000   C:\Windows\System32\Windows.Globalization.dll
+ModLoad: 00007ffa`7dcb0000 00007ffa`7e231000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.UI.Xaml.Controls.dll
+ModLoad: 00007ffa`b9600000 00007ffa`b963b000   C:\WINDOWS\SYSTEM32\rometadata.dll
+ModLoad: 000001fd`b6000000 000001fd`b6165000   image000001fd`b6000000
+ModLoad: 00007ffa`7daf0000 00007ffa`7dca7000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Net.Http.dll
+ModLoad: 00007ffa`7da40000 00007ffa`7dae6000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Net.Security.dll
+ModLoad: 00007ffa`7e280000 00007ffa`7e2f6000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Security.Cryptography.X509Certificates.dll
+ModLoad: 00007ffa`d9ae0000 00007ffa`d9bf5000   C:\WINDOWS\System32\MSCTF.dll
+ModLoad: 00007ffa`7d660000 00007ffa`7d82d000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\dcompi.dll
+ModLoad: 00007ffa`7d9c0000 00007ffa`7da33000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\marshal.dll
+ModLoad: 00007ffa`7bd90000 00007ffa`7c0dc000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\dwmcorei.dll
+ModLoad: 00007ffa`b0a40000 00007ffa`b0aa4000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\wuceffectsi.dll
+ModLoad: 00007ffa`c3b80000 00007ffa`c3b8d000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.UI.Composition.OSSupport.dll
+ModLoad: 00007ffa`d2c10000 00007ffa`d306d000   C:\WINDOWS\SYSTEM32\D3DCOMPILER_47.dll
+ModLoad: 00007ffa`b0380000 00007ffa`b03f0000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.InputStateManager.dll
+ModLoad: 00007ffa`c8e50000 00007ffa`c8eba000   C:\WINDOWS\SYSTEM32\NInput.dll
+ModLoad: 00007ffa`7d5c0000 00007ffa`7d652000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.UI.Windowing.Core.dll
+ModLoad: 00007ffa`7d4e0000 00007ffa`7d5bb000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.UI.Input.dll
+ModLoad: 00007ffa`d6d50000 00007ffa`d6d68000   C:\WINDOWS\SYSTEM32\CRYPTSP.dll
+ModLoad: 00007ffa`b4da0000 00007ffa`b5095000   C:\WINDOWS\SYSTEM32\uiautomationcore.dll
+ModLoad: 00007ffa`cf610000 00007ffa`cf646000   C:\WINDOWS\SYSTEM32\XmlLite.dll
+ModLoad: 00007ffa`d6d40000 00007ffa`d6d4c000   C:\WINDOWS\SYSTEM32\CRYPTBASE.DLL
+ModLoad: 00007ffa`b87f0000 00007ffa`b882e000   C:\WINDOWS\system32\DataExchange.dll
+ModLoad: 00007ffa`caa50000 00007ffa`cb1e9000   C:\Windows\System32\OneCoreUAPCommonProxyStub.dll
+ModLoad: 000001fd`b6ce0000 000001fd`b6cec000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Extensions.Configuration.Binder.dll
+ModLoad: 00007ffa`bcbc0000 00007ffa`bcbd6000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.Win32.Registry.dll
+ModLoad: 00007ffa`c30a0000 00007ffa`c30a8000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Runtime.InteropServices.RuntimeInformation.dll
+ModLoad: 00007ffa`d7b50000 00007ffa`d7ca6000   C:\WINDOWS\System32\crypt32.dll
+ModLoad: 00007ffa`d7250000 00007ffa`d725a000   C:\WINDOWS\SYSTEM32\DPAPI.DLL
+ModLoad: 000001fd`b6cf0000 000001fd`b6cf8000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Text.Encoding.Extensions.dll
+ModLoad: 00007ffa`b7c20000 00007ffa`b7e40000   C:\WINDOWS\system32\explorerframe.dll
+ModLoad: 000001fd`b6d10000 000001fd`b6d18000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Reflection.Emit.dll
+ModLoad: 00007ffa`7bce0000 00007ffa`7bd86000   C:\Program Files\WindowsApps\Microsoft.WindowsAppRuntime.1.0_1.440.209.0_x64__8wekyb3d8bbwe\Microsoft.DirectManipulation.dll
+onecoreuap\windows\frameworkudk\dxprivatescommon.cpp(53)\Microsoft.Internal.FrameworkUdk.dll!00007FFA9C9898A5: (caller: 00007FFA9C9C966D) ReturnHr(1) tid(14f8) 80004002 No such interface supported
+onecoreuap\windows\frameworkudk\dxprivatescommon.cpp(53)\Microsoft.Internal.FrameworkUdk.dll!00007FFA9C9898A5: (caller: 00007FFA9C9C966D) ReturnHr(2) tid(14f8) 80004002 No such interface supported
+ModLoad: 000001fd`b7340000 000001fd`b7348000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Threading.Thread.dll
+ModLoad: 00007ffa`d4ca0000 00007ffa`d4e54000   C:\WINDOWS\system32\windowscodecs.dll
+ModLoad: 00007ffa`cd1b0000 00007ffa`cd231000   C:\WINDOWS\SYSTEM32\PhotoMetadataHandler.dll
+ModLoad: 000001fd`b7370000 000001fd`b7384000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\Microsoft.AspNetCore.WebUtilities.dll
+ModLoad: 00007ffa`7bb70000 00007ffa`7bcda000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Text.Json.dll
+ModLoad: 00007ffa`bc190000 00007ffa`bc1b0000   C:\Program Files\WindowsApps\24075JumpForJoySoftware.49446A8871E87_1.0.0.0_x64__4ene0yq67pf8g\System.Text.Encodings.Web.dll
+onecoreuap\windows\frameworkudk\dxprivatescommon.cpp(53)\Microsoft.Internal.FrameworkUdk.dll!00007FFA9C9898A5: (caller: 00007FFA9C9C966D) ReturnHr(3) tid(29b8) 80004002 No such interface supported
+(1b68.ab8): CLR exception - code e0434352 (first chance)
+(1b68.14f8): CLR exception - code e0434352 (first chance)
+(1b68.ab8): CLR exception - code e0434352 (first chance)
+(1b68.ab8): CLR exception - code e0434352 (first chance)
+ModLoad: 00007ffa`c5260000 00007ffa`c5289000   C:\WINDOWS\SYSTEM32\Cabinet.dll
+(1b68.ab8): CLR exception - code e0434352 (first chance)
+(1b68.ab8): CLR exception - code e0434352 (first chance)
+(1b68.14f8): Windows Runtime Originate Error - code 40080201 (first chance)
+onecore\com\combase\winrt\error\restrictederror.cpp(1016)\combase.dll!00007FFAD924BEE3: (caller: 00007FFAD9255BC9) ReturnHr(1) tid(14f8) 8007007E The specified module could not be found.
+onecore\com\combase\winrt\error\restrictederror.cpp(1016)\combase.dll!00007FFAD924BEE3: (caller: 00007FFAD93CCC47) ReturnHr(2) tid(14f8) 8007007E The specified module could not be found.
+onecore\com\combase\winrt\error\restrictederror.cpp(1016)\combase.dll!00007FFAD924BEE3: (caller: 00007FFAD93CC6B3) ReturnHr(3) tid(14f8) 8007007E The specified module could not be found.
+(1b68.14f8): Unknown exception - code c000027b (!!! second chance !!!)
+KERNELBASE!RaiseFailFastException+0x152:
+00007ffa`d798b362 0f1f440000      nop     dword ptr [rax+rax]
+0:000&gt; g
+WARNING: Continuing a non-continuable exception
+(1b68.14f8): Unknown exception - code c0000602 (!!! second chance !!!)
+KERNELBASE!RaiseFailFastException+0x152:
+00007ffa`d798b362 0f1f440000      nop     dword ptr [rax+rax]
+0:000&gt; g
+WARNING: Continuing a non-continuable exception
+(1b68.14f8): CLR exception - code e0434352 (first chance)
+(1b68.14f8): Windows Runtime Originate Error - code 40080201 (first chance)
+onecore\com\combase\winrt\error\restrictederror.cpp(1016)\combase.dll!00007FFAD924BEE3: (caller: 00007FFAD9255BC9) ReturnHr(4) tid(14f8) 8007007E The specified module could not be found.
+onecore\com\combase\winrt\error\restrictederror.cpp(1016)\combase.dll!00007FFAD924BEE3: (caller: 00007FFAD93CCC47) ReturnHr(5) tid(14f8) 8007007E The specified module could not be found.
+onecore\com\combase\winrt\error\restrictederror.cpp(1016)\combase.dll!00007FFAD924BEE3: (caller: 00007FFAD93CC6B3) ReturnHr(6) tid(14f8) 8007007E The specified module could not be found.
+(1b68.14f8): Unknown exception - code c000027b (!!! second chance !!!)
+KERNELBASE!RaiseFailFastException+0x152:
+00007ffa`d798b362 0f1f440000      nop     dword ptr [rax+rax]
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\ObjectiveC.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2202.7001.0_neutral__8wekyb3d8bbwe\amd64\Visualizers\winrt.natvis'
+</DmlText>

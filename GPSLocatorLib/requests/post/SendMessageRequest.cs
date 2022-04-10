@@ -13,8 +13,10 @@ public class SendMessageRequest : DevicePostRequest<SendMessageCount, ErrorMulti
 
     public SendMessageRequest( 
         DeviceConfig config, 
-        IJ4JLogger logger )
-        : base( config, logger )
+        IJ4JLogger logger,
+        IBullshitLogger bsLogger
+        )
+        : base( config, logger, bsLogger )
     {
     }
 

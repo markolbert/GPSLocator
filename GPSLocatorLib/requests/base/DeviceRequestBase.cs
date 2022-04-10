@@ -22,7 +22,8 @@ namespace J4JSoftware.GPSLocator
 
         protected DeviceRequestBase(
             DeviceConfig config,
-            IJ4JLogger logger
+            IJ4JLogger logger,
+            IBullshitLogger bsLogger
         )
         {
             if( GetType()
@@ -40,14 +41,19 @@ namespace J4JSoftware.GPSLocator
 
             Logger = logger;
             Logger.SetLoggedType( GetType() );
+
+            BSLogger = bsLogger;
+            BSLogger.Log($"Created device request '{GetType().Name}'");
         }
 
         protected IJ4JLogger Logger { get; }
+        protected IBullshitLogger BSLogger { get; }
         protected DeviceConfig Configuration { get; }
 
         public async Task<DeviceResponse<TResponse>> ExecuteAsync()
         {
             Status?.Invoke( this, new RequestEventArgs<TResponse>( RequestEvent.Started, null ) );
+            BSLogger.Log("Beginning request execution");
             
             var website = Configuration.Website.Replace( "http://", "", StringComparison.OrdinalIgnoreCase )
                                        .Replace( "https://", "", StringComparison.OrdinalIgnoreCase );
@@ -55,6 +61,8 @@ namespace J4JSoftware.GPSLocator
             var requestUri = QueryHelpers.AddQueryString(
                 $"https://{website}/{_direction}/V{_version}/{_svcGroup}/{_service}",
                 _queryStrings );
+
+            BSLogger.Log($"Uri is '{requestUri}'");
 
             var credentials = _requiresAuth
                 ? new NetworkCredential( Configuration.UserName, Configuration.Password )
@@ -68,15 +76,19 @@ namespace J4JSoftware.GPSLocator
                 {
                     Credentials = credentials?.GetCredential( new Uri( requestUri ), "Basic" )
                 };
+
+                BSLogger.Log( $"Created {typeof( HttpClientHandler )}" );
             }
-            catch( Exception ex )
+            catch ( Exception ex )
             {
+                BSLogger.Log( $"Failed to create {typeof( HttpClientHandler )}, message was '{ex.Message}'" );
                 return HandleError( ex, requestUri );
             }
 
             var httpClient = new HttpClient( clientHandler );
 
             Logger.Information<string>( "Querying {0}", requestUri );
+            BSLogger.Log( $"Querying {requestUri}" );
 
             (HttpResponseMessage? ResponseMessage, DeviceResponse<TResponse>? DeviceResponse) internalResult;
 
@@ -93,6 +105,7 @@ namespace J4JSoftware.GPSLocator
                 return await HandleInvalidResponseAsync(requestUri, internalResult.ResponseMessage);
 
             Logger.Information("Reading response");
+            BSLogger.Log( "Reading response" );
             var respText = await internalResult!.ResponseMessage!.Content.ReadAsStringAsync();
 
             var retVal = new DeviceResponse<TResponse>( requestUri );
@@ -100,10 +113,12 @@ namespace J4JSoftware.GPSLocator
             try
             {
                 Logger.Information("Parsing response");
+                BSLogger.Log("Parsing response");
 
                 retVal.Result = JsonSerializer.Deserialize<TResponse>( respText );
 
                 Logger.Information("Query succeeded");
+                BSLogger.Log( "Query succeeded" );
             }
             catch ( Exception ex )
             {
@@ -148,6 +163,8 @@ namespace J4JSoftware.GPSLocator
         {
             Logger.Error<string?>( $"{_direction}/V{_version}/{_svcGroup}/{_version} request failed, message was {0}",
                                    ex?.Message );
+
+            BSLogger.Log($"{_direction}/V{_version}/{_svcGroup}/{_version} request failed, message was {ex?.Message}");
 
             var retVal = new DeviceResponse<TResponse>( requestUri )
             {
@@ -197,6 +214,7 @@ namespace J4JSoftware.GPSLocator
             Logger.Error<Type, string>("Parsing response to {0} failed, message was '{1}'",
                                        typeof(TResponse),
                                        ex.Message);
+            BSLogger.Log( $"Parsing response to {typeof( TResponse )} failed, message was '{ex.Message}'" );
         }
     }
 }

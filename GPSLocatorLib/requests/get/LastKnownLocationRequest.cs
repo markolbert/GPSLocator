@@ -10,8 +10,10 @@ public class LastKnownLocationRequest<TLoc> : DeviceGetRequest<LastKnownLocation
 
     public LastKnownLocationRequest( 
         DeviceConfig config, 
-        IJ4JLogger logger )
-        : base( config, logger )
+        IJ4JLogger logger,
+        IBullshitLogger bsLogger
+        )
+        : base( config, logger, bsLogger )
     {
         IMEI = Configuration.IMEI;
     }

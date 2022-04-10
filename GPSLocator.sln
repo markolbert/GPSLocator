@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPSRouter", "GPSRouter\GPSR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoProcessor", "..\GeoProcessor\GeoProcessor\GeoProcessor.csproj", "{C1A77C1C-9038-4BE7-91D7-7AC5ED8282F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSLocatorTest", "GPSLocatorTest\GPSLocatorTest.csproj", "{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,6 +193,30 @@ Global
 		{C1A77C1C-9038-4BE7-91D7-7AC5ED8282F8}.Release|x64.Build.0 = Release|Any CPU
 		{C1A77C1C-9038-4BE7-91D7-7AC5ED8282F8}.Release|x86.ActiveCfg = Release|Any CPU
 		{C1A77C1C-9038-4BE7-91D7-7AC5ED8282F8}.Release|x86.Build.0 = Release|Any CPU
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|Any CPU.Build.0 = Debug|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|arm64.ActiveCfg = Debug|arm64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|arm64.Build.0 = Debug|arm64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|arm64.Deploy.0 = Debug|arm64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|x64.ActiveCfg = Debug|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|x64.Build.0 = Debug|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|x64.Deploy.0 = Debug|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|x86.ActiveCfg = Debug|x86
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|x86.Build.0 = Debug|x86
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Debug|x86.Deploy.0 = Debug|x86
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|Any CPU.ActiveCfg = Release|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|Any CPU.Build.0 = Release|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|Any CPU.Deploy.0 = Release|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|arm64.ActiveCfg = Release|arm64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|arm64.Build.0 = Release|arm64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|arm64.Deploy.0 = Release|arm64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|x64.ActiveCfg = Release|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|x64.Build.0 = Release|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|x64.Deploy.0 = Release|x64
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|x86.ActiveCfg = Release|x86
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|x86.Build.0 = Release|x86
+		{E20B5429-9B18-4CC1-AD7D-E576442CEBF7}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
