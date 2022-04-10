@@ -82,7 +82,8 @@ namespace J4JSoftware.GPSLocator
             catch ( Exception ex )
             {
                 BSLogger.Log( $"Failed to create {typeof( HttpClientHandler )}, message was '{ex.Message}'" );
-                return HandleError( ex, requestUri );
+
+                return CreateErrorAndAbort( requestUri, ex );
             }
 
             var httpClient = new HttpClient( clientHandler );
@@ -90,23 +91,25 @@ namespace J4JSoftware.GPSLocator
             Logger.Information<string>( "Querying {0}", requestUri );
             BSLogger.Log( $"Querying {requestUri}" );
 
-            (HttpResponseMessage? ResponseMessage, DeviceResponse<TResponse>? DeviceResponse) internalResult;
+            HttpResponseMessage? response;
 
             try
             {
-                internalResult = await ExecuteInternalAsync( httpClient, requestUri );
+                response = await ExecuteInternalAsync( httpClient, requestUri );
             }
             catch ( Exception ex )
             {
-                return HandleError(ex, requestUri);
+                BSLogger.Log( $"{nameof( ExecuteInternalAsync )}() failed, message was {ex.Message}" );
+
+                return CreateErrorAndAbort( requestUri, ex );
             }
 
-            if (!internalResult!.ResponseMessage!.IsSuccessStatusCode)
-                return await HandleInvalidResponseAsync(requestUri, internalResult.ResponseMessage);
+            if (!response.IsSuccessStatusCode)
+                return await CreateErrorAndAbortAsync(requestUri, response);
 
             Logger.Information("Reading response");
             BSLogger.Log( "Reading response" );
-            var respText = await internalResult!.ResponseMessage!.Content.ReadAsStringAsync();
+            var respText = await response.Content.ReadAsStringAsync();
 
             var retVal = new DeviceResponse<TResponse>( requestUri );
 
@@ -122,7 +125,13 @@ namespace J4JSoftware.GPSLocator
             }
             catch ( Exception ex )
             {
-                HandleContentParsingError(retVal, ex);
+                Logger.Error<Type, string>("Parsing response to {0} failed, message was '{1}'",
+                                           typeof(TResponse),
+                                           ex.Message);
+                BSLogger.Log($"Parsing response to {typeof(TResponse)} failed, message was '{ex.Message}'");
+
+                retVal.Error =
+                    new TError() { Description = $"Response parsing failed, message was '{ex.Message}'" };
             }
 
             Status?.Invoke( this, new RequestEventArgs<TResponse>( RequestEvent.Succeeded, retVal ) );
@@ -131,10 +140,10 @@ namespace J4JSoftware.GPSLocator
         }
 
 #pragma warning disable CS1998
-        protected virtual async Task<(HttpResponseMessage?, DeviceResponse<TResponse>?)> ExecuteInternalAsync(HttpClient httpClient, string requestUri)
+        protected virtual async Task<HttpResponseMessage> ExecuteInternalAsync(HttpClient httpClient, string requestUri)
 #pragma warning restore CS1998
         {
-            return ( null, null );
+            return new HttpResponseMessage( HttpStatusCode.BadRequest );
         }
 
         protected void SetQueryProperty<TProp>(
@@ -159,14 +168,30 @@ namespace J4JSoftware.GPSLocator
             else _queryStrings.Add(memberName, toTextFunc(value));
         }
 
-        protected DeviceResponse<TResponse> HandleError( Exception? ex, string requestUri )
+        protected async Task<DeviceResponse<TResponse>> CreateErrorAndAbortAsync( string requestUri, HttpResponseMessage response )
         {
-            Logger.Error<string?>( $"{_direction}/V{_version}/{_svcGroup}/{_version} request failed, message was {0}",
-                                   ex?.Message );
+            ErrorBase? devError;
+            DeviceResponse<TResponse>? retVal;
 
-            BSLogger.Log($"{_direction}/V{_version}/{_svcGroup}/{_version} request failed, message was {ex?.Message}");
+            try
+            {
+                var respText = await response.Content.ReadAsStringAsync();
+                devError = JsonSerializer.Deserialize<TError>( respText );
 
-            var retVal = new DeviceResponse<TResponse>( requestUri )
+                retVal = CreateErrorAndAbort( requestUri, null );
+                retVal.Error = devError;
+            }
+            catch( Exception jsonEx )
+            {
+                retVal = CreateErrorAndAbort( requestUri, jsonEx );
+            }
+
+            return retVal;
+        }
+
+        protected DeviceResponse<TResponse> CreateErrorAndAbort( string uri, Exception? ex )
+        {
+            var retEx = new DeviceResponse<TResponse>(uri)
             {
                 Error = new TError()
                 {
@@ -177,44 +202,9 @@ namespace J4JSoftware.GPSLocator
                 }
             };
 
-            Status?.Invoke( this, new RequestEventArgs<TResponse>( RequestEvent.Aborted, retVal ) );
+            Status?.Invoke(this, new RequestEventArgs<TResponse>(RequestEvent.Aborted, retEx));
 
-            return retVal;
-        }
-
-        protected async Task<DeviceResponse<TResponse>> HandleInvalidResponseAsync( string requestUri, HttpResponseMessage response )
-        {
-            ErrorBase? devError;
-            DeviceResponse<TResponse>? retVal;
-
-            try
-            {
-                var respText = await response.Content.ReadAsStringAsync();
-                devError = JsonSerializer.Deserialize<TError>( respText );
-
-                retVal = HandleError( null, requestUri );
-                retVal.Error = devError;
-            }
-            catch( Exception jsonEx )
-            {
-                retVal = HandleError( jsonEx, requestUri );
-            }
-
-            Status?.Invoke( this,
-                            new RequestEventArgs<TResponse>( RequestEvent.Aborted, retVal ) );
-
-            return retVal;
-        }
-
-        protected void HandleContentParsingError(DeviceResponse<TResponse> response, Exception ex )
-        {
-            response.Error =
-                new TError() { Description = $"Response parsing failed, message was '{ex.Message}'" };
-
-            Logger.Error<Type, string>("Parsing response to {0} failed, message was '{1}'",
-                                       typeof(TResponse),
-                                       ex.Message);
-            BSLogger.Log( $"Parsing response to {typeof( TResponse )} failed, message was '{ex.Message}'" );
+            return retEx;
         }
     }
 }

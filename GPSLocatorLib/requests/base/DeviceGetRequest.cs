@@ -20,7 +20,7 @@ namespace J4JSoftware.GPSLocator
         {
         }
 
-        protected override async Task<(HttpResponseMessage?, DeviceResponse<TResponse>?)> ExecuteInternalAsync(
+        protected override async Task<HttpResponseMessage> ExecuteInternalAsync(
             HttpClient httpClient,
             string requestUri
         )
@@ -35,12 +35,12 @@ namespace J4JSoftware.GPSLocator
                 response = await httpClient.GetAsync( requestUri );
                 BSLogger.Log($"Got response");
             }
-            catch ( Exception ex )
+            catch ( Exception )
             {
-                return ( null, HandleError( ex, requestUri ) );
+                return new HttpResponseMessage( HttpStatusCode.BadRequest );
             }
 
-            return (response, null);
+            return response;
         }
     }
 }

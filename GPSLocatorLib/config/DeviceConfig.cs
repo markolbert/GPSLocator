@@ -157,11 +157,21 @@ public class DeviceConfig : INotifyPropertyChanged
         }
 
         var testReq = new DeviceConfigRequest(this, _logger!, _bsLogger!);
-        var response = await testReq.ExecuteAsync();
 
-        _bsLogger?.Log( "Returned from ExecuteAsync()" );
+        DeviceResponse<DeviceParameters>? response = null;
 
-        if( response.Succeeded )
+        try
+        {
+            response = await testReq.ExecuteAsync();
+            _bsLogger?.Log("Returned from ExecuteAsync()");
+        }
+        catch ( Exception ex )
+        {
+            _bsLogger?.Log( $"Exception return from ExecuteAsync(), message was '{ex.Message}', exception was {ex.GetType().Name}" );
+            return false;
+        }
+
+        if ( response!.Succeeded )
         {
             _bsLogger?.Log( "Credentials are valid" );
             ValidationState |= ValidationState.CredentialsValid;
