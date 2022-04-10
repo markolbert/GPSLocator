@@ -18,8 +18,21 @@ public class BullshitLogger : IBullshitLogger
         _logFile = System.IO.Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "bullshit.txt");
     }
 
-    public void Log(string text, [CallerMemberName] string calledBy = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int lineNum = 0)
+    public void Log(
+        string text,
+        [ CallerMemberName ] string calledBy = "",
+        [ CallerFilePath ] string callerFilePath = "",
+        [ CallerLineNumber ] int lineNum = 0
+    )
     {
-        File.AppendAllText(_logFile, $"{calledBy}\t{text}\n\t{callerFilePath}:{lineNum}\n");
+        File.AppendAllText( _logFile, $"{calledBy}\t{text}\n\t{callerFilePath}:{lineNum}\n" );
     }
+
+    public void Log(
+        Exception e,
+        [ CallerMemberName ] string calledBy = "",
+        [ CallerFilePath ] string callerFilePath = "",
+        [ CallerLineNumber ] int lineNum = 0
+    ) =>
+        Log( $"Exception {e.GetType().Name} - {e.Message}", calledBy, callerFilePath, lineNum );
 }
