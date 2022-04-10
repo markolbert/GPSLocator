@@ -16,10 +16,9 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
     protected HistoryViewModelBase(
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
-        IJ4JLogger logger,
-        IBullshitLogger bsLogger
+        IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger, bsLogger)
+        : base( appViewModel, statusMessages, logger)
     {
         var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds( 1 ) };
         timer.Tick += Timer_Tick;
@@ -55,7 +54,7 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
 
         ClearDisplayedPoints();
 
-        var request = new HistoryRequest<Location>( AppViewModel.Configuration, Logger, BSLogger )
+        var request = new HistoryRequest<Location>( AppViewModel.Configuration, Logger )
         {
             Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
         };

@@ -19,10 +19,9 @@ public class MessagingViewModel :SelectablePointViewModel
     public MessagingViewModel(
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
-        IJ4JLogger logger,
-        IBullshitLogger bsLogger
+        IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger,bsLogger )
+        : base( appViewModel, statusMessages, logger )
     {
         SendMessageCommand = new RelayCommand( SendMessageHandler );
 
@@ -75,7 +74,7 @@ public class MessagingViewModel :SelectablePointViewModel
                 messages.Add( sb.ToString() );
         }
 
-        var request = new SendMessageRequest( AppViewModel.Configuration, Logger, BSLogger );
+        var request = new SendMessageRequest( AppViewModel.Configuration, Logger );
 
         foreach( var message in messages )
         {

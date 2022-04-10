@@ -23,7 +23,6 @@ public class SettingsViewModel : ObservableObject
     private readonly AppViewModel _appViewModel;
     private readonly string _userConfigPath;
     private readonly IJ4JLogger _logger;
-    private readonly IBullshitLogger _bsLogger;
     private readonly IJ4JProtection _protector;
     private readonly DispatcherQueue _dQueue;
     private readonly StatusMessage.StatusMessages _statusMessages;
@@ -48,8 +47,7 @@ public class SettingsViewModel : ObservableObject
         StatusMessage.StatusMessages statusMessages,
         IJ4JProtection protector,
         IJ4JHost host,
-        IJ4JLogger logger,
-        IBullshitLogger bsLogger
+        IJ4JLogger logger
     )
     {
         _appViewModel = appViewModel;
@@ -59,8 +57,6 @@ public class SettingsViewModel : ObservableObject
 
         _logger = logger;
         _logger.SetLoggedType( GetType() );
-
-        _bsLogger = bsLogger;
 
         _dQueue = DispatcherQueue.GetForCurrentThread();
 
@@ -151,7 +147,7 @@ public class SettingsViewModel : ObservableObject
 
         testConfig.Validation += OnValidationProgress;
 
-        testConfig.Initialize( new GpsLocatorContext( _protector, _logger, _bsLogger ) );
+        testConfig.Initialize( new GpsLocatorContext( _protector, _logger ) );
 
         Validated = await testConfig.ValidateAsync();
 

@@ -22,8 +22,7 @@ namespace J4JSoftware.GPSLocator
 
         protected DeviceRequestBase(
             DeviceConfig config,
-            IJ4JLogger logger,
-            IBullshitLogger bsLogger
+            IJ4JLogger logger
         )
         {
             if( GetType()
@@ -42,18 +41,16 @@ namespace J4JSoftware.GPSLocator
             Logger = logger;
             Logger.SetLoggedType( GetType() );
 
-            BSLogger = bsLogger;
-            BSLogger.Log($"Created device request '{GetType().Name}'");
+            Logger.Information("Created device request '{0}'", GetType());
         }
 
         protected IJ4JLogger Logger { get; }
-        protected IBullshitLogger BSLogger { get; }
         protected DeviceConfig Configuration { get; }
 
         public async Task<DeviceResponse<TResponse>> ExecuteAsync()
         {
             Status?.Invoke( this, new RequestEventArgs<TResponse>( RequestEvent.Started, null ) );
-            BSLogger.Log("Beginning request execution");
+            Logger.Information("Beginning request execution");
             
             var website = Configuration.Website.Replace( "http://", "", StringComparison.OrdinalIgnoreCase )
                                        .Replace( "https://", "", StringComparison.OrdinalIgnoreCase );
@@ -62,7 +59,7 @@ namespace J4JSoftware.GPSLocator
                 $"https://{website}/{_direction}/V{_version}/{_svcGroup}/{_service}",
                 _queryStrings );
 
-            BSLogger.Log($"Uri is '{requestUri}'");
+            Logger.Information<string>( "Uri is '{0}'", requestUri );
 
             var credentials = _requiresAuth
                 ? new NetworkCredential( Configuration.UserName, Configuration.Password )
@@ -77,11 +74,13 @@ namespace J4JSoftware.GPSLocator
                     Credentials = credentials?.GetCredential( new Uri( requestUri ), "Basic" )
                 };
 
-                BSLogger.Log( $"Created {typeof( HttpClientHandler )}" );
+                Logger.Information( "Created {0}", typeof(HttpClientHandler));
             }
             catch ( Exception ex )
             {
-                BSLogger.Log( $"Failed to create {typeof( HttpClientHandler )}, message was '{ex.Message}'" );
+                Logger.Error<Type, string>( "Failed to create {0}, message was '{1}'",
+                                            typeof( HttpClientHandler ),
+                                            ex.Message );
 
                 return CreateErrorAndAbort( requestUri, ex );
             }
@@ -89,7 +88,6 @@ namespace J4JSoftware.GPSLocator
             var httpClient = new HttpClient( clientHandler );
 
             Logger.Information<string>( "Querying {0}", requestUri );
-            BSLogger.Log( $"Querying {requestUri}" );
 
             HttpResponseMessage? response;
 
@@ -99,7 +97,7 @@ namespace J4JSoftware.GPSLocator
             }
             catch ( Exception ex )
             {
-                BSLogger.Log( $"{nameof( ExecuteInternalAsync )}() failed, message was {ex.Message}" );
+                Logger.Error<string>( "Executing request failed, message was {0}", ex.Message);
 
                 return CreateErrorAndAbort( requestUri, ex );
             }
@@ -108,7 +106,6 @@ namespace J4JSoftware.GPSLocator
                 return await CreateErrorAndAbortAsync(requestUri, response);
 
             Logger.Information("Reading response");
-            BSLogger.Log( "Reading response" );
             var respText = await response.Content.ReadAsStringAsync();
 
             var retVal = new DeviceResponse<TResponse>( requestUri );
@@ -116,20 +113,16 @@ namespace J4JSoftware.GPSLocator
             try
             {
                 Logger.Information("Parsing response");
-                BSLogger.Log("Parsing response");
 
                 retVal.Result = JsonSerializer.Deserialize<TResponse>( respText );
 
                 Logger.Information("Query succeeded");
-                BSLogger.Log( "Query succeeded" );
             }
             catch ( Exception ex )
             {
                 Logger.Error<Type, string>("Parsing response to {0} failed, message was '{1}'",
                                            typeof(TResponse),
                                            ex.Message);
-                BSLogger.Log($"Parsing response to {typeof(TResponse)} failed, message was '{ex.Message}'");
-
                 retVal.Error =
                     new TError() { Description = $"Response parsing failed, message was '{ex.Message}'" };
             }

@@ -8,20 +8,16 @@ public record GpsLocatorContext : IGpsLocatorContext
 {
     public GpsLocatorContext(
         IJ4JProtection protector,
-        IJ4JLogger? logger,
-        IBullshitLogger? bsLogger
+        IJ4JLogger? logger
     )
     {
         Protector = protector;
 
         Logger = logger;
         Logger?.SetLoggedType(GetType());
-
-        BSLogger = bsLogger;
     }
 
     public IJ4JLogger? Logger { get; }
-    public IBullshitLogger? BSLogger { get; }
     public IJ4JProtection Protector { get; init; }
 
     public int MaxSmsLength => 160;

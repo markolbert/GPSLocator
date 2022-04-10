@@ -46,8 +46,7 @@ public partial class App
                     }
 
                     var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(),
-                                                         c.ResolveOptional<IJ4JLogger>(),
-                                                         c.ResolveOptional<IBullshitLogger>() );
+                                                         c.ResolveOptional<IJ4JLogger>() );
 
                     if( retVal != null )
                     {
@@ -61,10 +60,6 @@ public partial class App
                     return retVal;
                 } )
                .AsSelf()
-               .SingleInstance();
-
-        builder.RegisterType<BullshitLogger>()
-               .As<IBullshitLogger>()
                .SingleInstance();
 
         builder.Register( c =>

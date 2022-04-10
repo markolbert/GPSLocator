@@ -7,10 +7,9 @@ public class DeviceConfigRequest : DeviceGetRequest<DeviceParameters, ErrorSingl
 {
     public DeviceConfigRequest( 
         DeviceConfig config, 
-        IJ4JLogger logger,
-        IBullshitLogger bsLogger
+        IJ4JLogger logger
         )
-        : base( config, logger, bsLogger )
+        : base( config, logger )
     {
     }
 }

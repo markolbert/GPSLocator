@@ -11,10 +11,9 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
     public LastKnownViewModel(
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
-        IJ4JLogger logger,
-        IBullshitLogger bsLogger
+        IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger, bsLogger )
+        : base( appViewModel, statusMessages, logger )
     {
         Messenger.Send( new MapViewModelMessage( this ), "primary" );
     }
@@ -44,7 +43,7 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
             return;
         }
 
-        var request = new LastKnownLocationRequest<Location>( AppViewModel.Configuration, Logger, BSLogger );
+        var request = new LastKnownLocationRequest<Location>( AppViewModel.Configuration, Logger );
 
         ExecuteRequest(request, OnRequestStatusChanged);
     }

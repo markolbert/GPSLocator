@@ -11,10 +11,9 @@ public class HistoryViewModel : SelectablePointViewModel
     public HistoryViewModel(
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
-        IJ4JLogger logger,
-        IBullshitLogger bsLogger
+        IJ4JLogger logger
     )
-        : base(appViewModel, statusMessages, logger, bsLogger)
+        : base(appViewModel, statusMessages, logger)
     {
     }
 
