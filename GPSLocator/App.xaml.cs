@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
+using System.IO;
 using System.Runtime.ExceptionServices;
 using Windows.Graphics;
 using J4JSoftware.DependencyInjection;
@@ -11,6 +12,7 @@ using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using UnhandledExceptionEventArgs = System.UnhandledExceptionEventArgs;
+#pragma warning disable CS8618
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,6 +29,7 @@ public partial class App : Application
     private const string Publisher = "J4JSoftware";
     private const string ApplicationName = "GpsLocator";
 
+    private readonly string _crashFile;
     private readonly DispatcherQueue _dQueue;
     private readonly IJ4JLogger _buildLogger;
     private readonly IJ4JLogger _logger;
@@ -45,24 +48,41 @@ public partial class App : Application
         this.InitializeComponent();
 
         _dQueue = DispatcherQueue.GetForCurrentThread();
+        _crashFile = Path.Combine( Windows.Storage.ApplicationData.Current.LocalFolder.Path, "crashFile.txt" );
 
         var hostConfig = new J4JWinAppHostConfiguration()
-                        .Publisher( Publisher )
-                        .ApplicationName( ApplicationName )
-                        .LoggerInitializer( InitializeLogger )
-                        .AddNetEventSinkToLogger()
-                        .AddDependencyInjectionInitializers( SetupDependencyInjection )
-                        .AddServicesInitializers( InitializeServices )
-                        .AddUserConfigurationFile( "userConfig.json", optional: true )
-                        .FilePathTrimmer( FilePathTrimmer );
+                         .Publisher( Publisher )
+                         .ApplicationName( ApplicationName )
+                         .LoggerInitializer( InitializeLogger )
+                         .AddNetEventSinkToLogger()
+                         .AddDependencyInjectionInitializers( SetupDependencyInjection )
+                         .AddServicesInitializers( InitializeServices )
+                         .AddUserConfigurationFile( "userConfig.json", optional: true )
+                         .FilePathTrimmer( FilePathTrimmer )
+            as J4JWinAppHostConfiguration;
+
+        if( hostConfig == null )
+        {
+            OutputFatalMessage( $"Could not create {typeof( J4JWinAppHostConfiguration )}", true );
+            return;
+        }
 
         _buildLogger = hostConfig.Logger;
 
-        if (hostConfig.MissingRequirements != J4JHostRequirements.AllMet)
-            throw new ApplicationException($"Missing J4JHostConfiguration items: {hostConfig.MissingRequirements}");
+        if( hostConfig.MissingRequirements != J4JHostRequirements.AllMet )
+        {
+            OutputFatalMessage($"Missing J4JHostConfiguration items: {hostConfig.MissingRequirements}", true);
+            return;
+        }
 
-        Host = hostConfig.Build()
-         ?? throw new NullReferenceException($"Failed to build {nameof(IJ4JHost)}");
+        var host = hostConfig.Build();
+        if( host == null )
+        {
+            OutputFatalMessage( $"Failed to build {nameof( IJ4JHost )}", true );
+            return;
+        }
+
+        Host = host;
 
         _logger = Host.Services.GetRequiredService<IJ4JLogger>();
         _logger.OutputCache(hostConfig.Logger);
@@ -71,6 +91,22 @@ public partial class App : Application
             this,
             "primary",
             AppConfiguredHandler );
+
+        this.UnhandledException += App_UnhandledException;
+    }
+
+    private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        OutputFatalMessage( $"Unhandled exception: {e.GetType().Name}" );
+        OutputFatalMessage( $"{e.Message}", true );
+    }
+
+    private void OutputFatalMessage( string msg, bool exitApp = false )
+    {
+        File.AppendAllText( _crashFile, $"{msg}\n" );
+
+        if( exitApp )
+            Exit();
     }
 
     private void AppConfiguredHandler( App recipient, AppConfiguredMessage message )
