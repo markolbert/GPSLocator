@@ -17,9 +17,13 @@ namespace J4JSoftware.GPSLocator;
 
 public partial class App
 {
-    private void InitializeLogger( IConfiguration config, J4JLoggerConfiguration loggerConfig )
+    private void InitializeLogger(
+        IConfiguration config,
+        J4JHostConfiguration hostConfig,
+        J4JLoggerConfiguration loggerConfig
+    )
     {
-        var logFile = System.IO.Path.Combine( Windows.Storage.ApplicationData.Current.LocalFolder.Path, "log.txt" );
+        var logFile = System.IO.Path.Combine(hostConfig.UserConfigurationFolder, "log.txt");
 
         loggerConfig.SerilogConfiguration.WriteTo.File( logFile, rollingInterval: RollingInterval.Day );
 

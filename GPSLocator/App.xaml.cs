@@ -4,6 +4,7 @@ using System.Runtime.ExceptionServices;
 using Windows.Graphics;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.Logging;
+using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI;
@@ -45,7 +46,7 @@ public partial class App : Application
 
         _dQueue = DispatcherQueue.GetForCurrentThread();
 
-        var hostConfig = new J4JHostConfiguration()
+        var hostConfig = new J4JWinAppHostConfiguration()
                         .Publisher( Publisher )
                         .ApplicationName( ApplicationName )
                         .LoggerInitializer( InitializeLogger )
