@@ -19,20 +19,9 @@ public partial class App
 {
     private void InitializeLogger( IConfiguration config, J4JLoggerConfiguration loggerConfig )
     {
-        var appPath = Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData );
+        var logFile = System.IO.Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "log.txt");
 
-        if( string.IsNullOrEmpty( appPath ) )
-        {
-            _buildLogger.Error("Could not determine application's executable path");
-            return;
-        }
-
-        var userFolder = System.IO.Path.Combine( appPath, Publisher, ApplicationName );
-        Directory.CreateDirectory( userFolder );
-
-        loggerConfig.SerilogConfiguration
-                    .WriteTo.File( System.IO.Path.Combine( userFolder, "log.txt" ),
-                                   rollingInterval: RollingInterval.Day );
+        loggerConfig.SerilogConfiguration.WriteTo.File( logFile, rollingInterval: RollingInterval.Day );
 
         _buildLogger.Information("Configured logger");
     }
@@ -134,16 +123,25 @@ public partial class App
 
     private static string GetProjectPath( [ CallerFilePath ] string filePath = "" )
     {
-        var dirInfo = new DirectoryInfo( System.IO.Path.GetDirectoryName( filePath )! );
-
-        while( dirInfo.Parent != null )
+        // DirectoryInfo will throw an exception when this method is called on a machine
+        // other than the development machine, so just return an empty string in that case
+        try
         {
-            if( dirInfo.EnumerateFiles( "*.csproj" ).Any() )
-                break;
+            var dirInfo = new DirectoryInfo( System.IO.Path.GetDirectoryName( filePath )! );
 
-            dirInfo = dirInfo.Parent;
+            while( dirInfo.Parent != null )
+            {
+                if( dirInfo.EnumerateFiles( "*.csproj" ).Any() )
+                    break;
+
+                dirInfo = dirInfo.Parent;
+            }
+
+            return dirInfo.FullName;
         }
-
-        return dirInfo.FullName;
+        catch( Exception )
+        {
+            return string.Empty;
+        }
     }
 }

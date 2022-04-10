@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
+using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator;
 
@@ -45,14 +46,19 @@ public class LaunchViewModel : ObservableObject
     public void OnPageActivated()
     {
         _bsLogger.Log( "Starting initial validation" );
+        _logger.Information( "Starting initial validation" );
+
         _appViewModel.Configuration.Validation += OnValidationProgress;
 
         Task.Run( async () => await _appViewModel.Configuration.ValidateAsync() );
+
+        _logger.Information<string>( $"Exiting {0}", nameof( OnPageActivated ) );
         _bsLogger.Log($"Exiting {nameof( OnPageActivated )}" );
     }
 
     private void OnValidationProgress( object? sender, ValidationPhase args )
     {
+        _logger.Information("Validation event received {0}", args);
         _bsLogger.Log($"Validation event received {args}");
 
         OnValidationUpdate( args );
@@ -62,12 +68,14 @@ public class LaunchViewModel : ObservableObject
 
         Thread.Sleep( 1000 ); // so last message will be visible
 
+        _logger.Information<string>("Raising {0} event", nameof(Initialized));
         _bsLogger.Log($"Raising {nameof(Initialized)} event");
         Initialized?.Invoke( this, EventArgs.Empty );
     }
 
     private void OnValidationUpdate( ValidationPhase args )
     {
+        _logger.Information( "Queuing validation update {0}", args );
         _bsLogger.Log($"OnValidationUpdate(): {args}" );
 
         _dQueue.TryEnqueue( () =>
@@ -86,13 +94,17 @@ public class LaunchViewModel : ObservableObject
             Message = msg;
             MessageColor = msgColor;
 
+            _logger.Write<string>(isError ? LogEventLevel.Error : LogEventLevel.Information,
+                                   "Updating user interface: {0}",
+                                   msg);
             _bsLogger.Log($"Updating user interface: {msg}" );
 
-            if( terminate )
-            {
-                _appViewModel.Configuration.Validation -= OnValidationProgress;
-                _bsLogger.Log( $"Decoupled event handler" );
-            }
+            if( !terminate )
+                return;
+
+            _appViewModel.Configuration.Validation -= OnValidationProgress;
+            _logger.Information("Decoupled event handler");
+            _bsLogger.Log( $"Decoupled event handler" );
         } );
     }
 

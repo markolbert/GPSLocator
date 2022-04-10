@@ -138,7 +138,8 @@ public class DeviceConfig : INotifyPropertyChanged
         Validation?.Invoke( this, ValidationPhase.Starting );
 
         var isValid = await ValidateCredentialsAsync();
-        isValid &= await ValidateImeiAsync();
+        if( isValid )
+            isValid &= await ValidateImeiAsync();
 
         Validation?.Invoke( this, isValid ? ValidationPhase.Succeeded : ValidationPhase.Failed );
 

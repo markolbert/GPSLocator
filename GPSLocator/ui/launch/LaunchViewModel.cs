@@ -8,6 +8,7 @@ using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
+using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator;
 
@@ -37,24 +38,34 @@ public class LaunchViewModel : ObservableObject
 
     public void OnPageActivated()
     {
+        _logger.Information("Starting initial validation");
         _appViewModel.Configuration.Validation += OnValidationProgress;
 
         Task.Run( async () => await _appViewModel.Configuration.ValidateAsync() );
+
+        _logger.Information<string>($"Exiting {0}", nameof(OnPageActivated));
     }
 
     private void OnValidationProgress( object? sender, ValidationPhase args )
     {
+        _logger.Information("Validation event received {0}", args);
+
         OnValidationUpdate( args );
 
-        if( args is not (ValidationPhase.Failed or ValidationPhase.Succeeded) )
+        if (args is not (ValidationPhase.Failed or ValidationPhase.Succeeded or ValidationPhase.NotValidatable))
             return;
 
         Thread.Sleep( 1000 ); // so last message will be visible
+
+        _logger.Information<string>("Raising {0} event", nameof(Initialized));
+        
         Initialized?.Invoke( this, EventArgs.Empty );
     }
 
     private void OnValidationUpdate( ValidationPhase args )
     {
+        _logger.Information("Queuing validation update {0}", args);
+
         _dQueue.TryEnqueue( () =>
         {
             ( string msg, Color msgColor, bool isError, bool terminate ) = args switch
@@ -71,13 +82,15 @@ public class LaunchViewModel : ObservableObject
             Message = msg;
             MessageColor = msgColor;
 
-            if( isError )
-                _logger.Error<string>( "Validating credentials: {0}", msg );
-            else
-                _logger.Information<string>( "Validating credentials: {0}", msg );
+            _logger.Write<string>( isError ? LogEventLevel.Error : LogEventLevel.Information,
+                                   "Updating user interface: {0}",
+                                   msg );
 
-            if( terminate )
-                _appViewModel.Configuration.Validation -= OnValidationProgress;
+            if( !terminate )
+                return;
+
+            _appViewModel.Configuration.Validation -= OnValidationProgress;
+            _logger.Information( "Decoupled event handler" );
         } );
     }
 
