@@ -96,7 +96,6 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
             var changed = value != _hideInvalidLoc;
 
             SetProperty( ref _hideInvalidLoc, value );
-            DisplayedPoints.HideInvalidLocations = _hideInvalidLoc;
 
             if( changed )
                 OnPropertyChanged( nameof( FilteredPoints ) );
