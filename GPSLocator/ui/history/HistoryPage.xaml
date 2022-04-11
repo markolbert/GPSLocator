@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:common="using:J4JSoftware.GPSCommon"
     mc:Ignorable="d"
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -63,7 +62,7 @@
         <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
                    VerticalAlignment="Top">
             <Run Text="Tracked Points ("/>
-            <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
+            <Run Text="{x:Bind ViewModel.FilteredPoints.Count}"/>
             <Run Text=")"/>
         </TextBlock>
 
@@ -74,6 +73,7 @@
 
         <Border Grid.Row="6" Grid.Column="1"
                 MaxHeight="200"
+                Visibility="{x:Bind ViewModel.FilteredPoints, Converter={StaticResource CollectionToVisibilityConverter}}"
                 VerticalAlignment="Top"
                 BorderThickness="2"
                 BorderBrush="DarkGray">
@@ -81,7 +81,7 @@
             <ListView x:Name="LocationsGrid" 
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
-                      ItemsSource="{x:Bind ViewModel.FilteredPoints()}"
+                      ItemsSource="{x:Bind ViewModel.FilteredPoints}"
                       SelectedItem="{x:Bind ViewModel.PointOnMap, Mode=TwoWay}"
                       Tapped="LocationsGrid_OnTapped">
 
@@ -120,11 +120,11 @@
                 </FlyoutBase.AttachedFlyout>
 
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="common:MapPoint">
+                    <DataTemplate>
 
                         <Border BorderBrush="DarkGray"
                                 BorderThickness="0,0,0,2">
-                            <TextBlock Text="{x:Bind DeviceLocation.Timestamp}"
+                            <TextBlock Text="{Binding DeviceLocation.Timestamp}"
                                        Tapped="LocationsGrid_OnTapped"/>
                         </Border>
 
@@ -137,16 +137,16 @@
 
         <TextBlock Grid.Row="0" Grid.Column="2"
                    HorizontalAlignment="Center"
-                   Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}">
+                   Visibility="{x:Bind ViewModel.PointOnMap, Converter={StaticResource NullToHiddenConverter }}">
             Details for Selected Point
         </TextBlock>
 
         <local:LocationControl Grid.Row="1" Grid.Column="2"  Grid.RowSpan="7"
-                               Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
-                               DataContext="{Binding ElementName=LocationsGrid, Path=SelectedItem.DeviceLocation, FallbackValue=null}" />
+                               Visibility="{x:Bind ViewModel.PointOnMap, Converter={StaticResource NullToHiddenConverter }}"
+                               DataContext="{x:Bind ViewModel.PointOnMap.DeviceLocation, FallbackValue=null}" />
 
         <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="8"
-                                    Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
+                                    Visibility="{x:Bind ViewModel.PointOnMap, Converter={StaticResource NullToHiddenConverter }}"
                                     Margin="0,0,0,14"
                                     DataContext="{x:Bind ViewModel}"/>
 

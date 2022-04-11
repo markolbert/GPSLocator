@@ -128,13 +128,13 @@
             <TextBlock Grid.Row="0" Grid.Column="0"
                    HorizontalAlignment="Center">
                 <Run Text="On Server ("/>
-                <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
+                <Run Text="{x:Bind ViewModel.FilteredPoints.Count}"/>
                 <Run Text=")"/>
             </TextBlock>
 
             <ListView Grid.Row="0" Grid.Column="1" 
                       HorizontalAlignment="Left"
-                  ItemsSource="{x:Bind ViewModel.AllPoints}"
+                  ItemsSource="{x:Bind ViewModel.FilteredPoints}"
                   SelectedItem="{x:Bind ViewModel.PointOnMap, Mode=TwoWay}">
 
                 <ListView.ItemTemplate>

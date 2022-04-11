@@ -43,7 +43,7 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
         EndDate = DateTimeOffset.Now;
     }
 
-    protected override void RefreshHandlerInternal()
+    protected override void RefreshHandler()
     {
         if( !AppViewModel.Configuration.IsValid )
         {
@@ -51,6 +51,8 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
             StatusMessages.DisplayReady();
             return;
         }
+
+        SuspendUpdatingFilteredPoints();
 
         ClearDisplayedPoints();
 
@@ -94,6 +96,7 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
                           .Where( LocationFilter ) );
 
         RefreshEnabled = true;
+        EnableUpdatingFilteredPoints();
     }
 
     private void OnAborted( RequestEventArgs<History<Location>> args )
@@ -109,6 +112,7 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
         else Logger.Error( "Invalid configuration" );
 
         RefreshEnabled = true;
+        EnableUpdatingFilteredPoints();
     }
 
     protected virtual bool LocationFilter( Location toCheck ) => true;

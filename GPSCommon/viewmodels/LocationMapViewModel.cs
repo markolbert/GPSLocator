@@ -15,7 +15,8 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
     private bool _refreshEnabled;
     private MapControl.Location? _mapCenter;
     private bool _hideInvalidLoc;
-    private bool _deferFilteredPoints;
+    private bool _suspendFilteredPoints;
+    private ObservableCollection<MapPoint> _filteredPoints = new();
 
     protected LocationMapViewModel(
         BaseAppViewModel<TAppConfig> appViewModel,
@@ -24,20 +25,13 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
     )
         : base( appViewModel, statusMessages, logger )
     {
-        RefreshCommand = new RelayCommand(RefreshHandlerInternal);
+        RefreshCommand = new RelayCommand(RefreshHandler);
         IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);
         DecreaseZoomCommand = new RelayCommand(DecreaseZoomHandler);
 
-        DisplayedPoints.MapChanged += DisplayedPointsOnMapChanged;
-
         HideInvalidLocations = AppViewModel.Configuration.HideInvalidLocations;
-        AllPoints.CollectionChanged += AllPointsOnCollectionChanged;
-    }
 
-    private void AllPointsOnCollectionChanged( object? sender, NotifyCollectionChangedEventArgs e )
-    {
-        if( !_deferFilteredPoints )
-            OnPropertyChanged( nameof( FilteredPoints ) );
+        DisplayedPoints.MapChanged += DisplayedPointsOnMapChanged;
     }
 
     private void DisplayedPointsOnMapChanged( object? sender, MapChangedEventArgs e )
@@ -51,16 +45,18 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
 
     public RelayCommand RefreshCommand { get; }
 
-    protected virtual void RefreshHandlerInternal()
+    protected virtual void RefreshHandler()
     {
     }
 
-    protected void RefreshHandler()
+    protected void SuspendUpdatingFilteredPoints()
     {
-        _deferFilteredPoints = true;
-        RefreshHandlerInternal();
-        _deferFilteredPoints = false;
+        _suspendFilteredPoints = true;
+    }
 
+    protected void EnableUpdatingFilteredPoints()
+    {
+        _suspendFilteredPoints = false;
         OnPropertyChanged(nameof(FilteredPoints));
     }
 
@@ -70,16 +66,23 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
         set => SetProperty(ref _refreshEnabled, value);
     }
 
-    public ObservableCollection<MapPoint> AllPoints { get; } = new();
+    protected List<MapPoint> AllPoints { get; } = new();
 
-    public List<MapPoint> FilteredPoints()
+    public ObservableCollection<MapPoint> FilteredPoints
     {
-        var retVal = AllPoints
-            .Where( x => ( AppViewModel.Configuration.HideInvalidLocations && x.DeviceLocation.Coordinate.IsValid )
-                         || !AppViewModel.Configuration.HideInvalidLocations )
-            .ToList();
+        get
+        {
+            if( _suspendFilteredPoints )
+                return _filteredPoints;
 
-        return retVal;
+            var points = AllPoints
+                        .Where( x => ( HideInvalidLocations && x.DeviceLocation.Coordinate.IsValid )
+                                 || !HideInvalidLocations );
+
+            _filteredPoints = new ObservableCollection<MapPoint>( points );
+
+            return _filteredPoints;
+        }
     }
 
     public DisplayedPoints DisplayedPoints { get; } = new();
@@ -93,6 +96,7 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
             var changed = value != _hideInvalidLoc;
 
             SetProperty( ref _hideInvalidLoc, value );
+            DisplayedPoints.HideInvalidLocations = _hideInvalidLoc;
 
             if( changed )
                 OnPropertyChanged( nameof( FilteredPoints ) );

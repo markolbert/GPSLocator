@@ -24,8 +24,23 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
         new( NotifyCollectionChangedAction.Reset );
 
     private bool _deferNotifications;
+    private bool _hideInvalidLoc;
 
-    public Collection<MapPoint> Points => this;
+    public Collection<MapPoint> Points
+    {
+        get
+        {
+            var retVal = new Collection<MapPoint>();
+
+            foreach( var pt in this )
+            {
+                if( !HideInvalidLocations || ( HideInvalidLocations && pt.DeviceLocation.Coordinate.IsValid ) )
+                    retVal.Add( pt );
+            }
+
+            return retVal;
+        }
+    }
 
     public MapPoint Add( ILocation location )
     {
@@ -33,6 +48,21 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
         Add( retVal );
 
         return retVal;
+    }
+
+    public bool HideInvalidLocations
+    {
+        get => _hideInvalidLoc;
+
+        set
+        {
+            var changed = value != _hideInvalidLoc;
+
+            _hideInvalidLoc = value;
+
+            if( changed )
+                OnCollectionReset();
+        }
     }
 
     public void AddRange( IEnumerable<ILocation> locations )
@@ -55,6 +85,8 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
         OnPropertyChanged( nameof( Count ) );
         OnPropertyChanged( IndexerPropertyName );
     }
+
+    #region internal overrides
 
     protected override void InsertItem(int index, MapPoint item)
     {
@@ -93,6 +125,8 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
         OnPropertyChanged( nameof( Count ) );
         OnPropertyChanged( IndexerPropertyName );
     }
+
+    #endregion
 
     private void OnCenterBoundsChanged()
     {
