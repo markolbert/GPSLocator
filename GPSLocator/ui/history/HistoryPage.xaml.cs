@@ -39,13 +39,13 @@ public sealed partial class HistoryPage : Page
 
     private void LocationsGrid_OnTapped( object sender, TappedRoutedEventArgs e )
     {
-        if( sender is not ListView uiElement )
+        if (sender is not ListView uiElement)
             return;
 
-        if( LocationsGrid.SelectedItem is not MapPoint mapPoint
-        || !mapPoint.DeviceLocation.HasMessage )
+        if (LocationsGrid.SelectedItem is not MapPoint mapPoint
+        || !mapPoint.DeviceLocation.HasMessage)
             return;
 
-        FlyoutBase.ShowAttachedFlyout( uiElement );
+        FlyoutBase.ShowAttachedFlyout(uiElement);
     }
 }
