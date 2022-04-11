@@ -1,0 +1,13 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:J4JSoftware.GPSCommon">
+
+    <local:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
+    <local:NullToHiddenConverter x:Key="NullToHiddenConverter"/>
+    <local:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"/>
+    <local:CollectionToBoolConverter x:Key="CollectionToBoolConverter"/>
+    <local:TrueToVisibleConverter x:Key="TrueToVisibleConverter"/>
+    <local:FalseToVisibleConverter x:Key="FalseToVisibleConverter"/>
+
+</ResourceDictionary>

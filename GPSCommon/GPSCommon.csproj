@@ -23,6 +23,9 @@
 	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
 	  <PackageReadmeFile>nuget-common.md</PackageReadmeFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Converters.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
       <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.2" />
@@ -42,6 +45,12 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\J4JLogging\J4JLogging\J4JLogging.csproj" />
 	  <ProjectReference Include="..\GPSLocatorLib\GPSLocatorLib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Converters.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 </Project>

@@ -2,23 +2,18 @@
     x:Class="J4JSoftware.GPSLocator.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:J4JSoftware.GPSLocator"
-    xmlns:common="using:J4JSoftware.GPSCommon">
+    xmlns:local="using:J4JSoftware.GPSLocator">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+
                 <!-- Other merged dictionaries here -->
                 <ResourceDictionary Source="ms-appx:///ui/common/DefaultStyles.xaml"/>
+                <ResourceDictionary Source="ms-appx:///J4JSoftware.GPSCommon/Converters.xaml"/>
+
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
-
-            <common:NullToHiddenConverter x:Key="NullToHiddenConverter"/>
-            <common:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
-            <common:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"/>
-            <common:CollectionToBoolConverter x:Key="CollectionToBoolConverter"/>
-            <common:TrueToVisibleConverter x:Key="TrueToVisibleConverter"/>
-            <common:FalseToVisibleConverter x:Key="FalseToVisibleConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>
