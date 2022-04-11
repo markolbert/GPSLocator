@@ -27,6 +27,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -78,13 +79,18 @@
             Use compass headings
         </CheckBox>
 
-        <TextBlock Grid.Row="8" Grid.Column="0"
+        <CheckBox Grid.Row="8" Grid.Column="0"
+                  IsChecked="{x:Bind ViewModel.HideInvalidLocations, Mode=TwoWay}">
+            Hide invalid locations
+        </CheckBox>
+
+        <TextBlock Grid.Row="9" Grid.Column="0"
                    Padding="0,7,0,0"
                    VerticalAlignment="Top">
             Default Callback
         </TextBlock>
 
-        <StackPanel Grid.Row="8" Grid.Column="1"
+        <StackPanel Grid.Row="9" Grid.Column="1"
                     Orientation="Vertical">
 
             <TextBox Text="{x:Bind ViewModel.DefaultCallback, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -98,9 +104,9 @@
 
         </StackPanel>
 
-        <TextBlock Grid.Row="9" Grid.Column="0">Days Back</TextBlock>
+        <TextBlock Grid.Row="10" Grid.Column="0">Days Back</TextBlock>
 
-        <NumberBox Grid.Row="9" Grid.Column="1"
+        <NumberBox Grid.Row="10" Grid.Column="1"
                    Value="{x:Bind ViewModel.DefaultDaysBack, Mode=TwoWay}"
                    HorizontalAlignment="Left"
                    Minimum="1"
@@ -109,7 +115,7 @@
                    LargeChange="7" 
                    SpinButtonPlacementMode="Compact"/>
 
-        <Grid Grid.Row="10" Grid.Column="1">
+        <Grid Grid.Row="11" Grid.Column="1">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

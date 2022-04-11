@@ -33,6 +33,7 @@ public class SettingsViewModel : ObservableObject
     private string _imei = string.Empty;
     private bool _compassHeadings;
     private bool _imperialUnits;
+    private bool _hideInvalidLoc;
     private LogEventLevel _minEventLevel;
     private string? _defaultCallback;
     private int _defaultDaysBack;
@@ -100,6 +101,7 @@ public class SettingsViewModel : ObservableObject
             _appViewModel.Configuration.IMEI,
             _appViewModel.Configuration.UseCompassHeadings,
             _appViewModel.Configuration.UseImperialUnits,
+            _appViewModel.Configuration.HideInvalidLocations,
             _appViewModel.Configuration.MinimumLogLevel,
             _appViewModel.Configuration.DefaultCallback,
             _appViewModel.Configuration.DefaultDaysBack,
@@ -127,6 +129,7 @@ public class SettingsViewModel : ObservableObject
         _appViewModel.Configuration.IMEI = Imei;
         _appViewModel.Configuration.UseCompassHeadings = CompassHeadings;
         _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
+        _appViewModel.Configuration.HideInvalidLocations = HideInvalidLocations;
         _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
         _appViewModel.Configuration.DefaultCallback = DefaultCallback;
         _appViewModel.Configuration.DefaultDaysBack = DefaultDaysBack;
@@ -204,6 +207,7 @@ public class SettingsViewModel : ObservableObject
         Validated = _appViewModel.Configuration.IsValid;
         CompassHeadings = _appViewModel.Configuration.UseCompassHeadings;
         ImperialUnits = _appViewModel.Configuration.UseImperialUnits;
+        HideInvalidLocations = _appViewModel.Configuration.HideInvalidLocations;
         MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
         DefaultCallback = _appViewModel.Configuration.DefaultCallback;
         DefaultDaysBack = _appViewModel.Configuration.DefaultDaysBack;
@@ -288,6 +292,17 @@ public class SettingsViewModel : ObservableObject
         set
         {
             SetProperty( ref _imperialUnits, value );
+            OtherConfigChanged = true;
+        }
+    }
+
+    public bool HideInvalidLocations
+    {
+        get => _hideInvalidLoc;
+
+        set
+        {
+            SetProperty( ref _hideInvalidLoc, value );
             OtherConfigChanged = true;
         }
     }

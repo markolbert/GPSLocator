@@ -33,7 +33,7 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
         OnPropertyChanged( nameof( LastKnownPoint ) );
     }
 
-    protected override void RefreshHandler()
+    protected override void RefreshHandlerInternal()
     {
         if( !AppViewModel.Configuration.IsValid )
         {

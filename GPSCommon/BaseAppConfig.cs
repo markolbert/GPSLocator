@@ -10,6 +10,7 @@ public class BaseAppConfig : DeviceConfig
 {
     private LogEventLevel _minLevel = LogEventLevel.Verbose;
     private string? _launchPage;
+    private bool _hideInvalidLoc;
 
     protected BaseAppConfig()
     {
@@ -38,6 +39,12 @@ public class BaseAppConfig : DeviceConfig
     {
         get => _launchPage;
         set => SetProperty( ref _launchPage, value );
+    }
+
+    public bool HideInvalidLocations
+    {
+        get => _hideInvalidLoc;
+        set => SetProperty(ref _hideInvalidLoc, value);
     }
 
     public string HelpLink { get; protected set; } = string.Empty;

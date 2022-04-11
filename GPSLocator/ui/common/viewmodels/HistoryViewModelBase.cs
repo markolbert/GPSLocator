@@ -43,7 +43,7 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
         EndDate = DateTimeOffset.Now;
     }
 
-    protected override void RefreshHandler()
+    protected override void RefreshHandlerInternal()
     {
         if( !AppViewModel.Configuration.IsValid )
         {

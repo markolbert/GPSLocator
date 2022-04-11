@@ -27,6 +27,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -59,14 +60,19 @@
         <TextBlock Grid.Row="4" Grid.Column="0">Start Date</TextBlock>
         <TextBlock Grid.Row="4" Grid.Column="1" Text="{x:Bind ViewModel.StartDate}"/>
 
-        <TextBlock Grid.Row="5" Grid.Column="0"
+        <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
                    VerticalAlignment="Top">
             <Run Text="Tracked Points ("/>
             <Run Text="{x:Bind ViewModel.AllPoints.Count}"/>
             <Run Text=")"/>
         </TextBlock>
 
-        <Border Grid.Row="5" Grid.Column="1"
+        <CheckBox Grid.Row="5" Grid.Column="1"
+                  IsChecked="{x:Bind ViewModel.HideInvalidLocations, Mode=TwoWay}">
+            Hide invalid locations
+        </CheckBox>
+
+        <Border Grid.Row="6" Grid.Column="1"
                 MaxHeight="200"
                 VerticalAlignment="Top"
                 BorderThickness="2"
@@ -75,7 +81,7 @@
             <ListView x:Name="LocationsGrid" 
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
-                      ItemsSource="{x:Bind ViewModel.AllPoints}"
+                      ItemsSource="{x:Bind ViewModel.FilteredPoints()}"
                       SelectedItem="{x:Bind ViewModel.PointOnMap, Mode=TwoWay}"
                       Tapped="LocationsGrid_OnTapped">
 
@@ -135,11 +141,11 @@
             Details for Selected Point
         </TextBlock>
 
-        <local:LocationControl Grid.Row="1" Grid.Column="2"  Grid.RowSpan="6"
+        <local:LocationControl Grid.Row="1" Grid.Column="2"  Grid.RowSpan="7"
                                Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
                                DataContext="{Binding ElementName=LocationsGrid, Path=SelectedItem.DeviceLocation, FallbackValue=null}" />
 
-        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="7"
+        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="8"
                                     Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
                                     Margin="0,0,0,14"
                                     DataContext="{x:Bind ViewModel}"/>
