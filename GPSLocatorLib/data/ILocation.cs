@@ -2,7 +2,7 @@
 
 namespace J4JSoftware.GPSLocator;
 
-public interface ILocation : INotifyPropertyChanged
+public interface ILocation
 {
     long IMEI { get; set; }
     DateTime Timestamp { get; set; }
@@ -10,14 +10,7 @@ public interface ILocation : INotifyPropertyChanged
     double Altitude { get; set; }
     double Speed { get; set; }
     long Course { get; set; }
-    string CourseDisplay { get; }
     int GPSFixStatus { get; set; }
-
-    bool ImperialUnits { get; set; }
-    bool CompassHeadings { get; set; }
-    public string AltitudeUnits { get; }
-    public string SpeedUnits { get; }
-    public string CompassUnits { get; }
 
     bool HasMessage { get; }
     string TextMessage { get; set; }

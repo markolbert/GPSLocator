@@ -62,7 +62,7 @@
         <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
                    VerticalAlignment="Top">
             <Run Text="Tracked Points ("/>
-            <Run Text="{x:Bind ViewModel.FilteredPoints.Count}"/>
+            <Run Text="{x:Bind ViewModel.RetrievedPoints.Count}"/>
             <Run Text=")"/>
         </TextBlock>
 
@@ -73,7 +73,7 @@
 
         <Border Grid.Row="6" Grid.Column="1"
                 MaxHeight="200"
-                Visibility="{x:Bind ViewModel.FilteredPoints, Converter={StaticResource CollectionToVisibilityConverter}}"
+                Visibility="{x:Bind ViewModel.RetrievedPoints, Converter={StaticResource CollectionToVisibilityConverter}}"
                 VerticalAlignment="Top"
                 BorderThickness="2"
                 BorderBrush="DarkGray">
@@ -81,7 +81,7 @@
             <ListView x:Name="LocationsGrid" 
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
-                      ItemsSource="{x:Bind ViewModel.FilteredPoints}"
+                      ItemsSource="{x:Bind ViewModel.RetrievedPoints}"
                       SelectedItem="{x:Bind ViewModel.PointOnMap, Mode=TwoWay}"
                       Tapped="LocationsGrid_OnTapped">
 
@@ -102,12 +102,12 @@
                             <TextBlock Grid.Row="0" Grid.Column="0">Message</TextBlock>
 
                             <TextBlock Grid.Row="0" Grid.Column="1"
-                                       Text="{x:Bind ViewModel.PointOnMap.DeviceLocation.TextMessage}"/>
+                                       Text="{x:Bind ViewModel.PointOnMap.TextMessage}"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0">Recipients</TextBlock>
 
                             <ListView Grid.Row="1" Grid.Column="1"
-                                      ItemsSource="{x:Bind ViewModel.PointOnMap.DeviceLocation.Recipients}">
+                                      ItemsSource="{x:Bind ViewModel.PointOnMap.Recipients}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding}"/>
@@ -124,8 +124,7 @@
 
                         <Border BorderBrush="DarkGray"
                                 BorderThickness="0,0,0,2">
-                            <TextBlock Text="{Binding DeviceLocation.Timestamp}"
-                                       Tapped="LocationsGrid_OnTapped"/>
+                            <TextBlock Text="{Binding Timestamp}"/>
                         </Border>
 
                     </DataTemplate>
@@ -143,7 +142,7 @@
 
         <local:LocationControl Grid.Row="1" Grid.Column="2"  Grid.RowSpan="7"
                                Visibility="{x:Bind ViewModel.PointOnMap, Converter={StaticResource NullToHiddenConverter }}"
-                               DataContext="{x:Bind ViewModel.PointOnMap.DeviceLocation, FallbackValue=null}" />
+                               DataContext="{x:Bind ViewModel.PointOnMap, FallbackValue=null}" />
 
         <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="8"
                                     Visibility="{x:Bind ViewModel.PointOnMap, Converter={StaticResource NullToHiddenConverter }}"

@@ -24,7 +24,7 @@
 
         <local:LocationControl Grid.Row="0" Grid.Column="0"
                                Margin="14,14,14,14"
-                               DataContext="{x:Bind ViewModel.LastKnownPoint.DeviceLocation, FallbackValue=null}" />
+                               DataContext="{x:Bind ViewModel.LastKnownPoint, FallbackValue=null}" />
 
         <local:OpenStreetMapControl Grid.Row="0" Grid.Column="1"
                                     DataContext="{x:Bind ViewModel}"/>

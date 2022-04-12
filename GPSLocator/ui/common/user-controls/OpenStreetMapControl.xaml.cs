@@ -15,10 +15,10 @@ public sealed partial class OpenStreetMapControl : UserControl
     {
         this.InitializeComponent();
 
-        WeakReferenceMessenger.Default.Register<OpenStreetMapControl, MapViewModelMessage, string>(this, "primary", ViewModelChangedHandler);
+        WeakReferenceMessenger.Default.Register<OpenStreetMapControl, MapViewModelMessage<AppConfig>, string>(this, "primary", ViewModelChangedHandler);
     }
 
-    private void ViewModelChangedHandler(OpenStreetMapControl recipient, MapViewModelMessage message )
+    private void ViewModelChangedHandler(OpenStreetMapControl recipient, MapViewModelMessage<AppConfig> message )
     {
         ViewModel = message.ViewModel;
     }

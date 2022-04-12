@@ -33,12 +33,12 @@
         <TextBlock Grid.Row="1" Grid.Column="0">Latitude</TextBlock>
         <TextBlock Grid.Row="1" Grid.Column="1" 
                    HorizontalAlignment="Right"
-                   Text="{x:Bind ViewModel.Coordinate.Latitude}"/>
+                   Text="{x:Bind ViewModel.MapLocation.Latitude}"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Longitude</TextBlock>
         <TextBlock Grid.Row="2" Grid.Column="1" 
                    HorizontalAlignment="Right"
-                   Text="{x:Bind ViewModel.Coordinate.Longitude}"/>
+                   Text="{x:Bind ViewModel.MapLocation.Longitude}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0">Altitude</TextBlock>
         <StackPanel Grid.Row="3" Grid.Column="1" 

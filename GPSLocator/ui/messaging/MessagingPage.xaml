@@ -128,18 +128,18 @@
             <TextBlock Grid.Row="0" Grid.Column="0"
                    HorizontalAlignment="Center">
                 <Run Text="On Server ("/>
-                <Run Text="{x:Bind ViewModel.FilteredPoints.Count}"/>
+                <Run Text="{x:Bind ViewModel.RetrievedPoints.Count}"/>
                 <Run Text=")"/>
             </TextBlock>
 
             <ListView Grid.Row="0" Grid.Column="1" 
                       HorizontalAlignment="Left"
-                  ItemsSource="{x:Bind ViewModel.FilteredPoints}"
+                  ItemsSource="{x:Bind ViewModel.RetrievedPoints}"
                   SelectedItem="{x:Bind ViewModel.PointOnMap, Mode=TwoWay}">
 
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="common:MapPoint">
-                        <TextBlock Text="{x:Bind DeviceLocation.Timestamp}"/>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Timestamp}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
 
@@ -153,7 +153,7 @@
             <ListView Grid.Row="1" Grid.Column="1"
                   Visibility="{x:Bind ViewModel.PointOnMap, Converter={StaticResource NullToHiddenConverter}}"
                   HorizontalAlignment="Left"
-                  ItemsSource="{x:Bind ViewModel.PointOnMap.DeviceLocation.Recipients}">
+                  ItemsSource="{x:Bind ViewModel.PointOnMap.Recipients}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock HorizontalAlignment="Left" 
@@ -169,7 +169,7 @@
 
             <TextBlock Grid.Row="2" Grid.Column="1"
                    Visibility="{x:Bind ViewModel.PointOnMap, Converter={StaticResource NullToHiddenConverter}}"
-                   Text="{x:Bind ViewModel.PointOnMap.DeviceLocation.TextMessage}">
+                   Text="{x:Bind ViewModel.PointOnMap.TextMessage}">
             </TextBlock>
 
         </Grid>
