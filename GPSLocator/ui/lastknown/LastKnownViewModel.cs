@@ -8,6 +8,9 @@ namespace J4JSoftware.GPSLocator;
 
 public class LastKnownViewModel : LocationMapViewModel<AppConfig>
 {
+    private bool _refreshEnabled;
+    private MapPoint? _lastKnownPoint;
+
     public LastKnownViewModel(
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
@@ -15,27 +18,12 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
     )
         : base( appViewModel, statusMessages, logger )
     {
-        Messenger.Send( new MapViewModelMessage( this ), "primary" );
+        Messenger.Send( new MapViewModelMessage<AppConfig>( this ), "primary" );
     }
 
     public void OnPageActivated()
     {
-        RefreshHandler();
-    }
-
-    protected override void OnMapChanged( MapControl.Location? center, BoundingBox? boundingBox )
-    {
-        base.OnMapChanged( center, boundingBox );
-
-        MapCenter = center;
-        MapBoundingBox = boundingBox;
-
-        OnPropertyChanged( nameof( LastKnownPoint ) );
-    }
-
-    protected override void RefreshHandler()
-    {
-        if( !AppViewModel.Configuration.IsValid )
+        if (!AppViewModel.Configuration.IsValid)
         {
             StatusMessages.Message("Invalid configuration").Urgent().Enqueue();
             StatusMessages.DisplayReady();
@@ -43,9 +31,16 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
             return;
         }
 
-        var request = new LastKnownLocationRequest<Location>( AppViewModel.Configuration, Logger );
+        var request = new LastKnownLocationRequest<Location>(AppViewModel.Configuration, Logger);
 
         ExecuteRequest(request, OnRequestStatusChanged);
+    }
+
+    protected override void OnMapChanged( MapPoint? center, BoundingBox? boundingBox )
+    {
+        base.OnMapChanged( center, boundingBox );
+
+        LastKnownPoint = center;
     }
 
     private void OnRequestStatusChanged(RequestEventArgs<LastKnownLocation<Location>> args )
@@ -78,15 +73,13 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
             StatusMessages.Message("Last known location updated").Enqueue();
             StatusMessages.DisplayReady();
 
-            ClearDisplayedPoints();
-
             var lastLoc = args.Response.Result.Locations[0];
-            lastLoc.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
-            lastLoc.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
 
-            var mapPoint = AddLocation(lastLoc);
-
-            DisplayedPoints.Add( mapPoint );
+            DisplayedPoints.Add( new MapPoint( lastLoc )
+            {
+                CompassHeadings = AppViewModel.Configuration.UseCompassHeadings,
+                ImperialUnits = AppViewModel.Configuration.UseImperialUnits
+            } );
         }
         else StatusMessages.Message("No last known location").Important().Enqueue();
 
@@ -110,5 +103,15 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
         RefreshEnabled = true;
     }
 
-    public MapPoint? LastKnownPoint => DisplayedPoints.Any() ? DisplayedPoints[ 0 ] : null;
+    public bool RefreshEnabled
+    {
+        get => _refreshEnabled;
+        set => SetProperty(ref _refreshEnabled, value);
+    }
+
+    public MapPoint? LastKnownPoint
+    {
+        get => _lastKnownPoint;
+        set => SetProperty( ref _lastKnownPoint, value );
+    }
 }

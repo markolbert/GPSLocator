@@ -1,31 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
+using MapControl;
+using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSLocator;
 
-public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
+public class HistoryViewModelBase : SelectablePointViewModel<AppConfig>
 {
     private bool _initialized;
-    private DateTimeOffset _endDate;
-    private double _daysBack = 7;
+    private bool _hideInvalidLoc;
 
     protected HistoryViewModelBase(
         AppViewModel appViewModel,
+        CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger)
+        : base( appViewModel, cachedLocations, statusMessages, logger)
     {
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds( 1 ) };
-        timer.Tick += Timer_Tick;
-        timer.Start();
-
         DaysBack = AppViewModel.Configuration.DefaultDaysBack;
         EndDate = DateTimeOffset.Now;
+        HideInvalidLocations = AppViewModel.Configuration.HideInvalidLocations;
     }
 
     public void OnPageActivated()
@@ -38,106 +39,18 @@ public class HistoryViewModelBase : LocationMapViewModel<AppConfig>
         _initialized = true;
     }
 
-    private void Timer_Tick(object? sender, object e)
+    public bool HideInvalidLocations
     {
-        EndDate = DateTimeOffset.Now;
-    }
-
-    protected override void RefreshHandler()
-    {
-        if( !AppViewModel.Configuration.IsValid )
-        {
-            StatusMessages.Message( "Invalid configuration" ).Urgent().Enqueue();
-            StatusMessages.DisplayReady();
-            return;
-        }
-
-        SuspendUpdatingFilteredPoints();
-
-        ClearDisplayedPoints();
-
-        var request = new HistoryRequest<Location>( AppViewModel.Configuration, Logger )
-        {
-            Start = StartDate.UtcDateTime, End = EndDate.UtcDateTime
-        };
-
-        ExecuteRequest(request, OnHistoryRequestStatusChanged);
-    }
-
-    private void OnHistoryRequestStatusChanged(RequestEventArgs<History<Location>> args)
-    {
-        switch (args.RequestEvent)
-        {
-            case RequestEvent.Started:
-                StatusMessages.Message("Updating history").Indeterminate().Important().Display();
-                RefreshEnabled = false;
-
-                break;
-
-            case RequestEvent.Succeeded:
-                OnSucceeded(args);
-                break;
-
-            case RequestEvent.Aborted:
-                OnAborted(args);
-                break;
-
-            default:
-                throw new InvalidEnumArgumentException($"Unsupported {typeof(RequestEvent)} '{args.RequestEvent}'");
-        }
-    }
-
-    private void OnSucceeded( RequestEventArgs<History<Location>> args )
-    {
-        StatusMessages.Message( "Retrieved history" ).Important().Enqueue();
-        StatusMessages.DisplayReady();
-
-        AddLocations( args.Response!.Result!.HistoryItems
-                          .Where( LocationFilter ) );
-
-        RefreshEnabled = true;
-        EnableUpdatingFilteredPoints();
-    }
-
-    private void OnAborted( RequestEventArgs<History<Location>> args )
-    {
-        StatusMessages.Message( $"Retrieval failed ({( args.ErrorMessage ?? "Unspecified error" )})" )
-                      .Important()
-                      .Enqueue();
-
-        StatusMessages.DisplayReady();
-
-        if( args.Response?.Error != null )
-            Logger.Error<string>( "Invalid configuration, message was '{0}'", args.Response.Error.Description );
-        else Logger.Error( "Invalid configuration" );
-
-        RefreshEnabled = true;
-        EnableUpdatingFilteredPoints();
-    }
-
-    protected virtual bool LocationFilter( Location toCheck ) => true;
-
-    public DateTimeOffset StartDate => _endDate.DateTime.AddDays(-DaysBack);
-
-    public DateTimeOffset EndDate
-    {
-        get => _endDate;
+        get => _hideInvalidLoc;
 
         set
         {
-            SetProperty(ref _endDate, value);
-            OnPropertyChanged(nameof(StartDate));
-        }
-    }
+            var changed = value != _hideInvalidLoc;
 
-    public double DaysBack
-    {
-        get => _daysBack;
+            SetProperty(ref _hideInvalidLoc, value);
 
-        set
-        {
-            SetProperty(ref _daysBack, value);
-            OnPropertyChanged(nameof(StartDate));
+            if (changed)
+                UpdateLocations();
         }
     }
 }

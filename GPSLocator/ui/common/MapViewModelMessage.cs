@@ -2,4 +2,5 @@
 
 namespace J4JSoftware.GPSLocator;
 
-public record MapViewModelMessage(LocationMapViewModel<AppConfig> ViewModel );
+public record MapViewModelMessage<TAppConfig>(LocationMapViewModel<TAppConfig> ViewModel )
+    where TAppConfig : BaseAppConfig;

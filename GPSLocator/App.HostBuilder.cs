@@ -70,6 +70,10 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
+        builder.Register( c => new CachedLocations( c.Resolve<AppConfig>(), c.Resolve<IJ4JLogger>() ) )
+               .AsSelf()
+               .SingleInstance();
+
         builder.RegisterType<LaunchViewModel>()
                .AsSelf()
                .SingleInstance();

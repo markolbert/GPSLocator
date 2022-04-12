@@ -9,7 +9,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace J4JSoftware.GPSLocator;
 
-public class MessagingViewModel :SelectablePointViewModel
+public class MessagingViewModel : SelectablePointViewModel<AppConfig>
 {
     private string? _messageToSend;
     private string? _callback;
@@ -18,17 +18,23 @@ public class MessagingViewModel :SelectablePointViewModel
 
     public MessagingViewModel(
         AppViewModel appViewModel,
+        CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger )
+        : base( appViewModel, cachedLocations, statusMessages, logger )
     {
         SendMessageCommand = new RelayCommand( SendMessageHandler );
 
         Callback = AppViewModel.Configuration.DefaultCallback;
     }
 
-    protected override bool LocationFilter( Location toCheck ) => toCheck.HasMessage;
+    public void OnPageActivated()
+    {
+        RefreshHandler();
+    }
+
+    protected override bool IncludeLocation( ILocation location ) => location.HasMessage;
 
     public RelayCommand SendMessageCommand { get; }
 

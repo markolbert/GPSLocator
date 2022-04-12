@@ -244,5 +244,9 @@
 	<ItemGroup>
 		<PRIResource Remove="ui\home\**" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="ui\common\viewmodels\HistoryViewModelBase.cs" />
+	</ItemGroup>
 
 </Project>
