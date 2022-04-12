@@ -136,30 +136,32 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
 
     #region Map center
 
-    public MapControl.Location? GetCenter() =>
+    public MapPoint? GetCenter() =>
         this.Count switch
         {
             0 => null,
-            1 => this[ 0 ].MapLocation,
+            1 => this[ 0 ],
             _ => CalculateMapCenter()
         };
 
     // https://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
     // thanx to Gio and Yodacheese for this!
-    private MapControl.Location CalculateMapCenter()
+    private MapPoint CalculateMapCenter()
     {
         double x = 0;
         double y = 0;
         double z = 0;
+        double t = 0;
 
-        foreach( var mappedPoint in this )
+        foreach( var mapPoint in this )
         {
-            var latitude = mappedPoint.MapLocation.Latitude * Math.PI / 180;
-            var longitude = mappedPoint.MapLocation.Longitude * Math.PI / 180;
+            var latitude = mapPoint.MapLocation.Latitude * Math.PI / 180;
+            var longitude = mapPoint.MapLocation.Longitude * Math.PI / 180;
 
             x += Math.Cos( latitude ) * Math.Cos( longitude );
             y += Math.Cos( latitude ) * Math.Sin( longitude );
             z += Math.Sin( latitude );
+            t += ( mapPoint.Timestamp - DateTime.UnixEpoch ).TotalSeconds;
         }
 
         var total = this.Count;
@@ -167,12 +169,15 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
         x /= total;
         y /= total;
         z /= total;
+        t /= total;
 
         var centralLongitude = Math.Atan2( y, x );
         var centralSquareRoot = Math.Sqrt( x * x + y * y );
         var centralLatitude = Math.Atan2( z, centralSquareRoot );
 
-        return new MapControl.Location( centralLatitude * 180 / Math.PI, centralLongitude * 180 / Math.PI );
+        return new MapPoint( centralLatitude * 180 / Math.PI,
+                             centralLongitude * 180 / Math.PI,
+                             DateTime.UnixEpoch.AddSeconds( t ) );
     }
 
     #endregion
@@ -199,17 +204,17 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
 
         foreach( var point in this )
         {
-            if( point.DeviceLocation.Coordinate.Latitude > retVal.East )
-                retVal.East = point.DeviceLocation.Coordinate.Latitude;
+            if( point.MapLocation.Latitude > retVal.East )
+                retVal.East = point.MapLocation.Latitude;
 
-            if( point.DeviceLocation.Coordinate.Latitude < retVal.West )
-                retVal.West = point.DeviceLocation.Coordinate.Latitude;
+            if( point.MapLocation.Latitude < retVal.West )
+                retVal.West = point.MapLocation.Latitude;
 
-            if( point.DeviceLocation.Coordinate.Longitude > retVal.North )
-                retVal.North = point.DeviceLocation.Coordinate.Longitude;
+            if( point.MapLocation.Longitude > retVal.North )
+                retVal.North = point.MapLocation.Longitude;
 
-            if( point.DeviceLocation.Coordinate.Longitude < retVal.South )
-                retVal.South = point.DeviceLocation.Coordinate.Longitude;
+            if( point.MapLocation.Longitude < retVal.South )
+                retVal.South = point.MapLocation.Longitude;
         }
 
         // deal with oddball cases where the points all fall along a line
@@ -226,22 +231,22 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
         switch( latSeparation )
         {
             case <= MinimumSeparation when longSeparation <= MinimumSeparation:
-                retVal.West = center.Longitude - 0.1 * Math.Abs( center.Longitude );
-                retVal.East = center.Longitude + 0.1 * Math.Abs( center.Longitude );
-                retVal.South = center.Latitude - 0.1 * Math.Abs( center.Latitude );
-                retVal.North = center.Latitude + 0.1 * Math.Abs( center.Latitude );
+                retVal.West = center.MapLocation.Longitude - 0.1 * Math.Abs( center.MapLocation.Longitude );
+                retVal.East = center.MapLocation.Longitude + 0.1 * Math.Abs( center.MapLocation.Longitude );
+                retVal.South = center.MapLocation.Latitude - 0.1 * Math.Abs( center.MapLocation.Latitude );
+                retVal.North = center.MapLocation.Latitude + 0.1 * Math.Abs( center.MapLocation.Latitude );
 
                 return retVal;
 
             case <= MinimumSeparation:
-                retVal.North = center.Latitude - longSeparation / 2;
-                retVal.South = center.Latitude + longSeparation / 2;
+                retVal.North = center.MapLocation.Latitude - longSeparation / 2;
+                retVal.South = center.MapLocation.Latitude + longSeparation / 2;
 
                 return retVal;
         }
 
-        retVal.West = center.Longitude - latSeparation / 2;
-        retVal.East = center.Longitude + latSeparation / 2;
+        retVal.West = center.MapLocation.Longitude - latSeparation / 2;
+        retVal.East = center.MapLocation.Longitude + latSeparation / 2;
 
         return retVal;
     }
