@@ -6,8 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using J4JSoftware.GPSLocator;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Location = J4JSoftware.GPSLocator.Location;
 
 namespace J4JSoftware.GPSCommon
 {
@@ -47,6 +49,8 @@ namespace J4JSoftware.GPSCommon
 
         public DateTimeOffset EndDate { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset StartDate => EndDate.DateTime.AddDays( -DaysBack );
+        public bool Executed { get; private set; }
+        public DateTime? LastExecution { get; private set; }
 
         public double DaysBack
         {
@@ -72,7 +76,8 @@ namespace J4JSoftware.GPSCommon
             }
         }
 
-        public List<ILocation> Locations { get; } = new();
+        //public List<ILocation> Locations { get; } = new();
+        public List<MapPoint> MapPoints { get; } = new();
 
         public bool BeginUpdate()
         {
@@ -138,18 +143,20 @@ namespace J4JSoftware.GPSCommon
 
         private void OnSucceeded(RequestEventArgs<History<Location>> args)
         {
-            Locations.Clear();
-            Locations.AddRange(args.Response!.Result!.HistoryItems);
+            MapPoints.Clear();
+            MapPoints.AddRange( args.Response!.Result!.HistoryItems.Select( x => new MapPoint( x ) ) );
 
-            _logger.Information( "Retrieved {0} locations", Locations.Count );
+            _logger.Information( "Retrieved {0} locations", MapPoints.Count );
 
             CacheChanged?.Invoke( this,
                                   new CachedLocationEventArgs( RequestEvent.Succeeded )
                                   {
-                                      Message = $"Retrieved {Locations.Count:n0} locations"
+                                      Message = $"Retrieved {MapPoints.Count:n0} locations"
                                   } );
 
             _updating = false;
+            Executed = true;
+            LastExecution = DateTime.Now;
         }
 
         private void OnAborted(RequestEventArgs<History<Location>> args)
