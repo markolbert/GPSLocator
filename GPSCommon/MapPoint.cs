@@ -38,14 +38,16 @@ public class MapPoint : ObservableObject
         DateTime timestamp
     )
     {
-        Timestamp = timestamp;
         MapLocation = new MapControl.Location( latitude, longitude );
-        Label =
-            $"{latitude}, {longitude}\n{timestamp}";
+        IsValidLocation = latitude != 0.0 && longitude != 0.0;
+
+        Timestamp = timestamp;
+        Label = $"{latitude}, {longitude}\n{timestamp}";
     }
 
     public DateTime Timestamp { get; }
     public MapControl.Location MapLocation { get; }
+    public bool IsValidLocation { get; }
     public string Label { get; }
 
     public string? TextMessage { get; }
