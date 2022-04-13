@@ -12,11 +12,12 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
     private MapPoint? _lastKnownPoint;
 
     public LastKnownViewModel(
+        DisplayedPoints displayedPoints,
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger )
+        : base( displayedPoints, appViewModel, statusMessages, logger )
     {
         Messenger.Send( new MapViewModelMessage<AppConfig>( this ), "primary" );
     }

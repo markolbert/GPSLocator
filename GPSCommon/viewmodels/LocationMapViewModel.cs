@@ -16,20 +16,24 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
     private MapControl.Location? _mapCenter;
 
     protected LocationMapViewModel(
+        DisplayedPoints displayedPoints,
         BaseAppViewModel<TAppConfig> appViewModel,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
         : base( appViewModel, statusMessages, logger )
     {
-        DisplayedPoints.MapChanged += DisplayedPointsOnMapChanged;
+        DisplayedPoints = displayedPoints;
+        DisplayedPoints.CollectionChanged += DisplayedPointsOnCollectionChanged;
 
         IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);
         DecreaseZoomCommand = new RelayCommand(DecreaseZoomHandler);
     }
 
-    private void DisplayedPointsOnMapChanged( object? sender, MapChangedEventArgs e ) =>
-        OnMapChanged( e.Center, e.BoundingBox );
+    private void DisplayedPointsOnCollectionChanged( object? sender, NotifyCollectionChangedEventArgs e )
+    {
+        OnMapChanged( DisplayedPoints.GetCenter(), DisplayedPoints.GetBoundingBox() );
+    }
 
     protected virtual void OnMapChanged( MapPoint? center, BoundingBox? boundingBox )
     {
@@ -37,7 +41,7 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
         MapBoundingBox = boundingBox;
     }
 
-    public DisplayedPoints DisplayedPoints { get; } = new();
+    public DisplayedPoints DisplayedPoints { get; }
 
     public int ZoomLevel
     {

@@ -7,28 +7,19 @@ namespace J4JSoftware.GPSLocator;
 
 public class HistoryViewModel : SelectablePointViewModel<AppConfig>
 {
-    private bool _initialized;
     private bool _mustHaveMessages;
     private bool _hideInvalidLoc;
 
     public HistoryViewModel(
+        DisplayedPoints displayedPoints,
         AppViewModel appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base(appViewModel, cachedLocations, statusMessages, logger)
+        : base(displayedPoints, appViewModel, cachedLocations, statusMessages, logger)
     {
-    }
-
-    public void OnPageActivated()
-    {
-        if (_initialized)
-            return;
-
-        RefreshHandler();
-
-        _initialized = true;
+        HideInvalidLocations = AppViewModel.Configuration.HideInvalidLocations;
     }
 
     public bool HideInvalidLocations
@@ -56,21 +47,21 @@ public class HistoryViewModel : SelectablePointViewModel<AppConfig>
 
             SetProperty( ref _mustHaveMessages, value );
 
-            if( !changed || !_mustHaveMessages )
+            if( !changed  )
                 return;
 
             UpdateLocations();
         }
     }
 
-    protected override bool IncludeLocation( ILocation location )
+    protected override bool IncludeLocation( MapPoint mapPoint )
     {
         if( !HideInvalidLocations )
-            return !MustHaveMessages || ( MustHaveMessages && location.HasMessage );
+            return !MustHaveMessages || ( MustHaveMessages && mapPoint.HasMessage );
 
-        if( !location.Coordinate.IsValid )
+        if( !mapPoint.IsValidLocation )
             return false;
 
-        return !MustHaveMessages || (MustHaveMessages && location.HasMessage);
+        return !MustHaveMessages || (MustHaveMessages && mapPoint.HasMessage);
     }
 }

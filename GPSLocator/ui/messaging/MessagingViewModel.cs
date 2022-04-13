@@ -17,24 +17,20 @@ public class MessagingViewModel : SelectablePointViewModel<AppConfig>
     private bool _msgTooLong;
 
     public MessagingViewModel(
+        DisplayedPoints displayedPoints,
         AppViewModel appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, cachedLocations, statusMessages, logger )
+        : base( displayedPoints, appViewModel, cachedLocations, statusMessages, logger )
     {
         SendMessageCommand = new RelayCommand( SendMessageHandler );
 
         Callback = AppViewModel.Configuration.DefaultCallback;
     }
 
-    public void OnPageActivated()
-    {
-        RefreshHandler();
-    }
-
-    protected override bool IncludeLocation( ILocation location ) => location.HasMessage;
+    protected override bool IncludeLocation( MapPoint mapPoint ) => mapPoint.HasMessage;
 
     public RelayCommand SendMessageCommand { get; }
 

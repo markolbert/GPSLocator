@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Autofac.Features.ResolveAnything;
 using J4JSoftware.GPSLocator;
 
 // ReSharper disable ExplicitCallerInfoArgument
@@ -17,7 +18,6 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
     private const string IndexerPropertyName = "Item[]";
 
     public event NotifyCollectionChangedEventHandler? CollectionChanged;
-    public event EventHandler<MapChangedEventArgs>? MapChanged;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private static readonly NotifyCollectionChangedEventArgs ResetCollectionArgs =
@@ -51,7 +51,6 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
         _deferNotifications = false;
 
         OnCollectionChanged( NotifyCollectionChangedAction.Add, newPts, addedAt );
-        OnCenterBoundsChanged();
         OnPropertyChanged( nameof( Count ) );
         OnPropertyChanged( IndexerPropertyName );
     }
@@ -66,7 +65,6 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
             return;
 
         OnCollectionChanged(NotifyCollectionChangedAction.Add, item, index);
-        OnCenterBoundsChanged();
         OnPropertyChanged(nameof(Count));
         OnPropertyChanged(IndexerPropertyName);
     }
@@ -81,28 +79,23 @@ public class DisplayedPoints : Collection<MapPoint>, INotifyCollectionChanged, I
             return;
 
         OnCollectionChanged(NotifyCollectionChangedAction.Remove, removed, index);
-        OnCenterBoundsChanged();
         OnPropertyChanged(nameof(Count));
         OnPropertyChanged(IndexerPropertyName);
     }
 
     protected override void ClearItems()
     {
+        if( !this.Any() )
+            return;
+
         base.ClearItems();
 
         OnCollectionReset();
-        OnCenterBoundsChanged();
         OnPropertyChanged( nameof( Count ) );
         OnPropertyChanged( IndexerPropertyName );
     }
 
     #endregion
-
-    private void OnCenterBoundsChanged()
-    {
-        MapChanged?.Invoke( this,
-                            new MapChangedEventArgs { Center = GetCenter(), BoundingBox = GetBoundingBox() } );
-    }
 
     #region INotify... stuff
 

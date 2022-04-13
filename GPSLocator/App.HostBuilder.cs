@@ -74,6 +74,10 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
+        builder.RegisterType<DisplayedPoints>()
+               .AsSelf()
+               .SingleInstance();
+
         builder.RegisterType<LaunchViewModel>()
                .AsSelf()
                .SingleInstance();
