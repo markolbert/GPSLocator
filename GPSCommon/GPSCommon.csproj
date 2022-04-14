@@ -23,7 +23,8 @@
 	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
 	  <PackageReadmeFile>nuget-common.md</PackageReadmeFile>
   </PropertyGroup>
-  <ItemGroup>
+
+	<ItemGroup>
     <None Remove="Converters.xaml" />
   </ItemGroup>
 
@@ -48,7 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Page Update="Converters.xaml">
+	  <Page Update="converters\Converters.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>

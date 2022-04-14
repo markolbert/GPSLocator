@@ -10,7 +10,7 @@
 
                 <!-- Other merged dictionaries here -->
                 <ResourceDictionary Source="ms-appx:///ui/common/DefaultStyles.xaml"/>
-                <ResourceDictionary Source="ms-appx:///J4JSoftware.GPSCommon/Converters.xaml"/>
+                <ResourceDictionary Source="ms-appx:///J4JSoftware.GPSCommon/converters/Converters.xaml"/>
 
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->

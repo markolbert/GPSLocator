@@ -74,7 +74,7 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
-        builder.RegisterType<DisplayedPoints>()
+        builder.RegisterType<RetrievedPoints>()
                .AsSelf()
                .SingleInstance();
 
