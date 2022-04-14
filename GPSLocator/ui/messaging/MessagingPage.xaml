@@ -145,16 +145,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
 
-                <!--<i:Interaction.Behaviors>
-                    <ic:EventTriggerBehavior SourceObject="{x:Bind MessagesGrid}" 
-                                             EventName="SelectionChanged">
-                        <ic:EventTriggerBehavior.Actions>
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.SetMapPoint}"
-                                                    CommandParameter="{x:Bind MessagesGrid.SelectedItem}"/>
-                        </ic:EventTriggerBehavior.Actions>
-                    </ic:EventTriggerBehavior>
-                </i:Interaction.Behaviors>-->
-
             </ListView>
 
             <TextBlock Grid.Row="1" Grid.Column="0"

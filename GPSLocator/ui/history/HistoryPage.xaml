@@ -160,8 +160,7 @@
 
         <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="8"
                                     Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
-                                    Margin="0,0,0,14"
-                                    DataContext="{x:Bind ViewModel}"/>
+                                    Margin="0,0,0,14"/>
 
     </Grid>
 </Page>
