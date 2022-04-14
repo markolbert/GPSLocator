@@ -9,15 +9,13 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace J4JSoftware.GPSLocator;
 
-public class SelectablePointViewModel<TAppConfig> : LocationMapViewModel<TAppConfig>
-    where TAppConfig : BaseAppConfig
+public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
 {
-    private MapPoint? _selectedPoint;
     private bool _refreshEnabled;
 
     public SelectablePointViewModel(
-        DisplayedPoints displayedPoints,
-        BaseAppViewModel<TAppConfig> appViewModel,
+        RetrievedPoints displayedPoints,
+        BaseAppViewModel<AppConfig> appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
@@ -30,6 +28,9 @@ public class SelectablePointViewModel<TAppConfig> : LocationMapViewModel<TAppCon
 
         RefreshCommand = new RelayCommand(RefreshHandler);
         SetMapPoint = new RelayCommand<MapPoint>( SetMapPointHandler );
+
+        if( !CachedLocations.Executed )
+            DaysBack = AppViewModel.Configuration.DefaultDaysBack;
     }
 
     private void CachedLocationsOnTimeSpanChanged( object? sender, EventArgs e )
@@ -40,13 +41,11 @@ public class SelectablePointViewModel<TAppConfig> : LocationMapViewModel<TAppCon
 
     protected CachedLocations CachedLocations { get; }
 
-    public void OnPageActivated()
+    public virtual void OnPageActivated()
     {
         RefreshEnabled = true;
-        Messenger.Send(new MapViewModelMessage<TAppConfig>(this), "primary");
+        Messenger.Send(new MapViewModelMessage<AppConfig>(this), "primary");
         UpdateLocations();
-        SelectedPoint = DisplayedPoints.FirstOrDefault();
-        OnPropertyChanged( nameof( DisplayedPoints ) );
 
         if( CachedLocations.Executed )
         {
@@ -75,23 +74,10 @@ public class SelectablePointViewModel<TAppConfig> : LocationMapViewModel<TAppCon
 
     private void SetMapPointHandler( MapPoint? mapPoint )
     {
-        DisplayedPoints.Clear();
+        RetrievedPoints.UnselectAll();
 
         if( mapPoint != null )
-            DisplayedPoints.Add( mapPoint );
-    }
-
-    protected override void OnMapChanged( MapPoint? center, BoundingBox? boundingBox )
-    {
-        base.OnMapChanged( center, boundingBox );
-
-        SelectedPoint = center;
-    }
-
-    public MapPoint? SelectedPoint
-    {
-        get => _selectedPoint;
-        private set => SetProperty( ref _selectedPoint, value );
+            RetrievedPoints.Select( mapPoint );
     }
 
     private void CachedLocationsOnCacheChanged(object? sender, CachedLocationEventArgs e)
@@ -123,16 +109,21 @@ public class SelectablePointViewModel<TAppConfig> : LocationMapViewModel<TAppCon
         StatusMessages.Message("Retrieved history").Important().Enqueue();
         StatusMessages.DisplayReady();
 
-        DisplayedPoints.Clear();
+        var mapPts = InitializeMapPoints(CachedLocations.MapPoints);
+
+        RetrievedPoints.Clear();
+        RetrievedPoints.AddRange(mapPts);
         UpdateLocations();
 
         RefreshEnabled = true;
     }
 
+    protected virtual List<MapPoint> InitializeMapPoints( List<MapPoint> mapPoints ) => mapPoints;
+
     protected void UpdateLocations()
     {
         OnPropertyChanged( nameof( RetrievedPoints ) );
-        OnPropertyChanged( nameof( NumRetrieved ) );
+        OnPropertyChanged( nameof( NumDisplayable ) );
     }
 
     public bool RefreshEnabled
@@ -141,20 +132,7 @@ public class SelectablePointViewModel<TAppConfig> : LocationMapViewModel<TAppCon
         set => SetProperty(ref _refreshEnabled, value);
     }
 
-    protected virtual bool IncludeLocation( MapPoint mapPoint ) => true;
-
-    public IEnumerable<MapPoint> RetrievedPoints
-    {
-        get
-        {
-            foreach( var mapPoint in CachedLocations.MapPoints.Where( IncludeLocation ) )
-            {
-                yield return mapPoint;
-            }
-        }
-    }
-
-    public int NumRetrieved => CachedLocations.MapPoints.Count( IncludeLocation );
+    public int NumDisplayable => RetrievedPoints.NumDisplayable;
 
     public DateTimeOffset StartDate => CachedLocations.StartDate;
     public DateTimeOffset EndDate => CachedLocations.EndDate;

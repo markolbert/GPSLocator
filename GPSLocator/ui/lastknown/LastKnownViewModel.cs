@@ -12,7 +12,7 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
     private MapPoint? _lastKnownPoint;
 
     public LastKnownViewModel(
-        DisplayedPoints displayedPoints,
+        RetrievedPoints displayedPoints,
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
@@ -35,13 +35,6 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
         var request = new LastKnownLocationRequest<Location>(AppViewModel.Configuration, Logger);
 
         ExecuteRequest(request, OnRequestStatusChanged);
-    }
-
-    protected override void OnMapChanged( MapPoint? center, BoundingBox? boundingBox )
-    {
-        base.OnMapChanged( center, boundingBox );
-
-        LastKnownPoint = center;
     }
 
     private void OnRequestStatusChanged(RequestEventArgs<LastKnownLocation<Location>> args )
@@ -76,11 +69,12 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
 
             var lastLoc = args.Response.Result.Locations[0];
 
-            DisplayedPoints.Add( new MapPoint( lastLoc )
-            {
-                CompassHeadings = AppViewModel.Configuration.UseCompassHeadings,
-                ImperialUnits = AppViewModel.Configuration.UseImperialUnits
-            } );
+            LastKnownPoint = RetrievedPoints.Add( lastLoc );
+
+            LastKnownPoint.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
+            LastKnownPoint.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
+
+            RetrievedPoints.Select( LastKnownPoint );
         }
         else StatusMessages.Message("No last known location").Important().Enqueue();
 

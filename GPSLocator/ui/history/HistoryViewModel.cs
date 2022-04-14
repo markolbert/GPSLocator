@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 
 namespace J4JSoftware.GPSLocator;
 
-public class HistoryViewModel : SelectablePointViewModel<AppConfig>
+public class HistoryViewModel : SelectablePointViewModel
 {
-    private bool _mustHaveMessages;
+    private bool _mustHaveMsg;
     private bool _hideInvalidLoc;
 
     public HistoryViewModel(
-        DisplayedPoints displayedPoints,
+        RetrievedPoints displayedPoints,
         AppViewModel appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
@@ -19,7 +20,13 @@ public class HistoryViewModel : SelectablePointViewModel<AppConfig>
     )
         : base(displayedPoints, appViewModel, cachedLocations, statusMessages, logger)
     {
-        HideInvalidLocations = AppViewModel.Configuration.HideInvalidLocations;
+        RetrievedPoints.MapPointsFilter = new HistoryMapPointsFilter
+        {
+            HideInvalid = AppViewModel.Configuration.HideInvalidLocations,
+            RequireMessage = MustHaveMessages
+        };
+
+        _hideInvalidLoc = AppViewModel.Configuration.HideInvalidLocations;
     }
 
     public bool HideInvalidLocations
@@ -28,40 +35,37 @@ public class HistoryViewModel : SelectablePointViewModel<AppConfig>
 
         set
         {
-            var changed = value != _hideInvalidLoc;
+            var changed = _hideInvalidLoc != value;
 
-            SetProperty(ref _hideInvalidLoc, value);
+            SetProperty( ref _hideInvalidLoc, value );
 
-            if (changed)
-                UpdateLocations();
+            if( !changed )
+                return;
+
+            if( RetrievedPoints.MapPointsFilter is not HistoryMapPointsFilter filter )
+                return;
+
+            filter.HideInvalid = _hideInvalidLoc;
         }
     }
 
     public bool MustHaveMessages
     {
-        get => _mustHaveMessages;
+        get => _mustHaveMsg;
 
         set
         {
-            var changed = value != _mustHaveMessages;
+            var changed = _mustHaveMsg != value;
 
-            SetProperty( ref _mustHaveMessages, value );
+            SetProperty( ref _mustHaveMsg, value );
 
-            if( !changed  )
+            if (!changed)
                 return;
 
-            UpdateLocations();
+            if (RetrievedPoints.MapPointsFilter is not HistoryMapPointsFilter filter)
+                return;
+
+            filter.RequireMessage = _mustHaveMsg;
         }
-    }
-
-    protected override bool IncludeLocation( MapPoint mapPoint )
-    {
-        if( !HideInvalidLocations )
-            return !MustHaveMessages || ( MustHaveMessages && mapPoint.HasMessage );
-
-        if( !mapPoint.IsValidLocation )
-            return false;
-
-        return !MustHaveMessages || (MustHaveMessages && mapPoint.HasMessage);
     }
 }

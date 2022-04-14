@@ -9,7 +9,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace J4JSoftware.GPSLocator;
 
-public class MessagingViewModel : SelectablePointViewModel<AppConfig>
+public class MessagingViewModel : SelectablePointViewModel
 {
     private string? _messageToSend;
     private string? _callback;
@@ -17,7 +17,7 @@ public class MessagingViewModel : SelectablePointViewModel<AppConfig>
     private bool _msgTooLong;
 
     public MessagingViewModel(
-        DisplayedPoints displayedPoints,
+        RetrievedPoints displayedPoints,
         AppViewModel appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
@@ -28,9 +28,9 @@ public class MessagingViewModel : SelectablePointViewModel<AppConfig>
         SendMessageCommand = new RelayCommand( SendMessageHandler );
 
         Callback = AppViewModel.Configuration.DefaultCallback;
-    }
 
-    protected override bool IncludeLocation( MapPoint mapPoint ) => mapPoint.HasMessage;
+        RetrievedPoints.MapPointsFilter = new MessageMapPointsFilter() { RequireMessage = true };
+    }
 
     public RelayCommand SendMessageCommand { get; }
 
