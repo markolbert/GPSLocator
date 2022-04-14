@@ -48,6 +48,9 @@ public class MapPoint : ObservableObject
     public DateTime Timestamp { get; }
     public MapControl.Location MapLocation { get; }
     public bool IsValidLocation { get; }
+
+    public bool IsSelected { get; set; }
+
     public string Label { get; }
 
     public string? TextMessage { get; }
