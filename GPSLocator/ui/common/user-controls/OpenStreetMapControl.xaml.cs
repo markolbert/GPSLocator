@@ -1,4 +1,5 @@
 ﻿using J4JSoftware.GPSCommon;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -15,15 +16,10 @@ public sealed partial class OpenStreetMapControl : UserControl
     {
         this.InitializeComponent();
 
-        WeakReferenceMessenger.Default.Register<OpenStreetMapControl, MapViewModelMessage<AppConfig>, string>(this, "primary", ViewModelChangedHandler);
+        ViewModel = App.Current.Host.Services.GetRequiredService<RetrievedPoints>();
     }
 
-    private void ViewModelChangedHandler(OpenStreetMapControl recipient, MapViewModelMessage<AppConfig> message )
-    {
-        ViewModel = message.ViewModel;
-    }
-
-    public LocationMapViewModel<AppConfig> ViewModel { get; private set; }
+    private RetrievedPoints ViewModel { get; }
 
     private void UIElement_OnDoubleTapped( object sender, DoubleTappedRoutedEventArgs e )
     {

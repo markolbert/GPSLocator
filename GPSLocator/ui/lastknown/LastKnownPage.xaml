@@ -26,8 +26,7 @@
                                Margin="14,14,14,14"
                                DataContext="{x:Bind ViewModel.LastKnownPoint, FallbackValue=null}" />
 
-        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="1"
-                                    DataContext="{x:Bind ViewModel}"/>
+        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="1"/>
 
     </Grid>
 

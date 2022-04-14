@@ -130,14 +130,14 @@
             <TextBlock Grid.Row="0" Grid.Column="0"
                    HorizontalAlignment="Center">
                 <Run Text="On Server ("/>
-                <Run Text="{x:Bind ViewModel.NumRetrieved}"/>
+                <Run Text="{x:Bind ViewModel.NumDisplayable}"/>
                 <Run Text=")"/>
             </TextBlock>
 
             <ListView x:Name="MessagesGrid" 
                       Grid.Row="0" Grid.Column="1" 
                       HorizontalAlignment="Left"
-                      ItemsSource="{x:Bind ViewModel.RetrievedPoints}">
+                      ItemsSource="{x:Bind ViewModel.RetrievedPoints.DisplayablePoints}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -145,7 +145,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
 
-                <i:Interaction.Behaviors>
+                <!--<i:Interaction.Behaviors>
                     <ic:EventTriggerBehavior SourceObject="{x:Bind MessagesGrid}" 
                                              EventName="SelectionChanged">
                         <ic:EventTriggerBehavior.Actions>
@@ -153,19 +153,19 @@
                                                     CommandParameter="{x:Bind MessagesGrid.SelectedItem}"/>
                         </ic:EventTriggerBehavior.Actions>
                     </ic:EventTriggerBehavior>
-                </i:Interaction.Behaviors>
+                </i:Interaction.Behaviors>-->
 
             </ListView>
 
             <TextBlock Grid.Row="1" Grid.Column="0"
-                       Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}">
+                       Visibility="{x:Bind MessagesGrid.SelectedItem, Converter={StaticResource NullToHiddenConverter}}">
                 Recipients
             </TextBlock>
 
             <ListView Grid.Row="1" Grid.Column="1"
-                  Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}"
+                  Visibility="{x:Bind MessagesGrid.SelectedItem, Converter={StaticResource NullToHiddenConverter}}"
                   HorizontalAlignment="Left"
-                  ItemsSource="{x:Bind ViewModel.SelectedPoint.Recipients}">
+                  ItemsSource="{Binding ElementName=MessagesGrid, Path=SelectedItem.Recipients}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock HorizontalAlignment="Left" 
@@ -175,13 +175,13 @@
             </ListView>
 
             <TextBlock Grid.Row="2" Grid.Column="0"
-                       Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}">
+                       Visibility="{x:Bind MessagesGrid.SelectedItem, Converter={StaticResource NullToHiddenConverter}}">
                 Text
             </TextBlock>
 
             <TextBlock Grid.Row="2" Grid.Column="1"
-                   Visibility="{x:Bind ViewModel.SelectedPoint, Converter={StaticResource NullToHiddenConverter}}"
-                   Text="{x:Bind ViewModel.SelectedPoint.TextMessage}">
+                   Visibility="{x:Bind MessagesGrid.SelectedItem, Converter={StaticResource NullToHiddenConverter}}"
+                   Text="{Binding ElementName=MessagesGrid, Path=SelectedItem.TextMessage}">
             </TextBlock>
 
         </Grid>

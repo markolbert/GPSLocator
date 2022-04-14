@@ -9,7 +9,7 @@
     x:DefaultBindMode="OneWay"
     mc:Ignorable="d">
 
-    <Grid Visibility="{x:Bind ViewModel.DisplayedPoints.Points, Converter={StaticResource CollectionToVisibilityConverter}}">
+    <Grid Visibility="{x:Bind ViewModel.SelectedPoints, Converter={StaticResource CollectionToVisibilityConverter}}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -31,7 +31,7 @@
                  MinZoomLevel="2" 
                  MaxZoomLevel="21" 
                  ZoomLevel="{x:Bind ViewModel.ZoomLevel, Mode=TwoWay}"
-                 Center="{x:Bind ViewModel.MapCenter, Mode=TwoWay}"
+                 Center="{x:Bind ViewModel.Center}"
                  DoubleTapped="UIElement_OnDoubleTapped">
 
             <map:MapTileLayer SourceName="OpenStreetMap"
@@ -43,7 +43,7 @@
 
             </map:MapTileLayer>
 
-            <map:MapItemsControl ItemsSource="{x:Bind ViewModel.DisplayedPoints.Points}"
+            <map:MapItemsControl ItemsSource="{x:Bind ViewModel.SelectedPoints}"
                                  ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
 
             <!--<map:Pushpin AutoCollapse="True" Content="DingDong!">
