@@ -1,8 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using J4JSoftware.GPSCommon;
+using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -13,14 +15,18 @@ public sealed partial class LocationControl : UserControl, INotifyPropertyChange
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private readonly AppConfig _appConfig;
+
     public LocationControl()
     {
         this.InitializeComponent();
 
         DataContextChanged += LocationControl_DataContextChanged;
+
+        _appConfig = App.Current.Host.Services.GetRequiredService<AppViewModel>().Configuration;
     }
 
-    private MapPoint? ViewModel { get; set; }
+    private MapPoint ViewModel { get; set; } = new( 0, 0, DateTime.Now );
 
     private void LocationControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
     {
@@ -28,6 +34,9 @@ public sealed partial class LocationControl : UserControl, INotifyPropertyChange
             return;
 
         ViewModel = viewModel;
+        ViewModel.CompassHeadings = _appConfig.UseCompassHeadings;
+        ViewModel.ImperialUnits = _appConfig.UseImperialUnits;
+        
         OnPropertyChanged( nameof( ViewModel ) );
     }
 
