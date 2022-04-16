@@ -33,14 +33,14 @@
                  ZoomLevel="{x:Bind ViewModel.ZoomLevel, Mode=TwoWay}"
                  Center="{x:Bind ViewModel.Center}">
 
-            <map:MapTileLayer SourceName="OpenStreetMap"
+            <!--<map:MapTileLayer SourceName="OpenStreetMap"
                               Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
 
                 <map:MapTileLayer.TileSource>
                     <map:TileSource UriFormat="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
                 </map:MapTileLayer.TileSource>
 
-            </map:MapTileLayer>
+            </map:MapTileLayer>-->
 
             <map:MapItemsControl ItemsSource="{x:Bind ViewModel.SelectedPoints}"
                                  ItemContainerStyle="{StaticResource PushpinItemStyle}"/>
@@ -79,12 +79,15 @@
             © OpenStreetMap contributors
         </HyperlinkButton>
 
-        <!--<ComboBox Grid.Row="1" Grid.Column="1"
-                  ItemsSource="{x:Bind ViewModel.Configuration.MapLayers}">
-            <DataTemplate>
-                <TextBlock Text="{Binding SourceName }"/>
-            </DataTemplate>
-        </ComboBox>-->
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  ItemsSource="{x:Bind ViewModel.Configuration.MapLayers}"
+                  SelectedItem="{x:Bind ViewModel.MapLayer, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding SourceName }"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
     </Grid>
 </UserControl>
