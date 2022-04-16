@@ -17,7 +17,7 @@ public class MessagingViewModel : SelectablePointViewModel
     private bool _msgTooLong;
 
     public MessagingViewModel(
-        RetrievedPoints displayedPoints,
+        RetrievedPoints<AppConfig> displayedPoints,
         AppViewModel appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,

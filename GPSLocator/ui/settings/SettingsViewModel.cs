@@ -150,7 +150,7 @@ public class SettingsViewModel : ObservableObject
 
         testConfig.Validation += OnValidationProgress;
 
-        testConfig.Initialize( new GpsLocatorContext( _protector, _logger ) );
+        testConfig.Initialize( new GpsLocatorContext( _appViewModel.Configuration.MapLayers, _protector, _logger ) );
 
         Validated = await testConfig.ValidateAsync();
 

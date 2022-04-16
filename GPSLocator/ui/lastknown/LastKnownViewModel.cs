@@ -12,7 +12,7 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
     private MapPoint? _lastKnownPoint;
 
     public LastKnownViewModel(
-        RetrievedPoints displayedPoints,
+        RetrievedPoints<AppConfig> displayedPoints,
         AppViewModel appViewModel,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger

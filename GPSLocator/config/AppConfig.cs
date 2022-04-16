@@ -14,10 +14,10 @@ public class AppConfig : BaseAppConfig
     private string? _defaultCallback;
     private int _defaultDaysBack;
 
-    public AppConfig(
-        IEnumerable<IMapDisplayLayer> mapLayers
-    )
-        : base( mapLayers )
+    // this MUST be a parameterless constructor because otherwise the IConfiguration
+    // subsystem will not be able to create it. Any initialization must be done
+    // in the Initialize() method.
+    public AppConfig()
     {
         HelpLink = "https://www.jumpforjoysoftware.com/gpslocator-user-docs/";
     }

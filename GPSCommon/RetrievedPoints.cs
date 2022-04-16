@@ -7,12 +7,14 @@ using J4JSoftware.GPSLocator;
 using J4JSoftware.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace J4JSoftware.GPSCommon;
 
-public class RetrievedPoints : ObservableObject
+public class RetrievedPoints<TAppConfig> : ObservableObject
+    where TAppConfig : BaseAppConfig
 {
     private const double MinimumSeparation = 0.000001d;
 
@@ -20,9 +22,10 @@ public class RetrievedPoints : ObservableObject
 
     private int _zoomLevel = 17;
     private IFilterMapPoints _mapPtsFilter;
+    private IMapDisplayLayer _mapLayer;
 
     public RetrievedPoints(
-        BaseAppConfig config,
+        TAppConfig config,
         IJ4JLogger logger
         )
     {
@@ -53,7 +56,7 @@ public class RetrievedPoints : ObservableObject
         OnPropertyChanged( nameof( SelectedPoints ) );
     }
 
-    public BaseAppConfig Configuration { get; }
+    public TAppConfig Configuration { get; }
 
     public RelayCommand IncreaseZoomCommand { get; }
 
@@ -316,6 +319,18 @@ public class RetrievedPoints : ObservableObject
             retVal.East = center.Longitude + latSeparation / 2;
 
             return retVal;
+        }
+    }
+
+    public IMapDisplayLayer MapLayer
+    {
+        get => _mapLayer;
+
+        set
+        {
+            SetProperty( ref _mapLayer, value );
+
+            WeakReferenceMessenger.Default.Send( new MapLayerChangedMessage( _mapLayer ), "primary" );
         }
     }
 

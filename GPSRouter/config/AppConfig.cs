@@ -12,13 +12,6 @@ public class AppConfig : BaseAppConfig
     private bool _useCompass;
     private int _defaultDaysBack;
 
-    public AppConfig(
-        IEnumerable<IMapDisplayLayer> mapLayers
-    )
-        : base( mapLayers )
-    {
-    }
-
     public bool UseImperialUnits
     {
         get=> _useImperial;

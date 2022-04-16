@@ -13,7 +13,7 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
     where TAppConfig : BaseAppConfig
 {
     protected LocationMapViewModel(
-        RetrievedPoints retrievedPts,
+        RetrievedPoints<TAppConfig> retrievedPts,
         BaseAppViewModel<TAppConfig> appViewModel,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
@@ -23,5 +23,5 @@ public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
         RetrievedPoints = retrievedPts;
     }
 
-    public RetrievedPoints RetrievedPoints { get; }
+    public RetrievedPoints<TAppConfig> RetrievedPoints { get; }
 }

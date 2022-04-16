@@ -12,7 +12,7 @@ public class HistoryViewModel : SelectablePointViewModel
     private bool _hideInvalidLoc;
 
     public HistoryViewModel(
-        RetrievedPoints displayedPoints,
+        RetrievedPoints<AppConfig> displayedPoints,
         AppViewModel appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,

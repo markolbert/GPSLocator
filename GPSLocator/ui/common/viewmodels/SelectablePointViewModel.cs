@@ -14,7 +14,7 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
     private bool _refreshEnabled;
 
     public SelectablePointViewModel(
-        RetrievedPoints displayedPoints,
+        RetrievedPoints<AppConfig> displayedPoints,
         BaseAppViewModel<AppConfig> appViewModel,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,

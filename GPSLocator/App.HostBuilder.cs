@@ -54,7 +54,8 @@ public partial class App
                         _buildLogger.Error( "Error processing user configuration file, new configuration created" );
                     }
 
-                    var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(),
+                    var context = new GpsLocatorContext( c.Resolve<IEnumerable<IMapDisplayLayer>>(),
+                                                         c.Resolve<IJ4JProtection>(),
                                                          c.ResolveOptional<IJ4JLogger>() );
 
                     if( retVal != null )
@@ -63,7 +64,7 @@ public partial class App
                         return retVal;
                     }
 
-                    retVal = new AppConfig( c.Resolve<IEnumerable<IMapDisplayLayer>>() );
+                    retVal = new AppConfig();
                     retVal.Initialize( context );
 
                     return retVal;
@@ -83,7 +84,7 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
-        builder.RegisterType<RetrievedPoints>()
+        builder.RegisterType<RetrievedPoints<AppConfig>>()
                .AsSelf()
                .SingleInstance();
 

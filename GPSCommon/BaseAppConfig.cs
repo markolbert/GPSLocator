@@ -14,11 +14,8 @@ public class BaseAppConfig : DeviceConfig
     private string? _launchPage;
     private bool _hideInvalidLoc;
 
-    protected BaseAppConfig(
-        IEnumerable<IMapDisplayLayer> mapLayers
-        )
+    protected BaseAppConfig()
     {
-        MapLayers = mapLayers.ToList();
         AppVersion = Assembly.GetExecutingAssembly().GetName().Version;
     }
 
@@ -30,11 +27,14 @@ public class BaseAppConfig : DeviceConfig
             return;
 
         HelpLink = appContext.HelpLink;
+
+        MapLayers.Clear();
+        MapLayers.AddRange( appContext.MapLayers );
     }
 
     public Version? AppVersion { get; }
 
-    public List<IMapDisplayLayer> MapLayers { get; }
+    public List<IMapDisplayLayer> MapLayers { get; } = new();
 
     public LogEventLevel MinimumLogLevel
     {
