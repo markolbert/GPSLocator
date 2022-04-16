@@ -8,6 +8,7 @@ using Autofac;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,6 +39,18 @@ public partial class App
                .SingleInstance();
 
         builder.RegisterType<OpenTopoMapDisplayLayer>()
+               .AsImplementedInterfaces()
+               .SingleInstance();
+
+        builder.Register( c => new BingMapDisplayLayer() { MapMode = BingMapsTileLayer.MapMode.Road } )
+               .AsImplementedInterfaces()
+               .SingleInstance();
+
+        builder.Register(c => new BingMapDisplayLayer() { MapMode = BingMapsTileLayer.MapMode.Aerial })
+               .AsImplementedInterfaces()
+               .SingleInstance();
+
+        builder.Register(c => new BingMapDisplayLayer() { MapMode = BingMapsTileLayer.MapMode.AerialWithLabels })
                .AsImplementedInterfaces()
                .SingleInstance();
 
