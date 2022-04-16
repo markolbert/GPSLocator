@@ -20,8 +20,4 @@ public sealed partial class OpenStreetMapControl : UserControl
     }
 
     private RetrievedPoints ViewModel { get; }
-
-    private void UIElement_OnDoubleTapped( object sender, DoubleTappedRoutedEventArgs e )
-    {
-    }
 }

@@ -76,7 +76,6 @@ namespace J4JSoftware.GPSCommon
             }
         }
 
-        //public List<ILocation> Locations { get; } = new();
         public List<MapPoint> MapPoints { get; } = new();
 
         public bool BeginUpdate()

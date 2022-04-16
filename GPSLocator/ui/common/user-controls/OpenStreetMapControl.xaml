@@ -31,8 +31,7 @@
                  MinZoomLevel="2" 
                  MaxZoomLevel="21" 
                  ZoomLevel="{x:Bind ViewModel.ZoomLevel, Mode=TwoWay}"
-                 Center="{x:Bind ViewModel.Center}"
-                 DoubleTapped="UIElement_OnDoubleTapped">
+                 Center="{x:Bind ViewModel.Center}">
 
             <map:MapTileLayer SourceName="OpenStreetMap"
                               Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)">
