@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,6 +33,14 @@ public partial class App
 
     private void SetupDependencyInjection( HostBuilderContext hbc, ContainerBuilder builder )
     {
+        builder.RegisterType<OpenStreetMapDisplayLayer>()
+               .AsImplementedInterfaces()
+               .SingleInstance();
+
+        builder.RegisterType<OpenTopoMapDisplayLayer>()
+               .AsImplementedInterfaces()
+               .SingleInstance();
+
         builder.Register( ( c ) =>
                 {
                     AppConfig? retVal = null;
@@ -54,7 +63,7 @@ public partial class App
                         return retVal;
                     }
 
-                    retVal = new AppConfig();
+                    retVal = new AppConfig( c.Resolve<IEnumerable<IMapDisplayLayer>>() );
                     retVal.Initialize( context );
 
                     return retVal;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using J4JSoftware.GPSCommon;
 using Serilog.Events;
@@ -10,6 +11,13 @@ public class AppConfig : BaseAppConfig
     private bool _useImperial;
     private bool _useCompass;
     private int _defaultDaysBack;
+
+    public AppConfig(
+        IEnumerable<IMapDisplayLayer> mapLayers
+    )
+        : base( mapLayers )
+    {
+    }
 
     public bool UseImperialUnits
     {

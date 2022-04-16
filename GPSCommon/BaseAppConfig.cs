@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using J4JSoftware.GPSLocator;
 using Serilog;
@@ -12,8 +14,11 @@ public class BaseAppConfig : DeviceConfig
     private string? _launchPage;
     private bool _hideInvalidLoc;
 
-    protected BaseAppConfig()
+    protected BaseAppConfig(
+        IEnumerable<IMapDisplayLayer> mapLayers
+        )
     {
+        MapLayers = mapLayers.ToList();
         AppVersion = Assembly.GetExecutingAssembly().GetName().Version;
     }
 
@@ -28,6 +33,8 @@ public class BaseAppConfig : DeviceConfig
     }
 
     public Version? AppVersion { get; }
+
+    public List<IMapDisplayLayer> MapLayers { get; }
 
     public LogEventLevel MinimumLogLevel
     {

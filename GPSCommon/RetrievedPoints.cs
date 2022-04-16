@@ -22,9 +22,12 @@ public class RetrievedPoints : ObservableObject
     private IFilterMapPoints _mapPtsFilter;
 
     public RetrievedPoints(
+        BaseAppConfig config,
         IJ4JLogger logger
         )
     {
+        Configuration = config;
+
         _logger = logger;
         _logger.SetLoggedType( GetType() );
 
@@ -49,6 +52,8 @@ public class RetrievedPoints : ObservableObject
         OnPropertyChanged(nameof(NumSelected));
         OnPropertyChanged( nameof( SelectedPoints ) );
     }
+
+    public BaseAppConfig Configuration { get; }
 
     public RelayCommand IncreaseZoomCommand { get; }
 

@@ -79,5 +79,12 @@
             © OpenStreetMap contributors
         </HyperlinkButton>
 
+        <!--<ComboBox Grid.Row="1" Grid.Column="1"
+                  ItemsSource="{x:Bind ViewModel.Configuration.MapLayers}">
+            <DataTemplate>
+                <TextBlock Text="{Binding SourceName }"/>
+            </DataTemplate>
+        </ComboBox>-->
+
     </Grid>
 </UserControl>

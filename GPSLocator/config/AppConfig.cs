@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using J4JSoftware.GPSCommon;
 using Serilog;
@@ -13,7 +14,10 @@ public class AppConfig : BaseAppConfig
     private string? _defaultCallback;
     private int _defaultDaysBack;
 
-    public AppConfig()
+    public AppConfig(
+        IEnumerable<IMapDisplayLayer> mapLayers
+    )
+        : base( mapLayers )
     {
         HelpLink = "https://www.jumpforjoysoftware.com/gpslocator-user-docs/";
     }
