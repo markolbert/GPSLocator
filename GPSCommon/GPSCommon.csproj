@@ -23,6 +23,16 @@
 	  <PackageReleaseNotes>initial release</PackageReleaseNotes>
 	  <PackageReadmeFile>nuget-common.md</PackageReadmeFile>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="map-layers\BingMapDisplayLayerBase.cs" />
+    <Compile Remove="map-layers\IKeylessMapDisplayLayer.cs" />
+    <Compile Remove="map-layers\IMapDisplayLayer.cs" />
+    <Compile Remove="map-layers\KeyedMapDisplayLayer.cs" />
+    <Compile Remove="map-layers\KeyedMapType.cs" />
+    <Compile Remove="map-layers\KeylessMapDisplayLayerBase.cs" />
+    <Compile Remove="map-layers\OpenStreetMapDisplayLayer.cs" />
+    <Compile Remove="map-layers\OpenTopoMapDisplayLayer.cs" />
+  </ItemGroup>
 
 	<ItemGroup>
     <None Remove="Converters.xaml" />

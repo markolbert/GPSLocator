@@ -16,7 +16,7 @@ public sealed partial class OpenStreetMapControl : UserControl
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<RetrievedPoints<AppConfig>>();
+        ViewModel = App.Current.Host.Services.GetRequiredService<RetrievedPoints>();
 
         WeakReferenceMessenger.Default.Register<OpenStreetMapControl, MapLayerChangedMessage, string>(
             this,
@@ -26,8 +26,8 @@ public sealed partial class OpenStreetMapControl : UserControl
 
     private void MapLayerChangedHandler( OpenStreetMapControl recipient, MapLayerChangedMessage message )
     {
-        TheMap.MapLayer = message.Layer.GetMapLayer();
+        TheMap.MapLayer = message.MapService.MapLayer;
     }
 
-    private RetrievedPoints<AppConfig> ViewModel { get; }
+    private RetrievedPoints ViewModel { get; }
 }

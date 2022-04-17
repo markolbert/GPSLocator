@@ -17,14 +17,7 @@ public sealed partial class LogViewerPage : Page
         this.InitializeComponent();
 
         ViewModel = App.Current.Host.Services.GetRequiredService<LogViewerViewModel>();
-
-        Loaded += OnLoaded;
     }
 
     private LogViewerViewModel ViewModel { get; }
-
-    private void OnLoaded( object sender, RoutedEventArgs e )
-    {
-        ViewModel.OnPageActivated();
-    }
 }

@@ -6,5 +6,4 @@ namespace J4JSoftware.GPSCommon;
 public interface ICommonAppContext : IDeviceContext
 {
     string HelpLink { get; }
-    List<IMapDisplayLayer> MapLayers { get; }
 }

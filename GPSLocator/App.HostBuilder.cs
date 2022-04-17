@@ -34,26 +34,6 @@ public partial class App
 
     private void SetupDependencyInjection( HostBuilderContext hbc, ContainerBuilder builder )
     {
-        builder.RegisterType<OpenStreetMapDisplayLayer>()
-               .AsImplementedInterfaces()
-               .SingleInstance();
-
-        builder.RegisterType<OpenTopoMapDisplayLayer>()
-               .AsImplementedInterfaces()
-               .SingleInstance();
-
-        builder.Register( c => new BingMapDisplayLayer() { MapMode = BingMapsTileLayer.MapMode.Road } )
-               .AsImplementedInterfaces()
-               .SingleInstance();
-
-        builder.Register(c => new BingMapDisplayLayer() { MapMode = BingMapsTileLayer.MapMode.Aerial })
-               .AsImplementedInterfaces()
-               .SingleInstance();
-
-        builder.Register(c => new BingMapDisplayLayer() { MapMode = BingMapsTileLayer.MapMode.AerialWithLabels })
-               .AsImplementedInterfaces()
-               .SingleInstance();
-
         builder.Register( ( c ) =>
                 {
                     AppConfig? retVal = null;
@@ -67,8 +47,7 @@ public partial class App
                         _buildLogger.Error( "Error processing user configuration file, new configuration created" );
                     }
 
-                    var context = new GpsLocatorContext( c.Resolve<IEnumerable<IMapDisplayLayer>>(),
-                                                         c.Resolve<IJ4JProtection>(),
+                    var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(),
                                                          c.ResolveOptional<IJ4JLogger>() );
 
                     if( retVal != null )
@@ -82,6 +61,7 @@ public partial class App
 
                     return retVal;
                 } )
+               .AsImplementedInterfaces()
                .AsSelf()
                .SingleInstance();
 
@@ -93,11 +73,17 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
+        var typeTests = new TypeTests<IMapService>()
+                       .AddTests( PredefinedTypeTests.NonAbstract )
+                       .AddTests( new TypeTester( t => t.IsAssignableTo( typeof( MapService ) ) ) );
+
+        builder.RegisterTypeAssemblies<IMapService>( typeTests );
+
         builder.Register( c => new CachedLocations( c.Resolve<AppConfig>(), c.Resolve<IJ4JLogger>() ) )
                .AsSelf()
                .SingleInstance();
 
-        builder.RegisterType<RetrievedPoints<AppConfig>>()
+        builder.RegisterType<RetrievedPoints>()
                .AsSelf()
                .SingleInstance();
 
