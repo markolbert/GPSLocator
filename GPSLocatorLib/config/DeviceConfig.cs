@@ -6,7 +6,7 @@ using J4JSoftware.Logging;
 
 namespace J4JSoftware.GPSLocator;
 
-public class DeviceConfig : INotifyPropertyChanged
+public class DeviceConfig : IDeviceConfig
 {
     public event EventHandler<ValidationPhase>? Validation;
     public event PropertyChangedEventHandler? PropertyChanged;

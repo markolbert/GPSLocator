@@ -17,17 +17,17 @@ public class MessagingViewModel : SelectablePointViewModel
     private bool _msgTooLong;
 
     public MessagingViewModel(
-        RetrievedPoints<AppConfig> displayedPoints,
-        AppViewModel appViewModel,
+        RetrievedPoints displayedPoints,
+        IAppConfig appConfig,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( displayedPoints, appViewModel, cachedLocations, statusMessages, logger )
+        : base( displayedPoints, appConfig, cachedLocations, statusMessages, logger )
     {
         SendMessageCommand = new RelayCommand( SendMessageHandler );
 
-        Callback = AppViewModel.Configuration.DefaultCallback;
+        Callback = AppConfig.DefaultCallback;
 
         RetrievedPoints.MapPointsFilter = new MessageMapPointsFilter() { RequireMessage = true };
     }
@@ -76,7 +76,7 @@ public class MessagingViewModel : SelectablePointViewModel
                 messages.Add( sb.ToString() );
         }
 
-        var request = new SendMessageRequest( AppViewModel.Configuration, Logger );
+        var request = new SendMessageRequest( AppConfig, Logger );
 
         foreach( var message in messages )
         {
@@ -154,7 +154,7 @@ public class MessagingViewModel : SelectablePointViewModel
         {
             SetProperty( ref _messageToSend, value );
 
-            MessageTooLong = ( _messageToSend?.Length ?? 0 ) > AppViewModel.Configuration.MaxSmsLength;
+            MessageTooLong = ( _messageToSend?.Length ?? 0 ) > AppConfig.MaxSmsLength;
             OnPropertyChanged(nameof(SendMessageEnabled));
         }
     }

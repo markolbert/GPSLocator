@@ -26,11 +26,13 @@ public sealed partial class MainPage : Page
         _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
         _logger.SetLoggedType(GetType());
 
+        AppConfig = App.Current.Host.Services.GetRequiredService<IAppConfig>();
         ViewModel = App.Current.Host.Services.GetRequiredService<AppViewModel>();
 
         Loaded += OnLoaded;
     }
 
+    private IAppConfig AppConfig { get; }
     private AppViewModel ViewModel { get; }
 
     private void OnLoaded( object sender, RoutedEventArgs e )
@@ -55,12 +57,12 @@ public sealed partial class MainPage : Page
 
         if (tag.Equals(ResourceNames.HelpTag, StringComparison.OrdinalIgnoreCase))
         {
-            if (string.IsNullOrEmpty(ViewModel.Configuration.HelpLink))
+            if (string.IsNullOrEmpty(AppConfig.HelpLink))
                 return;
 
             try
             {
-                OpenUrl(ViewModel.Configuration.HelpLink);
+                OpenUrl(AppConfig.HelpLink);
             }
             catch (Exception ex)
             {
@@ -81,7 +83,7 @@ public sealed partial class MainPage : Page
 
     private void SetLaunchPage()
     {
-        if( !ViewModel.Configuration.IsValid )
+        if( !AppConfig.IsValid )
         {
             ContentFrame.Navigate( typeof( SettingsPage ) );
             return;
@@ -89,7 +91,7 @@ public sealed partial class MainPage : Page
 
         var launchPage = NavigationTargets.Pages
                                      .FirstOrDefault( x => x.PageTag.Equals(
-                                                          ViewModel.Configuration.LaunchPage,
+                                                          AppConfig.LaunchPage,
                                                           StringComparison.OrdinalIgnoreCase ) );
 
         if( launchPage == null )

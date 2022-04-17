@@ -9,8 +9,7 @@ using Microsoft.UI.Dispatching;
 
 namespace J4JSoftware.GPSCommon;
 
-public class BaseViewModel<TAppConfig> : ObservableValidator
-    where TAppConfig : BaseAppConfig
+public class BaseViewModel : ObservableValidator
 {
     private readonly DispatcherQueue _dQueue;
 
@@ -18,16 +17,14 @@ public class BaseViewModel<TAppConfig> : ObservableValidator
     private bool _isActive;
 
     protected BaseViewModel(
-        BaseAppViewModel<TAppConfig> appViewModel,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : this( appViewModel, statusMessages, WeakReferenceMessenger.Default, logger )
+        : this( statusMessages, WeakReferenceMessenger.Default, logger )
     {
     }
 
     protected BaseViewModel(
-        BaseAppViewModel<TAppConfig> appViewModel,
         StatusMessage.StatusMessages statusMessages,
         IMessenger messenger,
         IJ4JLogger logger
@@ -39,22 +36,16 @@ public class BaseViewModel<TAppConfig> : ObservableValidator
 
         IsActive = true;
 
-        AppViewModel = appViewModel;
         StatusMessages = statusMessages;
 
         Logger = logger;
         Logger.SetLoggedType( GetType() );
-
-        if( !AppViewModel.Configuration.IsValid )
-            StatusMessages.Message("Invalid configuration").Urgent().Enqueue();
 
         StatusMessages.DisplayReady();
     }
 
     protected IJ4JLogger Logger { get; }
     protected StatusMessage.StatusMessages StatusMessages { get; }
-
-    public BaseAppViewModel<TAppConfig> AppViewModel { get; }
 
     #region stuff to mimic ObservableRecipient
 

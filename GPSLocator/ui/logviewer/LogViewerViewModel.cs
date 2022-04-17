@@ -9,33 +9,34 @@ using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator;
 
-public class LogViewerViewModel : BaseViewModel<AppConfig>
+public class LogViewerViewModel : BaseViewModel
 {
-    private LogEventLevel _minLevel = LogEventLevel.Verbose;
+    private readonly AppViewModel _appViewModel;
+    private LogEventLevel _minLevel;
 
     public LogViewerViewModel(
         AppViewModel appViewModel,
+        IAppConfig appConfig,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger )
+        : base( statusMessages, logger )
     {
-        FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( AppViewModel.LogEvents );
+        _appViewModel = appViewModel;
+
+        FilteredLogEvents = new ObservableCollection<IndexedLogEvent>( appViewModel.LogEvents );
+
+        MinimumLogEventLevel = appConfig.MinimumLogLevel;
 
         LogLevels = Enum.GetValues<LogEventLevel>().ToList();
         ClearLogCommand = new RelayCommand( ClearLogHandler );
-    }
-
-    public void OnPageActivated()
-    {
-        MinimumLogEventLevel = AppViewModel.Configuration.MinimumLogLevel;
     }
 
     public List<LogEventLevel> LogLevels { get; }
 
     public RelayCommand ClearLogCommand { get; }
 
-    private void ClearLogHandler() => AppViewModel.LogEvents.Clear();
+    private void ClearLogHandler() => _appViewModel.LogEvents.Clear();
 
     public ObservableCollection<IndexedLogEvent> FilteredLogEvents { get; }
 
@@ -67,7 +68,7 @@ public class LogViewerViewModel : BaseViewModel<AppConfig>
             FilteredLogEvents.RemoveAt(idx);
         }
 
-        var newItems = AppViewModel.LogEvents
+        var newItems = _appViewModel.LogEvents
                                     .Where( x => x.LogEventLevel >= MinimumLogEventLevel
                                              && FilteredLogEvents.All( y => y.Index != x.Index ) )
                                     .ToList();

@@ -9,7 +9,7 @@ public class LastKnownLocationRequest<TLoc> : DeviceGetRequest<LastKnownLocation
     private string _imei = string.Empty;
 
     public LastKnownLocationRequest( 
-        DeviceConfig config, 
+        IDeviceConfig config, 
         IJ4JLogger logger
         )
         : base( config, logger )

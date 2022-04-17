@@ -15,7 +15,7 @@ public sealed partial class LocationControl : UserControl, INotifyPropertyChange
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private readonly AppConfig _appConfig;
+    private readonly IAppConfig _appConfig;
 
     public LocationControl()
     {
@@ -23,7 +23,7 @@ public sealed partial class LocationControl : UserControl, INotifyPropertyChange
 
         DataContextChanged += LocationControl_DataContextChanged;
 
-        _appConfig = App.Current.Host.Services.GetRequiredService<AppViewModel>().Configuration;
+        _appConfig = App.Current.Host.Services.GetRequiredService<IAppConfig>();
     }
 
     private MapPoint ViewModel { get; set; } = new( 0, 0, DateTime.Now );

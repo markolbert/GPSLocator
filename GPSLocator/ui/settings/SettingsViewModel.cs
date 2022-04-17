@@ -20,7 +20,7 @@ namespace J4JSoftware.GPSLocator;
 
 public class SettingsViewModel : ObservableObject
 {
-    private readonly AppViewModel _appViewModel;
+    private readonly IAppConfig _appConfig;
     private readonly string _userConfigPath;
     private readonly IJ4JLogger _logger;
     private readonly IJ4JProtection _protector;
@@ -44,14 +44,14 @@ public class SettingsViewModel : ObservableObject
     private bool _otherConfigChanged;
 
     public SettingsViewModel(
-        AppViewModel appViewModel,
+        IAppConfig appConfig,
         StatusMessage.StatusMessages statusMessages,
         IJ4JProtection protector,
         IJ4JHost host,
         IJ4JLogger logger
     )
     {
-        _appViewModel = appViewModel;
+        _appConfig = appConfig;
         _statusMessages = statusMessages;
         _userConfigPath = host.UserConfigurationFiles.First();
         _protector = protector;
@@ -72,7 +72,7 @@ public class SettingsViewModel : ObservableObject
     {
         RevertHandler();
 
-        Validated = _appViewModel.Configuration.IsValid;
+        Validated = _appConfig.IsValid;
         DeviceConfigChanged = false;
         OtherConfigChanged = false;
     }
@@ -95,17 +95,17 @@ public class SettingsViewModel : ObservableObject
         // appConfig stuff in the userConfig file
         var tempConfig = new
         {
-            _appViewModel.Configuration.Website,
-            _appViewModel.Configuration.UserName,
-            _appViewModel.Configuration.EncryptedPassword,
-            _appViewModel.Configuration.IMEI,
-            _appViewModel.Configuration.UseCompassHeadings,
-            _appViewModel.Configuration.UseImperialUnits,
-            _appViewModel.Configuration.HideInvalidLocations,
-            _appViewModel.Configuration.MinimumLogLevel,
-            _appViewModel.Configuration.DefaultCallback,
-            _appViewModel.Configuration.DefaultDaysBack,
-            _appViewModel.Configuration.LaunchPage,
+            _appConfig.Website,
+            _appConfig.UserName,
+            _appConfig.EncryptedPassword,
+            _appConfig.IMEI,
+            _appConfig.UseCompassHeadings,
+            _appConfig.UseImperialUnits,
+            _appConfig.HideInvalidLocations,
+            _appConfig.MinimumLogLevel,
+            _appConfig.DefaultCallback,
+            _appConfig.DefaultDaysBack,
+            _appConfig.LaunchPage,
         };
 
         var text = JsonSerializer.Serialize( tempConfig, jsonOptions );
@@ -123,17 +123,17 @@ public class SettingsViewModel : ObservableObject
 
     private void UpdateAppConfig()
     {
-        _appViewModel.Configuration.Website = Website;
-        _appViewModel.Configuration.UserName = UserName;
-        _appViewModel.Configuration.Password = Password;
-        _appViewModel.Configuration.IMEI = Imei;
-        _appViewModel.Configuration.UseCompassHeadings = CompassHeadings;
-        _appViewModel.Configuration.UseImperialUnits = ImperialUnits;
-        _appViewModel.Configuration.HideInvalidLocations = HideInvalidLocations;
-        _appViewModel.Configuration.MinimumLogLevel = MinimumLogLevel;
-        _appViewModel.Configuration.DefaultCallback = DefaultCallback;
-        _appViewModel.Configuration.DefaultDaysBack = DefaultDaysBack;
-        _appViewModel.Configuration.LaunchPage = LaunchPage?.PageTag;
+        _appConfig.Website = Website;
+        _appConfig.UserName = UserName;
+        _appConfig.Password = Password;
+        _appConfig.IMEI = Imei;
+        _appConfig.UseCompassHeadings = CompassHeadings;
+        _appConfig.UseImperialUnits = ImperialUnits;
+        _appConfig.HideInvalidLocations = HideInvalidLocations;
+        _appConfig.MinimumLogLevel = MinimumLogLevel;
+        _appConfig.DefaultCallback = DefaultCallback;
+        _appConfig.DefaultDaysBack = DefaultDaysBack;
+        _appConfig.LaunchPage = LaunchPage?.PageTag;
     }
 
     public AsyncRelayCommand ValidateCommand { get; }
@@ -150,14 +150,14 @@ public class SettingsViewModel : ObservableObject
 
         testConfig.Validation += OnValidationProgress;
 
-        testConfig.Initialize( new GpsLocatorContext( _appViewModel.Configuration.MapLayers, _protector, _logger ) );
+        testConfig.Initialize( new GpsLocatorContext( _protector, _logger ) );
 
         Validated = await testConfig.ValidateAsync();
 
         if( Validated )
         {
             UpdateAppConfig();
-            _appViewModel.Configuration.ValidationState = ValidationState.Validated;
+            _appConfig.ValidationState = ValidationState.Validated;
 
             _statusMessages.Message( "Validation succeeded").Important().Enqueue( 500 );
             _statusMessages.DisplayReady();
@@ -200,19 +200,19 @@ public class SettingsViewModel : ObservableObject
 
     private void RevertHandler()
     {
-        Website = _appViewModel.Configuration.Website;
-        UserName = _appViewModel.Configuration.UserName;
-        Password = _appViewModel.Configuration.Password;
-        Imei = _appViewModel.Configuration.IMEI;
-        Validated = _appViewModel.Configuration.IsValid;
-        CompassHeadings = _appViewModel.Configuration.UseCompassHeadings;
-        ImperialUnits = _appViewModel.Configuration.UseImperialUnits;
-        HideInvalidLocations = _appViewModel.Configuration.HideInvalidLocations;
-        MinimumLogLevel = _appViewModel.Configuration.MinimumLogLevel;
-        DefaultCallback = _appViewModel.Configuration.DefaultCallback;
-        DefaultDaysBack = _appViewModel.Configuration.DefaultDaysBack;
+        Website = _appConfig.Website;
+        UserName = _appConfig.UserName;
+        Password = _appConfig.Password;
+        Imei = _appConfig.IMEI;
+        Validated = _appConfig.IsValid;
+        CompassHeadings = _appConfig.UseCompassHeadings;
+        ImperialUnits = _appConfig.UseImperialUnits;
+        HideInvalidLocations = _appConfig.HideInvalidLocations;
+        MinimumLogLevel = _appConfig.MinimumLogLevel;
+        DefaultCallback = _appConfig.DefaultCallback;
+        DefaultDaysBack = _appConfig.DefaultDaysBack;
         LaunchPage = NavigationTargets.Pages
-                                 .FirstOrDefault( x => x.PageTag.Equals( _appViewModel.Configuration.LaunchPage,
+                                 .FirstOrDefault( x => x.PageTag.Equals( _appConfig.LaunchPage,
                                                                        StringComparison.OrdinalIgnoreCase ) );
 
         DeviceConfigChanged = true;

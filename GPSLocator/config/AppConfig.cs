@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
+using System.Threading.Tasks;
+using J4JSoftware.DependencyInjection;
 using J4JSoftware.GPSCommon;
 using Serilog;
 using Serilog.Events;
 
 namespace J4JSoftware.GPSLocator;
 
-public class AppConfig : BaseAppConfig
+public class AppConfig : BaseAppConfig, IAppConfig
 {
     private bool _useImperial;
     private bool _useCompass;

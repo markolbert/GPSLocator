@@ -35,17 +35,17 @@
 
                     <NavigationViewItem Content="Last Known"
                                         Tag="{x:Bind local:ResourceNames.LastKnownPageName, Mode=OneTime}"
-                                        IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
+                                        IsEnabled="{x:Bind AppConfig.IsValid}"
                                         ToolTipService.ToolTip="shows last known location on a map"/>
 
                     <NavigationViewItem Content="History"
                                         Tag="{x:Bind local:ResourceNames.HistoryPageName, Mode=OneTime}"
-                                        IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
+                                        IsEnabled="{x:Bind AppConfig.IsValid}"
                                         ToolTipService.ToolTip="shows locations within the last 31 days"/>
 
                     <NavigationViewItem Content="Messaging"
                                         Tag="{x:Bind local:ResourceNames.MessagingPageName, Mode=OneTime}"
-                                        IsEnabled="{x:Bind ViewModel.Configuration.IsValid}"
+                                        IsEnabled="{x:Bind AppConfig.IsValid}"
                                         ToolTipService.ToolTip="shows messages within the last 31 days"/>
 
                 </NavigationView.MenuItems>

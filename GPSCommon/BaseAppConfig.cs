@@ -8,7 +8,7 @@ using Serilog.Events;
 
 namespace J4JSoftware.GPSCommon;
 
-public class BaseAppConfig : DeviceConfig
+public class BaseAppConfig : DeviceConfig, IBaseAppConfig
 {
     private LogEventLevel _minLevel = LogEventLevel.Verbose;
     private string? _launchPage;
@@ -23,18 +23,21 @@ public class BaseAppConfig : DeviceConfig
     {
         base.Initialize( context );
 
-        if( context is not ICommonAppContext appContext )
+        foreach (var mapService in MapCredentials)
+        {
+            mapService.EncryptedApiKey.Logger = context.Logger;
+            mapService.EncryptedApiKey.Protector = context.Protector;
+        }
+
+        if ( context is not ICommonAppContext appContext )
             return;
 
         HelpLink = appContext.HelpLink;
-
-        MapLayers.Clear();
-        MapLayers.AddRange( appContext.MapLayers );
     }
 
     public Version? AppVersion { get; }
 
-    public List<IMapDisplayLayer> MapLayers { get; } = new();
+    public List<MapServiceCredentials> MapCredentials { get; set; } = new();
 
     public LogEventLevel MinimumLogLevel
     {

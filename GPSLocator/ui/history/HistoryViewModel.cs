@@ -12,21 +12,21 @@ public class HistoryViewModel : SelectablePointViewModel
     private bool _hideInvalidLoc;
 
     public HistoryViewModel(
-        RetrievedPoints<AppConfig> displayedPoints,
-        AppViewModel appViewModel,
+        RetrievedPoints displayedPoints,
+        IAppConfig appConfig,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base(displayedPoints, appViewModel, cachedLocations, statusMessages, logger)
+        : base(displayedPoints, appConfig, cachedLocations, statusMessages, logger)
     {
         RetrievedPoints.MapPointsFilter = new HistoryMapPointsFilter
         {
-            HideInvalid = AppViewModel.Configuration.HideInvalidLocations,
+            HideInvalid = AppConfig.HideInvalidLocations,
             RequireMessage = MustHaveMessages
         };
 
-        _hideInvalidLoc = AppViewModel.Configuration.HideInvalidLocations;
+        _hideInvalidLoc = AppConfig.HideInvalidLocations;
     }
 
     public bool HideInvalidLocations

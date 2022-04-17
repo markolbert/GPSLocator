@@ -14,14 +14,16 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
     private bool _refreshEnabled;
 
     public SelectablePointViewModel(
-        RetrievedPoints<AppConfig> displayedPoints,
-        BaseAppViewModel<AppConfig> appViewModel,
+        RetrievedPoints displayedPoints,
+        IAppConfig appConfig,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base(displayedPoints, appViewModel, statusMessages, logger)
+        : base(displayedPoints, statusMessages, logger)
     {
+        AppConfig = appConfig;
+
         CachedLocations = cachedLocations;
         CachedLocations.CacheChanged += CachedLocationsOnCacheChanged;
         CachedLocations.TimeSpanChanged += CachedLocationsOnTimeSpanChanged;
@@ -30,8 +32,10 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
         SetMapPoint = new RelayCommand<MapPoint>( SetMapPointHandler );
 
         if( !CachedLocations.Executed )
-            DaysBack = AppViewModel.Configuration.DefaultDaysBack;
+            DaysBack = AppConfig.DefaultDaysBack;
     }
+
+    protected IAppConfig AppConfig { get; }
 
     private void CachedLocationsOnTimeSpanChanged( object? sender, EventArgs e )
     {
@@ -60,7 +64,7 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
 
     protected void RefreshHandler()
     {
-        if (!AppViewModel.Configuration.IsValid)
+        if (!AppConfig.IsValid)
         {
             StatusMessages.Message("Invalid configuration").Urgent().Enqueue();
             StatusMessages.DisplayReady();

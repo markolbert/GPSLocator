@@ -12,7 +12,7 @@ public class SendMessageRequest : DevicePostRequest<SendMessageCount, ErrorMulti
     private readonly List<MessageInfo> _messages = new();
 
     public SendMessageRequest( 
-        DeviceConfig config, 
+        IDeviceConfig config, 
         IJ4JLogger logger
         )
         : base( config, logger )

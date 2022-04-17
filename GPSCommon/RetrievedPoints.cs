@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using J4JSoftware.GPSLocator;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -13,8 +14,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace J4JSoftware.GPSCommon;
 
-public class RetrievedPoints<TAppConfig> : ObservableObject
-    where TAppConfig : BaseAppConfig
+public class RetrievedPoints : ObservableObject
 {
     private const double MinimumSeparation = 0.000001d;
 
@@ -22,12 +22,13 @@ public class RetrievedPoints<TAppConfig> : ObservableObject
 
     private int _zoomLevel = 17;
     private IFilterMapPoints _mapPtsFilter;
-    private IMapDisplayLayer _mapLayer;
+    private MapServiceInfo? _mapService;
 
     public RetrievedPoints(
-        TAppConfig config,
+        IBaseAppConfig config,
+        IEnumerable<IMapService> mapServices,
         IJ4JLogger logger
-        )
+    )
     {
         Configuration = config;
 
@@ -37,8 +38,17 @@ public class RetrievedPoints<TAppConfig> : ObservableObject
         _mapPtsFilter = new AllowAllMapPointsFilter();
         _mapPtsFilter.PropertyChanged += MapPtsFilterOnPropertyChanged;
 
-        IncreaseZoomCommand = new RelayCommand(IncreaseZoomHandler);
-        DecreaseZoomCommand = new RelayCommand(DecreaseZoomHandler);
+        MapServices = new ObservableCollection<MapServiceInfo>( mapServices.SelectMany( x => x.GetMapServices() ) );
+
+        MapService = MapServices.FirstOrDefault( x => x.Label
+                                                       .Equals( OpenStreetMapService.Name,
+                                                                StringComparison.OrdinalIgnoreCase ) );
+
+        if( MapService == null )
+            _logger.Error( "Failed to load {0} service", MapServiceType.OpenStreetMap );
+
+        IncreaseZoomCommand = new RelayCommand( IncreaseZoomHandler );
+        DecreaseZoomCommand = new RelayCommand( DecreaseZoomHandler );
     }
 
     private void MapPtsFilterOnPropertyChanged( object? sender, PropertyChangedEventArgs e )
@@ -56,7 +66,7 @@ public class RetrievedPoints<TAppConfig> : ObservableObject
         OnPropertyChanged( nameof( SelectedPoints ) );
     }
 
-    public TAppConfig Configuration { get; }
+    public IBaseAppConfig Configuration { get; }
 
     public RelayCommand IncreaseZoomCommand { get; }
 
@@ -322,15 +332,17 @@ public class RetrievedPoints<TAppConfig> : ObservableObject
         }
     }
 
-    public IMapDisplayLayer MapLayer
+    public ObservableCollection<MapServiceInfo> MapServices { get; }
+
+    public MapServiceInfo? MapService
     {
-        get => _mapLayer;
+        get => _mapService;
 
         set
         {
-            SetProperty( ref _mapLayer, value );
+            SetProperty( ref _mapService, value );
 
-            WeakReferenceMessenger.Default.Send( new MapLayerChangedMessage( _mapLayer ), "primary" );
+            WeakReferenceMessenger.Default.Send( new MapLayerChangedMessage( _mapService ), "primary" );
         }
     }
 

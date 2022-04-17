@@ -17,14 +17,14 @@ public class LaunchViewModel : ObservableObject
     public event EventHandler? Initialized;
 
     private readonly IJ4JLogger _logger;
-    private readonly AppViewModel _appViewModel;
+    private readonly IAppConfig _appConfig;
     private readonly DispatcherQueue _dQueue;
 
     private string? _mesg;
     private Color _mesgColor = Colors.Gold;
 
     public LaunchViewModel( 
-        AppViewModel appViewModel,
+        IAppConfig appConfig,
         IJ4JLogger logger 
         )
     {
@@ -33,15 +33,15 @@ public class LaunchViewModel : ObservableObject
         _logger = logger;
         _logger.SetLoggedType( GetType() );
 
-        _appViewModel = appViewModel;
+        _appConfig = appConfig;
     }
 
     public void OnPageActivated()
     {
         _logger.Information("Starting initial validation");
-        _appViewModel.Configuration.Validation += OnValidationProgress;
+        _appConfig.Validation += OnValidationProgress;
 
-        Task.Run( async () => await _appViewModel.Configuration.ValidateAsync() );
+        Task.Run( async () => await _appConfig.ValidateAsync() );
 
         _logger.Information<string>($"Exiting {0}", nameof(OnPageActivated));
     }
@@ -89,7 +89,7 @@ public class LaunchViewModel : ObservableObject
             if( !terminate )
                 return;
 
-            _appViewModel.Configuration.Validation -= OnValidationProgress;
+            _appConfig.Validation -= OnValidationProgress;
             _logger.Information( "Decoupled event handler" );
         } );
     }

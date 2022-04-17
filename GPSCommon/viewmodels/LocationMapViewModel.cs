@@ -9,19 +9,18 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace J4JSoftware.GPSCommon;
 
-public class LocationMapViewModel<TAppConfig> : BaseViewModel<TAppConfig>
+public class LocationMapViewModel<TAppConfig> : BaseViewModel
     where TAppConfig : BaseAppConfig
 {
     protected LocationMapViewModel(
-        RetrievedPoints<TAppConfig> retrievedPts,
-        BaseAppViewModel<TAppConfig> appViewModel,
+        RetrievedPoints retrievedPts,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appViewModel, statusMessages, logger )
+        : base( statusMessages, logger )
     {
         RetrievedPoints = retrievedPts;
     }
 
-    public RetrievedPoints<TAppConfig> RetrievedPoints { get; }
+    public RetrievedPoints RetrievedPoints { get; }
 }

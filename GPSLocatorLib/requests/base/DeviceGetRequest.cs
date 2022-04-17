@@ -12,7 +12,7 @@ namespace J4JSoftware.GPSLocator
         where TError : ErrorBase, new()
     {
         protected DeviceGetRequest(
-            DeviceConfig config,
+            IDeviceConfig config,
             IJ4JLogger logger
         )
             : base( config, logger )

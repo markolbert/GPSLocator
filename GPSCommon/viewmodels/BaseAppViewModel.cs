@@ -7,8 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSCommon;
 
-public abstract class BaseAppViewModel<TAppConfig> : ObservableObject
-    where TAppConfig : BaseAppConfig
+public abstract class BaseAppViewModel : ObservableObject
 {
     private string? _statusMesg;
     private Style? _statusStyle;
@@ -18,29 +17,18 @@ public abstract class BaseAppViewModel<TAppConfig> : ObservableObject
     private Visibility _indeterminateVisibility = Visibility.Collapsed;
 
     protected BaseAppViewModel(
-        TAppConfig appConfig,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
         )
     {
-        Configuration = appConfig;
-        Configuration.PropertyChanged += ConfigurationOnPropertyChanged;
-
         logger.LogEvent += Logger_LogEvent;
         statusMessages.DisplayMessage += OnDisplayMessage;
-    }
-
-    private void ConfigurationOnPropertyChanged( object? sender, PropertyChangedEventArgs e )
-    {
-        OnPropertyChanged(nameof(Configuration));
     }
 
     private void Logger_LogEvent(object? sender, NetEventArgs e)
     {
         LogEvents.AddLogEvent( e );
     }
-
-    public TAppConfig Configuration { get; }
 
     [JsonIgnore]
     public IndexedLogEvent.Collection LogEvents { get; } = new();

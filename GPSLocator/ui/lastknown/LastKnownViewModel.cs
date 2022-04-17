@@ -8,23 +8,27 @@ namespace J4JSoftware.GPSLocator;
 
 public class LastKnownViewModel : LocationMapViewModel<AppConfig>
 {
+    private readonly IAppConfig _appConfig;
+
     private bool _refreshEnabled;
     private MapPoint? _lastKnownPoint;
 
     public LastKnownViewModel(
-        RetrievedPoints<AppConfig> displayedPoints,
-        AppViewModel appViewModel,
+        IAppConfig appConfig,
+        RetrievedPoints displayedPoints,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( displayedPoints, appViewModel, statusMessages, logger )
+        : base( displayedPoints, statusMessages, logger )
     {
+        _appConfig = appConfig;
+
         Messenger.Send( new MapViewModelMessage<AppConfig>( this ), "primary" );
     }
 
     public void OnPageActivated()
     {
-        if (!AppViewModel.Configuration.IsValid)
+        if (!_appConfig.IsValid)
         {
             StatusMessages.Message("Invalid configuration").Urgent().Enqueue();
             StatusMessages.DisplayReady();
@@ -32,7 +36,7 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
             return;
         }
 
-        var request = new LastKnownLocationRequest<Location>(AppViewModel.Configuration, Logger);
+        var request = new LastKnownLocationRequest<Location>(_appConfig, Logger);
 
         ExecuteRequest(request, OnRequestStatusChanged);
     }
@@ -71,8 +75,8 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
 
             LastKnownPoint = RetrievedPoints.Add( lastLoc );
 
-            LastKnownPoint.CompassHeadings = AppViewModel.Configuration.UseCompassHeadings;
-            LastKnownPoint.ImperialUnits = AppViewModel.Configuration.UseImperialUnits;
+            LastKnownPoint.CompassHeadings = _appConfig.UseCompassHeadings;
+            LastKnownPoint.ImperialUnits = _appConfig.UseImperialUnits;
 
             RetrievedPoints.Select( LastKnownPoint );
         }

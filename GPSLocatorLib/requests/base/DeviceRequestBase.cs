@@ -21,7 +21,7 @@ namespace J4JSoftware.GPSLocator
         private readonly Dictionary<string, string> _queryStrings = new(StringComparer.OrdinalIgnoreCase);
 
         protected DeviceRequestBase(
-            DeviceConfig config,
+            IDeviceConfig config,
             IJ4JLogger logger
         )
         {
@@ -45,7 +45,7 @@ namespace J4JSoftware.GPSLocator
         }
 
         protected IJ4JLogger Logger { get; }
-        protected DeviceConfig Configuration { get; }
+        protected IDeviceConfig Configuration { get; }
 
         public async Task<DeviceResponse<TResponse>> ExecuteAsync()
         {

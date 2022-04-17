@@ -15,8 +15,8 @@ public sealed partial class AboutPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<AppViewModel>();
+        ViewModel = App.Current.Host.Services.GetRequiredService<IAppConfig>();
     }
 
-    private AppViewModel ViewModel { get; }
+    private IAppConfig ViewModel { get; }
 }

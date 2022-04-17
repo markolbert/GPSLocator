@@ -8,14 +8,13 @@ using Microsoft.UI.Xaml;
 
 namespace J4JSoftware.GPSLocator;
 
-public class AppViewModel : BaseAppViewModel<AppConfig>
+public class AppViewModel : BaseAppViewModel
 {
     public AppViewModel(
-        AppConfig appConfig,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
-        : base( appConfig, statusMessages, logger )
+        : base( statusMessages, logger )
     {
     }
 

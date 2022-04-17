@@ -42,7 +42,7 @@
 
         <TextBlock Grid.Row="2" Grid.Column="0">
             <Run>Version</Run>
-            <Run Text="{x:Bind ViewModel.Configuration.AppVersion}"/>
+            <Run Text="{x:Bind ViewModel.AppVersion}"/>
         </TextBlock>
 
         <TextBlock Grid.Row="3" Grid.Column="0"
