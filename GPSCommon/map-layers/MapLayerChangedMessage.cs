@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace J4JSoftware.GPSCommon
 {
-    public record MapLayerChangedMessage( IMapDisplayLayer Layer );
+    public record MapLayerChangedMessage( MapServiceInfo MapService );
 }
