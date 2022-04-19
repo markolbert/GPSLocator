@@ -8,6 +8,7 @@ using Autofac;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
+using J4JSoftware.WindowsAppUtilities;
 using MapControl;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

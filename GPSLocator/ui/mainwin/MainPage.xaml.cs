@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
+using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
