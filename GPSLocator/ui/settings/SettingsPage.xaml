@@ -9,104 +9,111 @@
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Margin="7">
+    <StackPanel Margin="7"
+                Orientation="Vertical">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
+        <TabView CanDragTabs="False"
+                 CanReorderTabs="False"
+                 IsAddTabButtonVisible="False"
+                 TabWidthMode="SizeToContent">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+            <TabViewItem Header="Server"
+                         IsClosable="False">
 
-        <TextBlock Grid.Row="0" Grid.Column="0">Website</TextBlock>
+                <Grid>
 
-        <TextBox Grid.Row="0" Grid.Column="1"
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0">Website</TextBlock>
+
+                    <TextBox Grid.Row="0" Grid.Column="1"
                  Text="{x:Bind ViewModel.Website, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">User Name</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0">User Name</TextBlock>
 
-        <TextBox Grid.Row="1" Grid.Column="1"
+                    <TextBox Grid.Row="1" Grid.Column="1"
                  Text="{x:Bind ViewModel.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0">Password</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0">Password</TextBlock>
 
-        <PasswordBox Grid.Row="2" Grid.Column="1"
+                    <PasswordBox Grid.Row="2" Grid.Column="1"
                      Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0">Device IMEI</TextBlock>
+                    <TextBlock Grid.Row="3" Grid.Column="0">Device IMEI</TextBlock>
 
-        <TextBox Grid.Row="3" Grid.Column="1"
+                    <TextBox Grid.Row="3" Grid.Column="1"
                  Text="{x:Bind ViewModel.Imei, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0">Minimum log level</TextBlock>
+                </Grid>
 
-        <ComboBox Grid.Row="4" Grid.Column="1"
-                  ItemsSource="{x:Bind ViewModel.LogLevels}"
-                  SelectedItem="{x:Bind ViewModel.MinimumLogLevel, Mode=TwoWay}"/>
+            </TabViewItem>
 
-        <TextBlock Grid.Row="5" Grid.Column="0">Launch Page</TextBlock>
+            <TabViewItem Header="Defaults"
+                         IsClosable="False">
 
-        <ComboBox Grid.Row="5" Grid.Column="1"
-                  ItemsSource="{x:Bind local:NavigationTargets.Pages, Mode=OneTime}"
-                  SelectedItem="{x:Bind ViewModel.LaunchPage, Mode=TwoWay}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="local:SelectablePage">
-                    <TextBlock Text="{x:Bind Label, Mode=OneTime}"/>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+                <Grid>
 
-        <CheckBox Grid.Row="6" Grid.Column="0"
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Grid.Row="0" Grid.Column="0"
                   IsChecked="{x:Bind ViewModel.ImperialUnits, Mode=TwoWay}">
-            Use imperial units
-        </CheckBox>
+                        Use imperial units
+                    </CheckBox>
 
-        <CheckBox Grid.Row="7" Grid.Column="0"
+                    <CheckBox Grid.Row="1" Grid.Column="0"
                   IsChecked="{x:Bind ViewModel.CompassHeadings, Mode=TwoWay}">
-            Use compass headings
-        </CheckBox>
+                        Use compass headings
+                    </CheckBox>
 
-        <CheckBox Grid.Row="8" Grid.Column="0"
+                    <CheckBox Grid.Row="2" Grid.Column="0"
                   IsChecked="{x:Bind ViewModel.HideInvalidLocations, Mode=TwoWay}">
-            Hide invalid locations
-        </CheckBox>
+                        Hide invalid locations
+                    </CheckBox>
 
-        <TextBlock Grid.Row="9" Grid.Column="0"
+                    <TextBlock Grid.Row="3" Grid.Column="0"
                    Padding="0,7,0,0"
                    VerticalAlignment="Top">
             Default Callback
-        </TextBlock>
+                    </TextBlock>
 
-        <StackPanel Grid.Row="9" Grid.Column="1"
+                    <StackPanel Grid.Row="3" Grid.Column="1"
                     Orientation="Vertical">
 
-            <TextBox Text="{x:Bind ViewModel.DefaultCallback, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        <TextBox Text="{x:Bind ViewModel.DefaultCallback, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ToolTipService.ToolTip="email, phone number (digits only)"
                      IsSpellCheckEnabled="False" />
 
-            <TextBlock FontStyle="Italic"
+                        <TextBlock FontStyle="Italic"
                        Visibility="{x:Bind ViewModel.CallbackIsValid, Converter={StaticResource FalseToVisibleConverter}}">
                 Callback must be an email address or an all-digits phone number
-            </TextBlock>
+                        </TextBlock>
 
-        </StackPanel>
+                    </StackPanel>
 
-        <TextBlock Grid.Row="10" Grid.Column="0">Days Back</TextBlock>
+                    <TextBlock Grid.Row="4" Grid.Column="0">Days Back</TextBlock>
 
-        <NumberBox Grid.Row="10" Grid.Column="1"
+                    <NumberBox Grid.Row="4" Grid.Column="1"
                    Value="{x:Bind ViewModel.DefaultDaysBack, Mode=TwoWay}"
                    HorizontalAlignment="Left"
                    Minimum="1"
@@ -115,29 +122,98 @@
                    LargeChange="7" 
                    SpinButtonPlacementMode="Compact"/>
 
-        <Grid Grid.Row="11" Grid.Column="1">
+                </Grid>
 
+            </TabViewItem>
+
+            <TabViewItem Header="Miscellaneous"
+                         IsClosable="False">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0">Launch Page</TextBlock>
+
+                    <ComboBox Grid.Row="0" Grid.Column="1"
+                          ItemsSource="{x:Bind local:NavigationTargets.Pages, Mode=OneTime}"
+                          SelectedItem="{x:Bind ViewModel.LaunchPage, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="local:SelectablePage">
+                                <TextBlock Text="{x:Bind Label, Mode=OneTime}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0">Minimum log level</TextBlock>
+
+                    <ComboBox Grid.Row="1" Grid.Column="1"
+                          ItemsSource="{x:Bind ViewModel.LogLevels}"
+                          SelectedItem="{x:Bind ViewModel.MinimumLogLevel, Mode=TwoWay}"/>
+
+                </Grid>
+
+            </TabViewItem>
+
+            <TabViewItem Header="Map API Keys"
+                         IsClosable="False">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0">Bing</TextBlock>
+
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{x:Bind ViewModel.BingApiKey, Mode=TwoWay}"/>
+
+                </Grid>
+
+            </TabViewItem>
+
+        </TabView>
+
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Grid.Column="0"
                     IsEnabled="{x:Bind ViewModel.DeviceConfigChanged}"
                     HorizontalAlignment="Center"
                     Command="{x:Bind ViewModel.ValidateCommand}">
                 Validate
             </Button>
 
-            <Button Grid.Column="1"  
+            <Button Grid.Row="0" Grid.Column="1"  
                     HorizontalAlignment="Center"
                     Command="{x:Bind ViewModel.RevertCommand}"
                     IsEnabled="{x:Bind ViewModel.DeviceConfigChanged}">
                 Revert
             </Button>
 
-            <Button Grid.Column="2"
+            <Button Grid.Row="0" Grid.Column="2"
                     HorizontalAlignment="Center"
                     IsEnabled="{x:Bind ViewModel.CanSave}"
                     Command="{x:Bind ViewModel.SaveCommand}">
@@ -146,5 +222,5 @@
 
         </Grid>
 
-    </Grid>
+    </StackPanel>
 </Page>

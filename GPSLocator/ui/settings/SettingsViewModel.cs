@@ -13,6 +13,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using System.Text.Json.Serialization;
 using J4JSoftware.GPSCommon;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Dispatching;
 using Serilog.Events;
 
@@ -39,6 +40,7 @@ public class SettingsViewModel : ObservableObject
     private int _defaultDaysBack;
     private bool _validCallback;
     private SelectablePage? _launchPage;
+    private string? _bingApiKey;
     private bool _validated;
     private bool _deviceConfigChanged;
     private bool _otherConfigChanged;
@@ -93,6 +95,18 @@ public class SettingsViewModel : ObservableObject
 
         // create a temporary object to write because we don't want to include
         // appConfig stuff in the userConfig file
+        var mapCredentials = new List<MapServiceCredentials>()
+        {
+            new() { ApiKey = BingApiKey, ServiceType = MapServiceType.BingMaps }
+        };
+
+        // have to update each credential so the encryption/decryption will work
+        foreach( var credentials in mapCredentials )
+        {
+            credentials.EncryptedApiKey.Logger = _logger;
+            credentials.EncryptedApiKey.Protector = _protector;
+        }
+
         var tempConfig = new
         {
             _appConfig.Website,
@@ -106,6 +120,7 @@ public class SettingsViewModel : ObservableObject
             _appConfig.DefaultCallback,
             _appConfig.DefaultDaysBack,
             _appConfig.LaunchPage,
+            MapCredentials = mapCredentials
         };
 
         var text = JsonSerializer.Serialize( tempConfig, jsonOptions );
@@ -134,6 +149,15 @@ public class SettingsViewModel : ObservableObject
         _appConfig.DefaultCallback = DefaultCallback;
         _appConfig.DefaultDaysBack = DefaultDaysBack;
         _appConfig.LaunchPage = LaunchPage?.PageTag;
+
+        _appConfig.MapCredentials.Clear();
+
+        _appConfig.MapCredentials.Add(
+            new MapServiceCredentials() { ApiKey = BingApiKey, ServiceType = MapServiceType.BingMaps } );
+
+        // notify map view model that our map credentials have changed so the list of
+        // available map services can be regenerated
+        WeakReferenceMessenger.Default.Send( new MapCredentialsChanged(), "primary" );
     }
 
     public AsyncRelayCommand ValidateCommand { get; }
@@ -214,6 +238,8 @@ public class SettingsViewModel : ObservableObject
         LaunchPage = NavigationTargets.Pages
                                  .FirstOrDefault( x => x.PageTag.Equals( _appConfig.LaunchPage,
                                                                        StringComparison.OrdinalIgnoreCase ) );
+
+        BingApiKey = _appConfig.MapCredentials.FirstOrDefault( x => x.ServiceType == MapServiceType.BingMaps )?.ApiKey;
 
         DeviceConfigChanged = true;
     }
@@ -381,6 +407,17 @@ public class SettingsViewModel : ObservableObject
             OtherConfigChanged = true;
 
             SetProperty( ref _launchPage, value );
+        }
+    }
+
+    public string? BingApiKey
+    {
+        get => _bingApiKey;
+
+        set
+        {
+            OtherConfigChanged = true;
+            SetProperty( ref _bingApiKey, value );
         }
     }
 
