@@ -77,6 +77,7 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
             LastKnownPoint.CompassHeadings = _appConfig.UseCompassHeadings;
             LastKnownPoint.ImperialUnits = _appConfig.UseImperialUnits;
 
+            MapViewModel.UnselectAll();
             MapViewModel.Select( LastKnownPoint );
         }
         else StatusMessages.Message("No last known location").Important().Enqueue();
