@@ -17,7 +17,7 @@ public sealed partial class MessagingPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<MessagingViewModel>();
+        ViewModel = J4JServices.Default.GetRequiredService<MessagingViewModel>();
 
         Loaded += OnLoaded;
     }

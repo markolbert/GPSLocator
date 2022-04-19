@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using J4JSoftware.GPSCommon;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,7 @@ public sealed partial class LaunchPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<LaunchViewModel>();
+        ViewModel = J4JServices.Default.GetRequiredService<LaunchViewModel>();
         Loaded += LaunchPage_Loaded;
     }
 

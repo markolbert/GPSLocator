@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,11 +24,11 @@ public sealed partial class MainPage : Page
     {
         this.InitializeComponent();
 
-        _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
+        _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();
         _logger.SetLoggedType(GetType());
 
-        AppConfig = App.Current.Host.Services.GetRequiredService<IAppConfig>();
-        ViewModel = App.Current.Host.Services.GetRequiredService<AppViewModel>();
+        AppConfig = J4JServices.Default.GetRequiredService<IAppConfig>();
+        ViewModel = J4JServices.Default.GetRequiredService<AppViewModel>();
 
         Loaded += OnLoaded;
     }

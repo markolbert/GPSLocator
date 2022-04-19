@@ -29,7 +29,7 @@ public partial class App
 
         loggerConfig.SerilogConfiguration.WriteTo.File( logFile, rollingInterval: RollingInterval.Day );
 
-        _buildLogger.Information( "Configured logger" );
+        J4JServices.BuildLogger?.Information( "Configured logger" );
     }
 
     private void SetupDependencyInjection( HostBuilderContext hbc, ContainerBuilder builder )
@@ -44,7 +44,7 @@ public partial class App
                     }
                     catch( Exception )
                     {
-                        _buildLogger.Error( "Error processing user configuration file, new configuration created" );
+                        J4JServices.BuildLogger?.Error( "Error processing user configuration file, new configuration created" );
                     }
 
                     var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(),
@@ -77,7 +77,7 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
-        builder.RegisterType<RetrievedPoints>()
+        builder.RegisterType<MapViewModel>()
                .AsSelf()
                .SingleInstance();
 

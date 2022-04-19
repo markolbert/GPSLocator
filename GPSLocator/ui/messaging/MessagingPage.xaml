@@ -137,7 +137,7 @@
             <ListView x:Name="MessagesGrid" 
                       Grid.Row="0" Grid.Column="1" 
                       HorizontalAlignment="Left"
-                      ItemsSource="{x:Bind ViewModel.RetrievedPoints.DisplayablePoints}">
+                      ItemsSource="{x:Bind ViewModel.MapViewModel.DisplayablePoints}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

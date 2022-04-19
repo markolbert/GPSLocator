@@ -12,7 +12,7 @@ public class HistoryViewModel : SelectablePointViewModel
     private bool _hideInvalidLoc;
 
     public HistoryViewModel(
-        RetrievedPoints displayedPoints,
+        MapViewModel displayedPoints,
         IAppConfig appConfig,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
@@ -20,7 +20,7 @@ public class HistoryViewModel : SelectablePointViewModel
     )
         : base(displayedPoints, appConfig, cachedLocations, statusMessages, logger)
     {
-        RetrievedPoints.MapPointsFilter = new HistoryMapPointsFilter
+        MapViewModel.MapPointsFilter = new HistoryMapPointsFilter
         {
             HideInvalid = AppConfig.HideInvalidLocations,
             RequireMessage = MustHaveMessages
@@ -42,7 +42,7 @@ public class HistoryViewModel : SelectablePointViewModel
             if( !changed )
                 return;
 
-            if( RetrievedPoints.MapPointsFilter is not HistoryMapPointsFilter filter )
+            if( MapViewModel.MapPointsFilter is not HistoryMapPointsFilter filter )
                 return;
 
             filter.HideInvalid = _hideInvalidLoc;
@@ -62,7 +62,7 @@ public class HistoryViewModel : SelectablePointViewModel
             if (!changed)
                 return;
 
-            if (RetrievedPoints.MapPointsFilter is not HistoryMapPointsFilter filter)
+            if (MapViewModel.MapPointsFilter is not HistoryMapPointsFilter filter)
                 return;
 
             filter.RequireMessage = _mustHaveMsg;

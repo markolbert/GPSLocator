@@ -6,6 +6,7 @@
     xmlns:map="using:MapControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:J4JSoftware.GPSCommon"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance local:LastKnownViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -26,8 +27,7 @@
                                Margin="14,14,14,14"
                                DataContext="{x:Bind ViewModel.LastKnownPoint, FallbackValue=null}" />
 
-        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="1"/>
-
+        <common:MapViewControl Grid.Row="0" Grid.Column="1"/>
     </Grid>
 
 </Page>

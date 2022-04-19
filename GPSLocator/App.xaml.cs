@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.ExceptionServices;
 using Windows.Graphics;
 using J4JSoftware.DependencyInjection;
+using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,14 +25,10 @@ namespace J4JSoftware.GPSLocator;
 /// </summary>
 public partial class App : Application
 {
-    public new static App Current => (App)Application.Current;
-
     private const string Publisher = "J4JSoftware";
     private const string ApplicationName = "GpsLocator";
 
-    private readonly string _crashFile;
     private readonly DispatcherQueue _dQueue;
-    private readonly IJ4JLogger _buildLogger;
     private readonly IJ4JLogger _logger;
 
     private WindowId _windowId;
@@ -48,7 +45,6 @@ public partial class App : Application
         this.InitializeComponent();
 
         _dQueue = DispatcherQueue.GetForCurrentThread();
-        _crashFile = Path.Combine( Windows.Storage.ApplicationData.Current.LocalFolder.Path, "crashFile.txt" );
 
         var hostConfig = new J4JWinAppHostConfiguration()
                          .Publisher( Publisher )
@@ -61,31 +57,11 @@ public partial class App : Application
                          .FilePathTrimmer( FilePathTrimmer )
             as J4JWinAppHostConfiguration;
 
-        if( hostConfig == null )
-        {
-            OutputFatalMessage( $"Could not create {typeof( J4JWinAppHostConfiguration )}", true );
-            return;
-        }
+        if( !J4JServices.Initialize(hostConfig))
+            Exit();
 
-        _buildLogger = hostConfig.Logger;
-
-        if( hostConfig.MissingRequirements != J4JHostRequirements.AllMet )
-        {
-            OutputFatalMessage($"Missing J4JHostConfiguration items: {hostConfig.MissingRequirements}", true);
-            return;
-        }
-
-        var host = hostConfig.Build();
-        if( host == null )
-        {
-            OutputFatalMessage( $"Failed to build {nameof( IJ4JHost )}", true );
-            return;
-        }
-
-        Host = host;
-
-        _logger = Host.Services.GetRequiredService<IJ4JLogger>();
-        _logger.OutputCache(hostConfig.Logger);
+        _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();
+        _logger.OutputCache(hostConfig!.Logger);
 
         WeakReferenceMessenger.Default.Register<App, AppConfiguredMessage, string>(
             this,
@@ -95,18 +71,12 @@ public partial class App : Application
         this.UnhandledException += App_UnhandledException;
     }
 
-    private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    private void App_UnhandledException( object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e )
     {
-        OutputFatalMessage( $"Unhandled exception: {e.GetType().Name}" );
-        OutputFatalMessage( $"{e.Message}", true );
-    }
+        J4JServices.OutputFatalMessage( $"Unhandled exception: {e.GetType().Name}" );
+        J4JServices.OutputFatalMessage( $"{e.Message}" );
 
-    private void OutputFatalMessage( string msg, bool exitApp = false )
-    {
-        File.AppendAllText( _crashFile, $"{msg}\n" );
-
-        if( exitApp )
-            Exit();
+        Exit();
     }
 
     private void AppConfiguredHandler( App recipient, AppConfiguredMessage message )
@@ -116,7 +86,7 @@ public partial class App : Application
 
     public MainWindow? MainWindow { get; private set; }
 
-    public IJ4JHost Host { get; }
+    public IJ4JHost Host { get; protected set; }
 
     private void SetWindowSize( int width, int height )
     {

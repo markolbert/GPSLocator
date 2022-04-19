@@ -15,7 +15,7 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
 
     public LastKnownViewModel(
         IAppConfig appConfig,
-        RetrievedPoints displayedPoints,
+        MapViewModel displayedPoints,
         StatusMessage.StatusMessages statusMessages,
         IJ4JLogger logger
     )
@@ -73,12 +73,12 @@ public class LastKnownViewModel : LocationMapViewModel<AppConfig>
 
             var lastLoc = args.Response.Result.Locations[0];
 
-            LastKnownPoint = RetrievedPoints.Add( lastLoc );
+            LastKnownPoint = MapViewModel.Add( lastLoc );
 
             LastKnownPoint.CompassHeadings = _appConfig.UseCompassHeadings;
             LastKnownPoint.ImperialUnits = _appConfig.UseImperialUnits;
 
-            RetrievedPoints.Select( LastKnownPoint );
+            MapViewModel.Select( LastKnownPoint );
         }
         else StatusMessages.Message("No last known location").Important().Enqueue();
 

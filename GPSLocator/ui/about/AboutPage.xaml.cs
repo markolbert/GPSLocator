@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using J4JSoftware.GPSCommon;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -15,7 +16,7 @@ public sealed partial class AboutPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<IAppConfig>();
+        ViewModel = J4JServices.Default.GetRequiredService<IAppConfig>();
     }
 
     private IAppConfig ViewModel { get; }

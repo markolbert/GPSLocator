@@ -1,4 +1,5 @@
-﻿using J4JSoftware.Logging;
+﻿using J4JSoftware.GPSCommon;
+using J4JSoftware.Logging;
 using MapControl;
 using MapControl.Caching;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,11 +33,11 @@ public sealed partial class MainWindow : Window
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<AppViewModel>();
+        ViewModel = J4JServices.Default.GetRequiredService<AppViewModel>();
 
         Title = "GPS Locator";
 
-        _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
+        _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();
         _logger.SetLoggedType( GetType() );
     }
 

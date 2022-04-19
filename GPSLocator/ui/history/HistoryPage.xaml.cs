@@ -22,9 +22,9 @@ public sealed partial class HistoryPage : Page
     {
         InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<HistoryViewModel>();
+        ViewModel = J4JServices.Default.GetRequiredService<HistoryViewModel>();
 
-        _logger = App.Current.Host.Services.GetRequiredService<IJ4JLogger>();
+        _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();
         _logger.SetLoggedType(GetType());
 
         Loaded += OnLoaded;

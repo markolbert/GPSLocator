@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:gpsCommon="clr-namespace:J4JSoftware.GPSCommon;assembly=J4JSoftware.GPSCommon"
+    xmlns:common="using:J4JSoftware.GPSCommon"
     mc:Ignorable="d"
     x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -74,7 +74,7 @@
 
         <Border Grid.Row="6" Grid.Column="1"
                 MaxHeight="200"
-                Visibility="{x:Bind ViewModel.RetrievedPoints, Converter={StaticResource CollectionToVisibilityConverter}}"
+                Visibility="{x:Bind ViewModel.MapViewModel, Converter={StaticResource CollectionToVisibilityConverter}}"
                 VerticalAlignment="Top"
                 BorderThickness="2"
                 BorderBrush="DarkGray">
@@ -82,7 +82,7 @@
             <ListView x:Name="LocationsGrid" 
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
-                      ItemsSource="{x:Bind ViewModel.RetrievedPoints.DisplayablePoints}"
+                      ItemsSource="{x:Bind ViewModel.MapViewModel.DisplayablePoints}"
                       Tapped="LocationsGrid_OnTapped">
 
                 <FlyoutBase.AttachedFlyout>
@@ -158,7 +158,7 @@
                                Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
                                DataContext="{Binding ElementName=LocationsGrid, Path=SelectedItem, FallbackValue=null}" />
 
-        <local:OpenStreetMapControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="8"
+        <common:MapViewControl Grid.Row="0" Grid.Column="3" Grid.RowSpan="8"
                                     Visibility="{Binding ElementName=LocationsGrid, Path=SelectedItem, Converter={StaticResource NullToHiddenConverter }}"
                                     Margin="0,0,0,14"/>
 

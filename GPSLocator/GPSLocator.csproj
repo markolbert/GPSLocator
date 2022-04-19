@@ -91,7 +91,6 @@
 		<None Remove="Assets\Wide310x150Logo.scale-400.png" />
 		<None Remove="ui\AboutPage.xaml" />
 		<None Remove="ui\common\DefaultStyles.xaml" />
-		<None Remove="ui\common\LocationControl.xaml" />
 		<None Remove="ui\launch\LaunchPage.xaml" />
 		<None Remove="ui\logviewer\LogViewerPage.xaml" />
 		<None Remove="ui\mainwin\MainPage.xaml" />
@@ -214,13 +213,10 @@
 		<Page Update="ui\messaging\MessagingPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
-		<Page Update="ui\common\user-controls\OpenStreetMapControl.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
 		<Page Update="ui\logviewer\LogViewerPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
-		<Page Update="ui\common\user-controls\LocationControl.xaml">
+		<Page Update="ui\common\LocationControl.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Update="ui\history\HistoryPage.xaml">

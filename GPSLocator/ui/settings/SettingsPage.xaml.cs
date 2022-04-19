@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using J4JSoftware.GPSCommon;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,7 @@ public sealed partial class SettingsPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<SettingsViewModel>();
+        ViewModel = J4JServices.Default.GetRequiredService<SettingsViewModel>();
 
         this.Loaded += SettingsPage_Loaded;
     }

@@ -14,7 +14,7 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
     private bool _refreshEnabled;
 
     public SelectablePointViewModel(
-        RetrievedPoints displayedPoints,
+        MapViewModel displayedPoints,
         IAppConfig appConfig,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
@@ -78,10 +78,10 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
 
     private void SetMapPointHandler( MapPoint? mapPoint )
     {
-        RetrievedPoints.UnselectAll();
+        MapViewModel.UnselectAll();
 
         if( mapPoint != null )
-            RetrievedPoints.Select( mapPoint );
+            MapViewModel.Select( mapPoint );
     }
 
     private void CachedLocationsOnCacheChanged(object? sender, CachedLocationEventArgs e)
@@ -115,8 +115,8 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
 
         var mapPts = InitializeMapPoints(CachedLocations.MapPoints);
 
-        RetrievedPoints.Clear();
-        RetrievedPoints.AddRange(mapPts);
+        MapViewModel.Clear();
+        MapViewModel.AddRange(mapPts);
         UpdateLocations();
 
         RefreshEnabled = true;
@@ -126,7 +126,7 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
 
     protected void UpdateLocations()
     {
-        OnPropertyChanged( nameof( RetrievedPoints ) );
+        OnPropertyChanged( nameof( MapViewModel ) );
         OnPropertyChanged( nameof( NumDisplayable ) );
     }
 
@@ -136,7 +136,7 @@ public class SelectablePointViewModel : LocationMapViewModel<AppConfig>
         set => SetProperty(ref _refreshEnabled, value);
     }
 
-    public int NumDisplayable => RetrievedPoints.NumDisplayable;
+    public int NumDisplayable => MapViewModel.NumDisplayable;
 
     public DateTimeOffset StartDate => CachedLocations.StartDate;
     public DateTimeOffset EndDate => CachedLocations.EndDate;

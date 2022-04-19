@@ -17,7 +17,7 @@ public class MessagingViewModel : SelectablePointViewModel
     private bool _msgTooLong;
 
     public MessagingViewModel(
-        RetrievedPoints displayedPoints,
+        MapViewModel displayedPoints,
         IAppConfig appConfig,
         CachedLocations cachedLocations,
         StatusMessage.StatusMessages statusMessages,
@@ -29,7 +29,7 @@ public class MessagingViewModel : SelectablePointViewModel
 
         Callback = AppConfig.DefaultCallback;
 
-        RetrievedPoints.MapPointsFilter = new MessageMapPointsFilter() { RequireMessage = true };
+        MapViewModel.MapPointsFilter = new MessageMapPointsFilter() { RequireMessage = true };
     }
 
     public RelayCommand SendMessageCommand { get; }
