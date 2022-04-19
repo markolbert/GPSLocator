@@ -15,7 +15,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace J4JSoftware.GPSCommon;
 
-public class RetrievedPoints : ObservableRecipient
+public class MapViewModel : ObservableRecipient
 {
     private const double MinimumSeparation = 0.000001d;
 
@@ -27,7 +27,7 @@ public class RetrievedPoints : ObservableRecipient
     private Uri? _copyrightUri;
     private string? _copyrightText;
 
-    public RetrievedPoints(
+    public MapViewModel(
         IBaseAppConfig config,
         IJ4JLogger logger
     )
@@ -53,13 +53,13 @@ public class RetrievedPoints : ObservableRecipient
     {
         base.OnActivated();
 
-        WeakReferenceMessenger.Default.Register<RetrievedPoints, MapCredentialsChanged, string>(
+        WeakReferenceMessenger.Default.Register<MapViewModel, MapCredentialsChanged, string>(
             this,
             "primary",
             InitializeMapServices );
     }
 
-    private void InitializeMapServices( RetrievedPoints recipient, MapCredentialsChanged message )
+    private void InitializeMapServices( MapViewModel recipient, MapCredentialsChanged message )
     {
         var curSvc = MapLayerGenerator;
 
