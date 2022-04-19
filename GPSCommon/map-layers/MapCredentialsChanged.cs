@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace J4JSoftware.GPSCommon
 {
-    public record MapLayerChangedMessage();
+    public record MapCredentialsChanged();
 }

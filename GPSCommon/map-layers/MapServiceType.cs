@@ -2,7 +2,5 @@
 
 public enum MapServiceType
 {
-    BingMaps,
-    OpenStreetMap,
-    OpenTopoMap
+    BingMaps
 }

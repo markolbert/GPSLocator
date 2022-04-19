@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using J4JSoftware.GPSLocator;
@@ -14,7 +15,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace J4JSoftware.GPSCommon;
 
-public class RetrievedPoints : ObservableObject
+public class RetrievedPoints : ObservableRecipient
 {
     private const double MinimumSeparation = 0.000001d;
 
@@ -22,11 +23,12 @@ public class RetrievedPoints : ObservableObject
 
     private int _zoomLevel = 17;
     private IFilterMapPoints _mapPtsFilter;
-    private MapServiceInfo? _mapService;
+    private MapLayerGenerator? _mapLayerGenerator;
+    private Uri? _copyrightUri;
+    private string? _copyrightText;
 
     public RetrievedPoints(
         IBaseAppConfig config,
-        IEnumerable<IMapService> mapServices,
         IJ4JLogger logger
     )
     {
@@ -38,17 +40,64 @@ public class RetrievedPoints : ObservableObject
         _mapPtsFilter = new AllowAllMapPointsFilter();
         _mapPtsFilter.PropertyChanged += MapPtsFilterOnPropertyChanged;
 
-        MapServices = new ObservableCollection<MapServiceInfo>( mapServices.SelectMany( x => x.GetMapServices() ) );
-
-        MapService = MapServices.FirstOrDefault( x => x.Label
-                                                       .Equals( OpenStreetMapService.Name,
-                                                                StringComparison.OrdinalIgnoreCase ) );
-
-        if( MapService == null )
-            _logger.Error( "Failed to load {0} service", MapServiceType.OpenStreetMap );
+        InitializeMapServices( this, new MapCredentialsChanged() );
 
         IncreaseZoomCommand = new RelayCommand( IncreaseZoomHandler );
         DecreaseZoomCommand = new RelayCommand( DecreaseZoomHandler );
+        SetMapLayerCommand = new RelayCommand<MapLayerGenerator>( SetMapLayerHandler );
+
+        IsActive = true;
+    }
+
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+
+        WeakReferenceMessenger.Default.Register<RetrievedPoints, MapCredentialsChanged, string>(
+            this,
+            "primary",
+            InitializeMapServices );
+    }
+
+    private void InitializeMapServices( RetrievedPoints recipient, MapCredentialsChanged message )
+    {
+        var curSvc = MapLayerGenerator;
+
+        MapLayerGenerators.Clear();
+
+        foreach (var generator in MapLayerGenerator.GetCollection(Configuration.MapCredentials, _logger))
+        {
+            MapLayerGenerators.Add( generator );
+        }
+
+        if (curSvc != null)
+            MapLayerGenerator = MapLayerGenerators.FirstOrDefault(x => x.Label
+                                                          .Equals(curSvc.Label, StringComparison.OrdinalIgnoreCase));
+
+        MapLayerGenerator ??= MapLayerGenerators.FirstOrDefault(x => x.Label
+                                                        .Equals("OpenStreetMap", StringComparison.OrdinalIgnoreCase));
+
+        if( MapLayerGenerator == null )
+        {
+            _logger.Error("Failed to load {0} service", MapType.OpenStreetMap);
+
+            CopyrightText = null;
+            CopyrightUri = null;
+        }
+        else
+        {
+            CopyrightText = MapLayerGenerator.CopyrightText;
+            CopyrightUri = MapLayerGenerator.CopyrightUri;
+        }
+
+        WeakReferenceMessenger.Default.Send( new MapLayerChangedMessage(), "primary" );
+    }
+
+    protected override void OnDeactivated()
+    {
+        base.OnDeactivated();
+
+        WeakReferenceMessenger.Default.UnregisterAll( this );
     }
 
     private void MapPtsFilterOnPropertyChanged( object? sender, PropertyChangedEventArgs e )
@@ -86,6 +135,17 @@ public class RetrievedPoints : ObservableObject
             return;
 
         ZoomLevel--;
+    }
+
+    public RelayCommand<MapLayerGenerator> SetMapLayerCommand { get; }
+
+    private void SetMapLayerHandler( MapLayerGenerator? generator )
+    {
+        MapLayerGenerator = generator;
+        CopyrightText = generator?.CopyrightText;
+        CopyrightUri = generator?.CopyrightUri;
+
+        WeakReferenceMessenger.Default.Send( new MapLayerChangedMessage(), "primary" );
     }
 
     // be careful not to test for whether a MapPoint is selected in this filter
@@ -241,7 +301,6 @@ public class RetrievedPoints : ObservableObject
             double x = 0;
             double y = 0;
             double z = 0;
-            double t = 0;
 
             foreach( var mapPoint in SelectedPoints )
             {
@@ -251,7 +310,6 @@ public class RetrievedPoints : ObservableObject
                 x += Math.Cos( latitude ) * Math.Cos( longitude );
                 y += Math.Cos( latitude ) * Math.Sin( longitude );
                 z += Math.Sin( latitude );
-                t += ( mapPoint.Timestamp - DateTime.UnixEpoch ).TotalSeconds;
             }
 
             var total = this.Count;
@@ -259,7 +317,6 @@ public class RetrievedPoints : ObservableObject
             x /= total;
             y /= total;
             z /= total;
-            t /= total;
 
             var centralLongitude = Math.Atan2( y, x );
             var centralSquareRoot = Math.Sqrt( x * x + y * y );
@@ -332,18 +389,24 @@ public class RetrievedPoints : ObservableObject
         }
     }
 
-    public ObservableCollection<MapServiceInfo> MapServices { get; }
+    public ObservableCollection<MapLayerGenerator> MapLayerGenerators { get; } = new();
 
-    public MapServiceInfo? MapService
+    public MapLayerGenerator? MapLayerGenerator
     {
-        get => _mapService;
+        get => _mapLayerGenerator;
+        private set => SetProperty( ref _mapLayerGenerator, value );
+    }
 
-        set
-        {
-            SetProperty( ref _mapService, value );
+    public Uri? CopyrightUri
+    {
+        get => _copyrightUri;
+        set => SetProperty( ref _copyrightUri, value );
+    }
 
-            WeakReferenceMessenger.Default.Send( new MapLayerChangedMessage( _mapService ), "primary" );
-        }
+    public string? CopyrightText
+    {
+        get => _copyrightText;
+        set=> SetProperty( ref _copyrightText, value );
     }
 
     public int ZoomLevel

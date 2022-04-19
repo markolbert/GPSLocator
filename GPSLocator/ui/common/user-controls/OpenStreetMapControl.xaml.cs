@@ -1,9 +1,9 @@
 ﻿using J4JSoftware.GPSCommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-#pragma warning disable CS8618
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -22,11 +22,13 @@ public sealed partial class OpenStreetMapControl : UserControl
             this,
             "primary",
             MapLayerChangedHandler );
+
+        TheMap.MapLayer = ViewModel.MapLayerGenerator?.GetMapTileLayer();
     }
 
     private void MapLayerChangedHandler( OpenStreetMapControl recipient, MapLayerChangedMessage message )
     {
-        TheMap.MapLayer = message.MapService.MapLayer;
+        TheMap.MapLayer = ViewModel.MapLayerGenerator?.GetMapTileLayer();
     }
 
     private RetrievedPoints ViewModel { get; }
