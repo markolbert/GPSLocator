@@ -44,7 +44,7 @@ public class BingMapLayerGenerator : MapLayerGenerator
                 _ => throw new InvalidEnumArgumentException( $"Unsupported {typeof( MapType )} '{MapType}'" )
             };
 
-            return new J4JBingMapsTileLayer(_apiKey) { Mode = bingType, Culture = Culture };
+            return new J4JBingMapsTileLayer(_apiKey, Logger) { Mode = bingType, Culture = Culture };
         }
 
         Logger.Error( "Trying to retrieve MapTileLayer from invalid generator '{0}'", GetType() );
