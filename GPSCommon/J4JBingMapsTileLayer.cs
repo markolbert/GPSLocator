@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
+using J4JSoftware.Logging;
 using MapControl;
 using Microsoft.UI.Xaml;
 #pragma warning disable CS8618
@@ -26,21 +27,28 @@ public class J4JBingMapsTileLayer : MapTileLayer
     }
 
     private readonly string _apiKey;
+    private readonly IJ4JLogger _logger;
 
     public J4JBingMapsTileLayer( 
-        string apiKey 
+        string apiKey,
+        IJ4JLogger logger
         )
-        : this( apiKey, new TileImageLoader())
+        : this( apiKey, logger, new TileImageLoader())
     {
     }
 
     public J4JBingMapsTileLayer(
         string apiKey, 
+        IJ4JLogger logger,
         ITileImageLoader tileImageLoader 
         )
         : base(tileImageLoader)
     {
         _apiKey = apiKey;
+        
+        _logger = logger;
+        _logger.SetLoggedType( GetType() );
+
         MinZoomLevel = 1;
         MaxZoomLevel = 21;
         Loaded += OnLoaded;
@@ -65,13 +73,13 @@ public class J4JBingMapsTileLayer : MapTileLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"BingMapsTileLayer: {metadataUri}: {ex.Message}");
+                _logger.Error<string, string>( "Problem retrieving Bing metadata from {0}, message was '{1}'",
+                                               metadataUri,
+                                               ex.Message );
             }
         }
         else
-        {
-            Debug.WriteLine("BingMapsTileLayer requires a Bing Maps API Key");
-        }
+            _logger.Error("J4JBingMapsTileLayer requires a Bing Maps API Key");
     }
 
     private void ReadImageryMetadata(XElement metadataResponse)
@@ -79,7 +87,9 @@ public class J4JBingMapsTileLayer : MapTileLayer
         var ns = metadataResponse.Name.Namespace;
         var metadata = metadataResponse.Descendants(ns + "ImageryMetadata").FirstOrDefault();
 
-        if (metadata != null)
+        if( metadata==null)
+            _logger.Error("Failed to get ImageryMetadata");
+        else
         {
             var imageUrl = metadata.Element(ns + "ImageUrl")?.Value;
             var subdomains = metadata.Element(ns + "ImageUrlSubdomains")?.Elements(ns + "string").Select(e => e.Value).ToArray();
@@ -90,19 +100,13 @@ public class J4JBingMapsTileLayer : MapTileLayer
                 var zoomMax = metadata.Element(ns + "ZoomMax")?.Value;
 
                 if (zoomMin != null && int.TryParse(zoomMin, out int zoomLevel) && MinZoomLevel < zoomLevel)
-                {
                     MinZoomLevel = zoomLevel;
-                }
 
                 if (zoomMax != null && int.TryParse(zoomMax, out zoomLevel) && MaxZoomLevel > zoomLevel)
-                {
                     MaxZoomLevel = zoomLevel;
-                }
 
                 if (string.IsNullOrEmpty(Culture))
-                {
                     Culture = CultureInfo.CurrentUICulture.Name;
-                }
 
                 TileSource = new BingMapsTileSource
                 {
@@ -114,7 +118,9 @@ public class J4JBingMapsTileLayer : MapTileLayer
 
         var logoUri = metadataResponse.Element(ns + "BrandLogoUri");
 
-        if (logoUri != null)
+        if (logoUri == null)
+            _logger.Error("Failed to retrieve BrandLogoUri");
+        else
         {
             LogoImageUri = new Uri(logoUri.Value);
         }
