@@ -8,17 +8,17 @@ using Microsoft.UI.Xaml.Input;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace J4JSoftware.GPSLocator;
+namespace J4JSoftware.GPSCommon;
 
-public sealed partial class OpenStreetMapControl : UserControl
+public sealed partial class MapViewControl : UserControl
 {
-    public OpenStreetMapControl()
+    public MapViewControl()
     {
         this.InitializeComponent();
 
-        ViewModel = App.Current.Host.Services.GetRequiredService<RetrievedPoints>();
+        ViewModel = J4JServices.Default.GetRequiredService<MapViewModel>();
 
-        WeakReferenceMessenger.Default.Register<OpenStreetMapControl, MapLayerChangedMessage, string>(
+        WeakReferenceMessenger.Default.Register<MapViewControl, MapLayerChangedMessage, string>(
             this,
             "primary",
             MapLayerChangedHandler );
@@ -26,10 +26,10 @@ public sealed partial class OpenStreetMapControl : UserControl
         TheMap.MapLayer = ViewModel.MapLayerGenerator?.GetMapTileLayer();
     }
 
-    private void MapLayerChangedHandler( OpenStreetMapControl recipient, MapLayerChangedMessage message )
+    private void MapLayerChangedHandler( MapViewControl recipient, MapLayerChangedMessage message )
     {
         TheMap.MapLayer = ViewModel.MapLayerGenerator?.GetMapTileLayer();
     }
 
-    private RetrievedPoints ViewModel { get; }
+    private MapViewModel ViewModel { get; }
 }

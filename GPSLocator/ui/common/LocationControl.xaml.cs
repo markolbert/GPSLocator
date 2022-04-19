@@ -23,7 +23,7 @@ public sealed partial class LocationControl : UserControl, INotifyPropertyChange
 
         DataContextChanged += LocationControl_DataContextChanged;
 
-        _appConfig = App.Current.Host.Services.GetRequiredService<IAppConfig>();
+        _appConfig = J4JServices.Default.GetRequiredService<IAppConfig>();
     }
 
     private MapPoint ViewModel { get; set; } = new( 0, 0, DateTime.Now );

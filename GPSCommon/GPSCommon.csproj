@@ -26,11 +26,13 @@
 
 	<ItemGroup>
     <None Remove="Converters.xaml" />
+    <None Remove="MapViewControl.xaml" />
   </ItemGroup>
 
   <ItemGroup>
       <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.2" />
       <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
+      <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
       <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
       <PackageReference Include="XAML.MapControl" Version="7.2.0" />
   </ItemGroup>
@@ -45,12 +47,17 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\J4JLogging\J4JLogging\J4JLogging.csproj" />
+	  <ProjectReference Include="..\..\ProgrammingUtilities\WindowsAppUtilities\WindowsAppUtilities.csproj" />
 	  <ProjectReference Include="..\GPSLocatorLib\GPSLocatorLib.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Page Update="converters\Converters.xaml">
 	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Update="MapViewControl.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
 	  </Page>
 	</ItemGroup>
 

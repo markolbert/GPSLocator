@@ -1,15 +1,19 @@
 ﻿<UserControl
-    x:Class="J4JSoftware.GPSLocator.OpenStreetMapControl"
+    x:Class="J4JSoftware.GPSCommon.MapViewControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:J4JSoftware.GPSLocator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:map="using:MapControl"
+    xmlns:local="using:J4JSoftware.GPSCommon"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
     x:DefaultBindMode="OneWay"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <local:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter"/>
+    </UserControl.Resources>
 
     <Grid Visibility="{x:Bind ViewModel.SelectedPoints, Converter={StaticResource CollectionToVisibilityConverter}}">
 
