@@ -1,10 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
-using System.IO;
-using System.Runtime.ExceptionServices;
 using Windows.Graphics;
 using J4JSoftware.DependencyInjection;
-using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +9,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
-using UnhandledExceptionEventArgs = System.UnhandledExceptionEventArgs;
+
 #pragma warning disable CS8618
 
 // To learn more about WinUI, the WinUI project structure,

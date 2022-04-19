@@ -2,7 +2,6 @@
 using System.Linq;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
-using MapControl;
 
 namespace J4JSoftware.GPSLocator;
 

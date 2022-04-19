@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using J4JSoftware.GPSLocator;
 using J4JSoftware.Logging;
-using MapControl;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Location = J4JSoftware.GPSLocator.Location;

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
-using System.Threading.Tasks;
-using J4JSoftware.DependencyInjection;
-using J4JSoftware.GPSCommon;
-using Serilog;
-using Serilog.Events;
+﻿using J4JSoftware.GPSCommon;
 
 namespace J4JSoftware.GPSLocator;
 

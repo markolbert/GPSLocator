@@ -12,7 +12,6 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.Text.Json.Serialization;
 using J4JSoftware.GPSCommon;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Dispatching;
 using Serilog.Events;

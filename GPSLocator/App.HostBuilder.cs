@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Autofac;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
-using MapControl;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using J4JSoftware.DependencyInjection;
+﻿using J4JSoftware.DependencyInjection;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 

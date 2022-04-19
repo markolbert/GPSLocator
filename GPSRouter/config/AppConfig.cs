@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using J4JSoftware.GPSCommon;
-using Serilog.Events;
+﻿using J4JSoftware.GPSCommon;
 
 namespace J4JSoftware.GPSLocator;
 

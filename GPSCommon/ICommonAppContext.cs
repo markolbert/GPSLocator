@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using J4JSoftware.GPSLocator;
+﻿using J4JSoftware.GPSLocator;
 
 namespace J4JSoftware.GPSCommon;
 

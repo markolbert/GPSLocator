@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
 using J4JSoftware.Logging;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 

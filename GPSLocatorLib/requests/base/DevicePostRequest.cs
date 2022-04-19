@@ -1,11 +1,7 @@
 ﻿using System.Net;
-using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using J4JSoftware.Logging;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Net.Http.Headers;
 
 namespace J4JSoftware.GPSLocator
 {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace J4JSoftware.GPSLocator;
+﻿namespace J4JSoftware.GPSLocator;
 
 public interface ILocation
 {

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
-using MapControl;
 using Microsoft.Toolkit.Mvvm.Input;
 
 namespace J4JSoftware.GPSLocator;

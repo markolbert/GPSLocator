@@ -3,7 +3,6 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;

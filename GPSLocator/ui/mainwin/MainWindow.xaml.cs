@@ -1,5 +1,4 @@
-﻿using J4JSoftware.GPSCommon;
-using J4JSoftware.Logging;
+﻿using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
 using MapControl;
 using MapControl.Caching;

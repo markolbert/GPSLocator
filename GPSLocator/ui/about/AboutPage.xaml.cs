@@ -1,5 +1,4 @@
-﻿using J4JSoftware.GPSCommon;
-using J4JSoftware.WindowsAppUtilities;
+﻿using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 
