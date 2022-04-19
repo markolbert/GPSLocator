@@ -73,12 +73,6 @@ public partial class App
                .AsSelf()
                .SingleInstance();
 
-        var typeTests = new TypeTests<IMapService>()
-                       .AddTests( PredefinedTypeTests.NonAbstract )
-                       .AddTests( new TypeTester( t => t.IsAssignableTo( typeof( MapService ) ) ) );
-
-        builder.RegisterTypeAssemblies<IMapService>( typeTests );
-
         builder.Register( c => new CachedLocations( c.Resolve<AppConfig>(), c.Resolve<IJ4JLogger>() ) )
                .AsSelf()
                .SingleInstance();
