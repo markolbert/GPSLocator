@@ -2,5 +2,6 @@
 
 public enum MapServiceType
 {
-    BingMaps
+    BingMaps,
+    GoogleMaps
 }
