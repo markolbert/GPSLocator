@@ -17,5 +17,8 @@ public enum MapType
     BingAerialWithLabels,
     
     OpenStreetMap,
-    OpenTopoMap
+    OpenTopoMap,
+
+    [MapService(MapServiceType.GoogleMaps)]
+    GoogleMaps
 }

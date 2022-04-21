@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using J4JSoftware.Logging;
+using MapControl;
 
 namespace J4JSoftware.GPSCommon;
 
@@ -9,6 +10,7 @@ public abstract partial class MapLayerGenerator
 {
     public static List<MapLayerGenerator> GetCollection(
         List<MapServiceCredentials> credentials,
+        MapBase map,
         IJ4JLogger logger
     )
     {
@@ -31,6 +33,10 @@ public abstract partial class MapLayerGenerator
         var bingCredentials = credentials.FirstOrDefault( x => x.ServiceType == MapServiceType.BingMaps )?.ApiKey;
         if( bingCredentials != null )
             AddBingMapTypes( bingCredentials, retVal, logger );
+
+        var googleApiKey = "AIzaSyDSGlR6-fVszRgSQUZ1EN59ft5UfJsRt2Q";
+
+        AddGoogleMapTypes( googleApiKey, map, retVal, logger );
 
         return retVal;
     }
@@ -56,5 +62,15 @@ public abstract partial class MapLayerGenerator
                                                    "© Microsoft Corporation",
                                                    bingCopyright,
                                                    logger ) );
+    }
+
+    private static void AddGoogleMapTypes( string apiKey, MapBase map, List<MapLayerGenerator> generators, IJ4JLogger logger )
+    {
+        generators.Add( new GoogleMapLayerGenerator( map,
+                                                     MapType.GoogleMaps,
+                                                     apiKey,
+                                                     "© Google",
+                                                     new Uri( "https://www.google.com" ),
+                                                     logger ) );
     }
 }

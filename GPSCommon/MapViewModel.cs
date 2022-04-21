@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using J4JSoftware.GPSLocator;
 using J4JSoftware.Logging;
+using MapControl;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -24,6 +25,7 @@ public class MapViewModel : ObservableRecipient
     private MapLayerGenerator? _mapLayerGenerator;
     private Uri? _copyrightUri;
     private string? _copyrightText;
+    private MapBase _map;
 
     public MapViewModel(
         IBaseAppConfig config,
@@ -37,8 +39,6 @@ public class MapViewModel : ObservableRecipient
 
         _mapPtsFilter = new AllowAllMapPointsFilter();
         _mapPtsFilter.PropertyChanged += MapPtsFilterOnPropertyChanged;
-
-        InitializeMapServices( this, new MapCredentialsChanged() );
 
         IncreaseZoomCommand = new RelayCommand( IncreaseZoomHandler );
         DecreaseZoomCommand = new RelayCommand( DecreaseZoomHandler );
@@ -57,13 +57,20 @@ public class MapViewModel : ObservableRecipient
             InitializeMapServices );
     }
 
+    public void SetMapControl( MapBase map )
+    {
+        _map = map;
+
+        InitializeMapServices(this, new MapCredentialsChanged());
+    }
+
     private void InitializeMapServices( MapViewModel recipient, MapCredentialsChanged message )
     {
         var curSvc = MapLayerGenerator;
 
         MapLayerGenerators.Clear();
 
-        foreach (var generator in MapLayerGenerator.GetCollection(Configuration.MapCredentials, _logger))
+        foreach (var generator in MapLayerGenerator.GetCollection(Configuration.MapCredentials, _map, _logger))
         {
             MapLayerGenerators.Add( generator );
         }

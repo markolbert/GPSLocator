@@ -24,7 +24,7 @@ public class OpenMapSingleLayerGenerator : MapLayerGenerator
     public override MapTileLayer? GetMapTileLayer()
     {
         if( IsValid )
-            return new MapTileLayer()
+            return new MapTileLayer( new J4JTileImageLoader( Logger ) )
             {
                 TileSource = new TileSource() { UriFormat = TileUri },
                 SourceName = Label,

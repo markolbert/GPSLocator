@@ -32,7 +32,7 @@ public class J4JBingMapsTileLayer : MapTileLayer
         string apiKey,
         IJ4JLogger logger
         )
-        : this( apiKey, logger, new TileImageLoader())
+        : this( apiKey, logger, new J4JTileImageLoader(logger))
     {
     }
 

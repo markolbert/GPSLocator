@@ -15,6 +15,7 @@ public sealed partial class MapViewControl : UserControl
         this.InitializeComponent();
 
         ViewModel = J4JServices.Default.GetRequiredService<MapViewModel>();
+        ViewModel.SetMapControl( TheMap );
 
         WeakReferenceMessenger.Default.Register<MapViewControl, MapLayerChangedMessage, string>(
             this,

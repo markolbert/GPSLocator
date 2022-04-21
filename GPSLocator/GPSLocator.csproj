@@ -179,7 +179,7 @@
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="XAML.MapControl" Version="7.2.0" />
+		<!--<PackageReference Include="XAML.MapControl" Version="7.2.0" />-->
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
@@ -193,6 +193,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\J4JLogging\J4JLogging\J4JLogging.csproj" />
 		<ProjectReference Include="..\..\ProgrammingUtilities\WindowsAppUtilities\WindowsAppUtilities.csproj" />
+		<ProjectReference Include="..\..\XAML-Map-Control\MapControl\WinUI\MapControl.WinUI.csproj" />
 		<ProjectReference Include="..\GPSCommon\GPSCommon.csproj" />
 		<ProjectReference Include="..\GPSLocatorLib\GPSLocatorLib.csproj" />
 	</ItemGroup>
