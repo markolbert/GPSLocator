@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using J4JSoftware.DependencyInjection;
 using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;

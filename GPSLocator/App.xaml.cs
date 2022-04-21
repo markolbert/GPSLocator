@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
+using System.IO;
 using Windows.Graphics;
 using J4JSoftware.DependencyInjection;
 using J4JSoftware.Logging;
@@ -54,7 +55,9 @@ public partial class App : Application
                          .FilePathTrimmer( FilePathTrimmer )
             as J4JWinAppHostConfiguration;
 
-        if( !J4JServices.Initialize(hostConfig))
+        if( !J4JServices.Initialize( hostConfig,
+                                     Path.Combine( Windows.Storage.ApplicationData.Current.LocalFolder.Path,
+                                                   "crashFile.txt" ) ) )
             Exit();
 
         _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();

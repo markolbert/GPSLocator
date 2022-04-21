@@ -1,4 +1,5 @@
-﻿using J4JSoftware.WindowsAppUtilities;
+﻿using J4JSoftware.DependencyInjection;
+using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml.Controls;

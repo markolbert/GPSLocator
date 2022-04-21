@@ -3,8 +3,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using J4JSoftware.DependencyInjection;
 using J4JSoftware.GPSCommon;
-using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,

@@ -1,4 +1,5 @@
-﻿using J4JSoftware.Logging;
+﻿using J4JSoftware.DependencyInjection;
+using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
 using MapControl;
 using MapControl.Caching;
@@ -25,8 +26,6 @@ public sealed partial class MainWindow : Window
 
         //TileImageLoader.Cache = new FileDbCache(TileImageLoader.DefaultCacheFolder);
         //TileImageLoader.Cache = new SQLiteCache(TileImageLoader.DefaultCacheFolder);
-
-        //BingMapsTileLayer.ApiKey = "Ameqf9cCPjqwawIcun91toGQ-F85jSDu8-XyEFeHEdTDr60dV9ySmZt800aHj6PS";
     }
 
     public MainWindow()
