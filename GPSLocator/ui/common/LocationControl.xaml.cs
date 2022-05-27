@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.GPSCommon;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +25,7 @@ public sealed partial class LocationControl : UserControl, INotifyPropertyChange
 
         DataContextChanged += LocationControl_DataContextChanged;
 
-        _appConfig = J4JServices.Default.GetRequiredService<IAppConfig>();
+        _appConfig = J4JDeusEx.ServiceProvider.GetRequiredService<IAppConfig>();
     }
 
     private MapPoint ViewModel { get; set; } = new( 0, 0, DateTime.Now );

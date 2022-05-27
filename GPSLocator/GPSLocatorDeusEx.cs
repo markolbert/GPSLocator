@@ -16,8 +16,25 @@ using Serilog;
 
 namespace J4JSoftware.GPSLocator;
 
-public partial class App
+internal class GPSLocatorDeusEx : J4JDeusExWinApp
 {
+    private const string Publisher = "J4JSoftware";
+    private const string ApplicationName = "GpsLocator";
+
+    protected override J4JHostConfiguration? GetHostConfiguration()
+    {
+        return new J4JWinAppHostConfiguration()
+                        .Publisher(Publisher)
+                        .ApplicationName(ApplicationName)
+                        .LoggerInitializer(InitializeLogger)
+                        .AddNetEventSinkToLogger()
+                        .AddDependencyInjectionInitializers(SetupDependencyInjection)
+                        .AddServicesInitializers(InitializeServices)
+                        .AddUserConfigurationFile("userConfig.json", optional: true)
+                        .FilePathTrimmer(FilePathTrimmer)
+            as J4JWinAppHostConfiguration;
+    }
+
     private void InitializeLogger(
         IConfiguration config,
         J4JHostConfiguration hostConfig,
@@ -43,7 +60,8 @@ public partial class App
                     }
                     catch( Exception )
                     {
-                        J4JDeusEx.Logger?.Error( "Error processing user configuration file, new configuration created" );
+                        J4JDeusEx.Logger?.Error(
+                            "Error processing user configuration file, new configuration created" );
                     }
 
                     var context = new GpsLocatorContext( c.Resolve<IJ4JProtection>(),

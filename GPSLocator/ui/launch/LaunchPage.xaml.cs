@@ -1,4 +1,5 @@
 ﻿using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -18,7 +19,7 @@ public sealed partial class LaunchPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = J4JServices.Default.GetRequiredService<LaunchViewModel>();
+        ViewModel = J4JDeusEx.ServiceProvider.GetRequiredService<LaunchViewModel>();
         Loaded += LaunchPage_Loaded;
     }
 

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,11 +26,11 @@ public sealed partial class MainPage : Page
     {
         this.InitializeComponent();
 
-        _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();
+        _logger = J4JDeusEx.ServiceProvider.GetRequiredService<IJ4JLogger>();
         _logger.SetLoggedType(GetType());
 
-        AppConfig = J4JServices.Default.GetRequiredService<IAppConfig>();
-        ViewModel = J4JServices.Default.GetRequiredService<AppViewModel>();
+        AppConfig = J4JDeusEx.ServiceProvider.GetRequiredService<IAppConfig>();
+        ViewModel = J4JDeusEx.ServiceProvider.GetRequiredService<AppViewModel>();
 
         Loaded += OnLoaded;
     }

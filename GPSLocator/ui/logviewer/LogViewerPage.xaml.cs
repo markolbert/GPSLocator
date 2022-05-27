@@ -1,4 +1,5 @@
 ﻿using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ public sealed partial class LogViewerPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = J4JServices.Default.GetRequiredService<LogViewerViewModel>();
+        ViewModel = J4JDeusEx.ServiceProvider.GetRequiredService<LogViewerViewModel>();
     }
 
     private LogViewerViewModel ViewModel { get; }

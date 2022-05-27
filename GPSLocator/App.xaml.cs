@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using Windows.Graphics;
 using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,9 +24,6 @@ namespace J4JSoftware.GPSLocator;
 /// </summary>
 public partial class App : Application
 {
-    private const string Publisher = "J4JSoftware";
-    private const string ApplicationName = "GpsLocator";
-
     private readonly DispatcherQueue _dQueue;
     private readonly IJ4JLogger _logger;
 
@@ -44,39 +42,24 @@ public partial class App : Application
 
         _dQueue = DispatcherQueue.GetForCurrentThread();
 
-        var hostConfig = new J4JWinAppHostConfiguration()
-                         .Publisher( Publisher )
-                         .ApplicationName( ApplicationName )
-                         .LoggerInitializer( InitializeLogger )
-                         .AddNetEventSinkToLogger()
-                         .AddDependencyInjectionInitializers( SetupDependencyInjection )
-                         .AddServicesInitializers( InitializeServices )
-                         .AddUserConfigurationFile( "userConfig.json", optional: true )
-                         .FilePathTrimmer( FilePathTrimmer )
-            as J4JWinAppHostConfiguration;
+        this.UnhandledException += App_UnhandledException;
 
-        if( !J4JServices.Initialize( hostConfig,
-                                     Path.Combine( Windows.Storage.ApplicationData.Current.LocalFolder.Path,
-                                                   "crashFile.txt" ) ) )
-            Exit();
+        var deusEx = new GPSLocatorDeusEx();
+        if ( !deusEx.Initialize() )
+            throw new J4JDeusExException( "Couldn't configure J4JDeusEx object" );
 
-        _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();
-        _logger.OutputCache(hostConfig!.Logger);
+        _logger = J4JDeusEx.ServiceProvider.GetRequiredService<IJ4JLogger>();
 
         WeakReferenceMessenger.Default.Register<App, AppConfiguredMessage, string>(
             this,
             "primary",
             AppConfiguredHandler );
-
-        this.UnhandledException += App_UnhandledException;
     }
 
     private void App_UnhandledException( object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e )
     {
-        J4JServices.OutputFatalMessage( $"Unhandled exception: {e.GetType().Name}" );
-        J4JServices.OutputFatalMessage( $"{e.Message}" );
-
-        Exit();
+        J4JDeusEx.OutputFatalMessage($"Unhandled exception: {e.GetType().Name}", null);
+        J4JDeusEx.OutputFatalMessage( $"{e.Message}", null );
     }
 
     private void AppConfiguredHandler( App recipient, AppConfiguredMessage message )

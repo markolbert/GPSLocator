@@ -1,4 +1,5 @@
 ﻿using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
@@ -17,7 +18,7 @@ public sealed partial class AboutPage : Page
     {
         this.InitializeComponent();
 
-        ViewModel = J4JServices.Default.GetRequiredService<IAppConfig>();
+        ViewModel = J4JDeusEx.ServiceProvider.GetRequiredService<IAppConfig>();
     }
 
     private IAppConfig ViewModel { get; }

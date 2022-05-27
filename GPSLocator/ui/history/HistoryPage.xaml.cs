@@ -1,4 +1,5 @@
 ﻿using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.GPSCommon;
 using J4JSoftware.Logging;
 using J4JSoftware.WindowsAppUtilities;
@@ -24,9 +25,9 @@ public sealed partial class HistoryPage : Page
     {
         InitializeComponent();
 
-        ViewModel = J4JServices.Default.GetRequiredService<HistoryViewModel>();
+        ViewModel = J4JDeusEx.ServiceProvider.GetRequiredService<HistoryViewModel>();
 
-        _logger = J4JServices.Default.GetRequiredService<IJ4JLogger>();
+        _logger = J4JDeusEx.ServiceProvider.GetRequiredService<IJ4JLogger>();
         _logger.SetLoggedType(GetType());
 
         Loaded += OnLoaded;

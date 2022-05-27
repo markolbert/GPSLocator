@@ -1,4 +1,5 @@
 ﻿using J4JSoftware.DependencyInjection;
+using J4JSoftware.DeusEx;
 using J4JSoftware.WindowsAppUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -15,7 +16,7 @@ public sealed partial class MapViewControl : UserControl
     {
         this.InitializeComponent();
 
-        ViewModel = J4JServices.Default.GetRequiredService<MapViewModel>();
+        ViewModel = J4JDeusEx.ServiceProvider.GetRequiredService<MapViewModel>();
 
         WeakReferenceMessenger.Default.Register<MapViewControl, MapLayerChangedMessage, string>(
             this,
